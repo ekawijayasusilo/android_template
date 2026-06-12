@@ -49,12 +49,6 @@
       "skillPath": "wear/jetpack-compose-m3/SKILL.md",
       "computedHash": "02a438a1ea5e00cc472d941551b283b89610e19dcd19e48cc43ac53486ce99b7"
     },
-    "migrate-xml-views-to-jetpack-compose": {
-      "source": "android/skills",
-      "sourceType": "github",
-      "skillPath": "jetpack-compose/migration/migrate-xml-views-to-jetpack-compose/SKILL.md",
-      "computedHash": "7df7e726037cae3e0fcdbfb60ee001b133094d163a799fdc958af8e671ead5a6"
-    },
     "navigation-3": {
       "source": "android/skills",
       "sourceType": "github",
