@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{background:#EDE7E3;font-family:'Outfit',system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#231915;}
+  .ms{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<div style="max-width:1080px;margin:0 auto;padding:56px 24px 96px;">
+
+  <!-- header -->
+  <header style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+    <div style="width:52px;height:52px;border-radius:16px;background:#BB3E1C;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px -10px rgba(187,62,28,.7);flex:none;"><div style="width:26px;height:22px;border-radius:8px 8px 8px 3px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;"><div style="width:7px;height:7px;border-radius:50%;background:#BB3E1C;"></div></div></div>
+    <div><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#231915;">Ember · Post &amp; Compose</div><div style="font-size:14px;color:#85736C;margin-top:2px;">Screen 04 Post detail · Screen 05 Compose states</div></div>
+  </header>
+  <div style="background:#FFDBCF;border-radius:14px;padding:12px 18px;margin-bottom:36px;font-size:13px;line-height:1.5;color:#3A0B00;"><b>Nav note:</b> New screens use 3-tab NavigationBar (Home · Search · Profile) per the updated canonical spec. Post detail and Compose are outside the tab bar.</div>
+
+  <!-- ===== POST DETAIL ===== -->
+  <div data-screen-label="Post Detail" style="margin-bottom:52px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">Screen 04</div>
+    <h2 style="font-size:22px;font-weight:700;color:#231915;margin:4px 0 4px;">Post detail</h2>
+    <p style="font-size:14px;color:#85736C;margin:0 0 20px;max-width:600px;line-height:1.5;">Expanded post (full body · image · timestamp · counts line · action row); threaded reply list below; sticky bottom reply composer. <b>Spec:</b> <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">LazyColumn</code> with sticky <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">TopAppBar</code> and fixed <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">BottomAppBar</code>.</p>
+    <div style="display:flex;gap:44px;flex-wrap:wrap;">
+
+      <!-- LIGHT -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;">
+              <!-- status bar -->
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <!-- top app bar -->
+              <div style="height:56px;flex:none;display:flex;align-items:center;gap:4px;padding:0 8px 0 4px;border-bottom:1px solid #ECDBD3;"><span class="ms" style="font-size:26px;color:#231915;padding:8px;">arrow_back</span><span style="font-size:22px;font-weight:600;color:#231915;flex:1;">Post</span><span class="ms" style="font-size:24px;color:#53433E;padding:8px;">more_horiz</span></div>
+              <!-- scrollable content -->
+              <div style="flex:1;overflow:hidden;background:#FFF8F6;">
+                <!-- focused post -->
+                <div style="padding:14px 16px 0;">
+                  <div style="display:flex;gap:10px;align-items:flex-start;">
+                    <div style="width:44px;height:44px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex:none;">MO</div>
+                    <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#231915;line-height:1.2;">Maya Okonkwo</div><div style="font-size:13px;color:#85736C;">@mayabuilds</div></div>
+                    <span class="ms" style="font-size:20px;color:#85736C;">more_horiz</span>
+                  </div>
+                  <div style="font-size:16px;line-height:1.55;color:#231915;margin-top:12px;">shipped a tiny weekend project — a reading app that hides everything except the words. The smallest tools are the most fun to build 🌱</div>
+                  <div style="margin-top:12px;height:164px;border-radius:16px;background:repeating-linear-gradient(135deg,#F5DED6,#F5DED6 10px,#EFD3C9 10px,#EFD3C9 20px);display:flex;align-items:center;justify-content:center;"><span style="font-family:ui-monospace,monospace;font-size:11px;color:#85736C;">image · 16:9</span></div>
+                  <div style="font-size:12px;color:#85736C;margin-top:10px;">10:42 AM · Jun 16, 2026</div>
+                  <div style="height:1px;background:#ECDBD3;margin:10px 0;"></div>
+                  <div style="display:flex;gap:18px;font-size:14px;color:#85736C;"><span><b style="color:#231915;font-weight:700;">129</b> Likes</span><span><b style="color:#231915;font-weight:700;">18</b> Comments</span><span><b style="color:#231915;font-weight:700;">6</b> Reposts</span></div>
+                  <div style="height:1px;background:#ECDBD3;margin:10px 0;"></div>
+                  <div style="display:flex;justify-content:space-around;padding:2px 0 8px;">
+                    <span class="ms" style="font-size:22px;color:#BB3E1C;font-variation-settings:'FILL' 1;">favorite</span>
+                    <span class="ms" style="font-size:22px;color:#53433E;">chat_bubble</span>
+                    <span class="ms" style="font-size:22px;color:#53433E;">repeat</span>
+                    <span class="ms" style="font-size:22px;color:#53433E;">share</span>
+                    <span class="ms" style="font-size:22px;color:#53433E;">bookmark_border</span>
+                  </div>
+                </div>
+                <div style="height:1px;background:#ECDBD3;"></div>
+                <!-- replies -->
+                <div style="padding:12px 16px 8px;font-size:15px;font-weight:700;color:#231915;">18 Replies</div>
+                <!-- reply 1 -->
+                <div style="padding:10px 16px;border-top:1px solid #ECDBD3;display:flex;gap:10px;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#77574E;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none;">DP</div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;gap:6px;align-items:baseline;"><span style="font-size:14px;font-weight:600;color:#231915;">Devon Park</span><span style="font-size:12px;color:#85736C;">@dpark · 5m</span></div><div style="font-size:14px;line-height:1.4;color:#231915;margin-top:2px;">this is exactly what I needed. the no-friction reading mode is such a good idea.</div><div style="display:flex;gap:18px;margin-top:8px;color:#53433E;"><div style="display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:17px;">chat_bubble</span><span style="font-size:12px;font-weight:600;">3</span></div><div style="display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:17px;">repeat</span><span style="font-size:12px;font-weight:600;">1</span></div><div style="display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:17px;">favorite</span><span style="font-size:12px;font-weight:600;">14</span></div></div></div>
+                </div>
+                <!-- reply 2 (partial) -->
+                <div style="padding:10px 16px 6px;border-top:1px solid #ECDBD3;display:flex;gap:10px;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#6C5D2F;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none;">PN</div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;gap:6px;align-items:baseline;"><span style="font-size:14px;font-weight:600;color:#231915;">Priya Nair</span><span style="font-size:12px;color:#85736C;">@priyaui · 12m</span></div><div style="font-size:14px;line-height:1.4;color:#231915;margin-top:2px;">open source? would love to peek at the Compose implementation</div></div>
+                </div>
+              </div>
+              <!-- sticky reply bar -->
+              <div style="height:64px;flex:none;border-top:1px solid #ECDBD3;display:flex;align-items:center;gap:10px;padding:0 14px;background:#FFF8F6;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;height:38px;border-radius:19px;background:#F6E5DD;display:flex;align-items:center;padding:0 14px;"><span style="font-size:14px;color:#85736C;">Add a reply…</span></div>
+                <span class="ms" style="font-size:24px;color:#BB3E1C;">send</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- DARK -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:56px;flex:none;display:flex;align-items:center;gap:4px;padding:0 8px 0 4px;border-bottom:1px solid #2E211C;"><span class="ms" style="font-size:26px;color:#F1DFD8;padding:8px;">arrow_back</span><span style="font-size:22px;font-weight:600;color:#F1DFD8;flex:1;">Post</span><span class="ms" style="font-size:24px;color:#D8C2BA;padding:8px;">more_horiz</span></div>
+              <div style="flex:1;overflow:hidden;background:#1A110D;">
+                <div style="padding:14px 16px 0;">
+                  <div style="display:flex;gap:10px;align-items:flex-start;">
+                    <div style="width:44px;height:44px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex:none;">MO</div>
+                    <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#F1DFD8;line-height:1.2;">Maya Okonkwo</div><div style="font-size:13px;color:#A08D85;">@mayabuilds</div></div>
+                    <span class="ms" style="font-size:20px;color:#A08D85;">more_horiz</span>
+                  </div>
+                  <div style="font-size:16px;line-height:1.55;color:#F1DFD8;margin-top:12px;">shipped a tiny weekend project — a reading app that hides everything except the words. The smallest tools are the most fun to build 🌱</div>
+                  <div style="margin-top:12px;height:164px;border-radius:16px;background:repeating-linear-gradient(135deg,#322722,#322722 10px,#3D312C 10px,#3D312C 20px);display:flex;align-items:center;justify-content:center;"><span style="font-family:ui-monospace,monospace;font-size:11px;color:#A08D85;">image · 16:9</span></div>
+                  <div style="font-size:12px;color:#A08D85;margin-top:10px;">10:42 AM · Jun 16, 2026</div>
+                  <div style="height:1px;background:#2E211C;margin:10px 0;"></div>
+                  <div style="display:flex;gap:18px;font-size:14px;color:#A08D85;"><span><b style="color:#F1DFD8;font-weight:700;">129</b> Likes</span><span><b style="color:#F1DFD8;font-weight:700;">18</b> Comments</span><span><b style="color:#F1DFD8;font-weight:700;">6</b> Reposts</span></div>
+                  <div style="height:1px;background:#2E211C;margin:10px 0;"></div>
+                  <div style="display:flex;justify-content:space-around;padding:2px 0 8px;">
+                    <span class="ms" style="font-size:22px;color:#FFB59E;font-variation-settings:'FILL' 1;">favorite</span>
+                    <span class="ms" style="font-size:22px;color:#D8C2BA;">chat_bubble</span>
+                    <span class="ms" style="font-size:22px;color:#D8C2BA;">repeat</span>
+                    <span class="ms" style="font-size:22px;color:#D8C2BA;">share</span>
+                    <span class="ms" style="font-size:22px;color:#D8C2BA;">bookmark_border</span>
+                  </div>
+                </div>
+                <div style="height:1px;background:#2E211C;"></div>
+                <div style="padding:12px 16px 8px;font-size:15px;font-weight:700;color:#F1DFD8;">18 Replies</div>
+                <div style="padding:10px 16px;border-top:1px solid #2E211C;display:flex;gap:10px;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#E7BDB0;color:#442A20;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none;">DP</div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;gap:6px;align-items:baseline;"><span style="font-size:14px;font-weight:600;color:#F1DFD8;">Devon Park</span><span style="font-size:12px;color:#A08D85;">@dpark · 5m</span></div><div style="font-size:14px;line-height:1.4;color:#F1DFD8;margin-top:2px;">this is exactly what I needed. the no-friction reading mode is such a good idea.</div><div style="display:flex;gap:18px;margin-top:8px;color:#D8C2BA;"><div style="display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:17px;">chat_bubble</span><span style="font-size:12px;font-weight:600;">3</span></div><div style="display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:17px;">repeat</span><span style="font-size:12px;font-weight:600;">1</span></div><div style="display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:17px;">favorite</span><span style="font-size:12px;font-weight:600;">14</span></div></div></div>
+                </div>
+                <div style="padding:10px 16px 6px;border-top:1px solid #2E211C;display:flex;gap:10px;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#D9C58D;color:#3A2F05;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none;">PN</div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;gap:6px;align-items:baseline;"><span style="font-size:14px;font-weight:600;color:#F1DFD8;">Priya Nair</span><span style="font-size:12px;color:#A08D85;">@priyaui · 12m</span></div><div style="font-size:14px;line-height:1.4;color:#F1DFD8;margin-top:2px;">open source? would love to peek at the Compose implementation</div></div>
+                </div>
+              </div>
+              <div style="height:64px;flex:none;border-top:1px solid #2E211C;display:flex;align-items:center;gap:10px;padding:0 14px;background:#1A110D;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;height:38px;border-radius:19px;background:#322722;display:flex;align-items:center;padding:0 14px;"><span style="font-size:14px;color:#A08D85;">Add a reply…</span></div>
+                <span class="ms" style="font-size:24px;color:#FFB59E;">send</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COMPOSE STATES ===== -->
+  <div data-screen-label="Compose States" style="margin-bottom:8px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">Screen 05 — states</div>
+    <h2 style="font-size:22px;font-weight:700;color:#231915;margin:4px 0 4px;">Compose post</h2>
+    <p style="font-size:14px;color:#85736C;margin:0 0 20px;max-width:600px;line-height:1.5;">Three states: empty/disabled (Post btn inactive, empty ring), 4-image ready (2×2 thumbnail grid, full ring), uploading (linear progress indicator, spinner in appbar, images overlaid). <b>Spec:</b> ModalBottomSheet or full-screen Activity. <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">viewModel.uiState: Idle | Editing | Uploading</code>.</p>
+
+    <div style="display:flex;gap:44px;flex-wrap:wrap;">
+
+      <!-- STATE 1: EMPTY / DISABLED — light -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#FFDBCF;color:#3A0B00;padding:4px 12px;border-radius:10px;">Empty · disabled</div>
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <!-- app bar: ✕ + disabled Post -->
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #ECDBD3;">
+                <span class="ms" style="font-size:26px;color:#231915;">close</span>
+                <div style="height:36px;border-radius:18px;background:rgba(35,25,21,.12);color:rgba(35,25,21,.38);display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Post</div>
+              </div>
+              <!-- composer -->
+              <div style="flex:1;padding:14px 16px;display:flex;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;"><div style="font-size:17px;color:#85736C;line-height:1.5;">What's happening?</div></div>
+              </div>
+              <!-- media toolbar -->
+              <div style="height:56px;flex:none;border-top:1px solid #ECDBD3;display:flex;align-items:center;justify-content:space-between;padding:0 16px;">
+                <div style="display:flex;align-items:center;gap:20px;color:#BB3E1C;"><span class="ms" style="font-size:23px;">image</span><span class="ms" style="font-size:23px;">gif_box</span><span class="ms" style="font-size:23px;">sentiment_satisfied</span><span class="ms" style="font-size:23px;">poll</span></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:12px;font-weight:600;color:#ECDBD3;">280</span>
+                  <!-- empty ring -->
+                  <div style="width:22px;height:22px;border-radius:50%;border:2.5px solid #ECDBD3;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- STATE 1: EMPTY — dark -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#3D312C;color:#FFDBCF;padding:4px 12px;border-radius:10px;">Empty · disabled</div>
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #2E211C;">
+                <span class="ms" style="font-size:26px;color:#F1DFD8;">close</span>
+                <div style="height:36px;border-radius:18px;background:rgba(241,223,216,.12);color:rgba(241,223,216,.38);display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Post</div>
+              </div>
+              <div style="flex:1;padding:14px 16px;display:flex;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;"><div style="font-size:17px;color:#A08D85;line-height:1.5;">What's happening?</div></div>
+              </div>
+              <div style="height:56px;flex:none;border-top:1px solid #2E211C;display:flex;align-items:center;justify-content:space-between;padding:0 16px;">
+                <div style="display:flex;align-items:center;gap:20px;color:#FFB59E;"><span class="ms" style="font-size:23px;">image</span><span class="ms" style="font-size:23px;">gif_box</span><span class="ms" style="font-size:23px;">sentiment_satisfied</span><span class="ms" style="font-size:23px;">poll</span></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:12px;font-weight:600;color:#3D312C;">280</span>
+                  <div style="width:22px;height:22px;border-radius:50%;border:2.5px solid #3D312C;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+
+      <!-- STATE 2: 4 IMAGES / READY — light -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#FFDBCF;color:#3A0B00;padding:4px 12px;border-radius:10px;">4 images · ready</div>
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;">
+                <span class="ms" style="font-size:26px;color:#231915;">close</span>
+                <div style="height:36px;border-radius:18px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Post</div>
+              </div>
+              <div style="flex:1;overflow:hidden;padding:4px 16px 0;display:flex;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:16px;line-height:1.5;color:#231915;">Tiny weekend project — reading app that strips everything away. Open-sourcing it this week 🌱</div>
+                  <!-- 2x2 image grid -->
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;">
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#F5DED6,#F5DED6 8px,#EFD3C9 8px,#EFD3C9 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(11,7,5,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#FFFFFF;">close</span></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#F5DED6,#F5DED6 8px,#EFD3C9 8px,#EFD3C9 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(11,7,5,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#FFFFFF;">close</span></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#EFD3C9,#EFD3C9 8px,#E8C9BD 8px,#E8C9BD 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(11,7,5,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#FFFFFF;">close</span></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#EFD3C9,#EFD3C9 8px,#E8C9BD 8px,#E8C9BD 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(11,7,5,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#FFFFFF;">close</span></div></div>
+                  </div>
+                  <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;height:28px;border:1px solid #ECDBD3;border-radius:8px;padding:0 10px;"><span class="ms" style="font-size:15px;color:#85736C;">public</span><span style="font-size:12px;font-weight:600;color:#85736C;">Everyone</span></div>
+                </div>
+              </div>
+              <div style="height:56px;flex:none;border-top:1px solid #ECDBD3;display:flex;align-items:center;justify-content:space-between;padding:0 16px;">
+                <!-- image icon grayed (max reached) -->
+                <div style="display:flex;align-items:center;gap:20px;"><span class="ms" style="font-size:23px;color:rgba(35,25,21,.3);">image</span><span class="ms" style="font-size:23px;color:#BB3E1C;">gif_box</span><span class="ms" style="font-size:23px;color:#BB3E1C;">sentiment_satisfied</span><span class="ms" style="font-size:23px;color:#BB3E1C;">poll</span></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:12px;font-weight:600;color:#85736C;">156 / 280</span>
+                  <div style="width:22px;height:22px;border-radius:50%;background:conic-gradient(#BB3E1C 56%,#ECDBD3 0);display:flex;align-items:center;justify-content:center;"><div style="width:14px;height:14px;border-radius:50%;background:#FFF8F6;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- STATE 2: 4 IMAGES / READY — dark -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#3D312C;color:#FFDBCF;padding:4px 12px;border-radius:10px;">4 images · ready</div>
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;">
+                <span class="ms" style="font-size:26px;color:#F1DFD8;">close</span>
+                <div style="height:36px;border-radius:18px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Post</div>
+              </div>
+              <div style="flex:1;overflow:hidden;padding:4px 16px 0;display:flex;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:16px;line-height:1.5;color:#F1DFD8;">Tiny weekend project — reading app that strips everything away. Open-sourcing it this week 🌱</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;">
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#322722,#322722 8px,#3D312C 8px,#3D312C 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#F1DFD8;">close</span></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#322722,#322722 8px,#3D312C 8px,#3D312C 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#F1DFD8;">close</span></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#3D312C,#3D312C 8px,#453830 8px,#453830 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#F1DFD8;">close</span></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#3D312C,#3D312C 8px,#453830 8px,#453830 16px);"><div style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:14px;color:#F1DFD8;">close</span></div></div>
+                  </div>
+                  <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;height:28px;border:1px solid #53433E;border-radius:8px;padding:0 10px;"><span class="ms" style="font-size:15px;color:#A08D85;">public</span><span style="font-size:12px;font-weight:600;color:#A08D85;">Everyone</span></div>
+                </div>
+              </div>
+              <div style="height:56px;flex:none;border-top:1px solid #2E211C;display:flex;align-items:center;justify-content:space-between;padding:0 16px;">
+                <div style="display:flex;align-items:center;gap:20px;"><span class="ms" style="font-size:23px;color:rgba(241,223,216,.2);">image</span><span class="ms" style="font-size:23px;color:#FFB59E;">gif_box</span><span class="ms" style="font-size:23px;color:#FFB59E;">sentiment_satisfied</span><span class="ms" style="font-size:23px;color:#FFB59E;">poll</span></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-size:12px;font-weight:600;color:#A08D85;">156 / 280</span>
+                  <div style="width:22px;height:22px;border-radius:50%;background:conic-gradient(#FFB59E 56%,#3D312C 0);display:flex;align-items:center;justify-content:center;"><div style="width:14px;height:14px;border-radius:50%;background:#1A110D;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+
+      <!-- STATE 3: UPLOADING — light -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#FFDBCF;color:#3A0B00;padding:4px 12px;border-radius:10px;">Uploading</div>
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;">
+                <span class="ms" style="font-size:26px;color:rgba(35,25,21,.38);">close</span>
+                <div style="width:32px;height:32px;border-radius:50%;border:3px solid #FFDBCF;border-top-color:#BB3E1C;animation:spin 0.9s linear infinite;"></div>
+              </div>
+              <!-- linear progress indicator -->
+              <div style="height:4px;background:#FFDBCF;flex:none;position:relative;"><div style="position:absolute;left:0;top:0;height:4px;width:62%;background:#BB3E1C;border-radius:0 2px 2px 0;"></div></div>
+              <div style="flex:1;overflow:hidden;padding:12px 16px 0;display:flex;gap:12px;opacity:0.6;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:16px;line-height:1.5;color:#231915;">Tiny weekend project — reading app that strips everything away. Open-sourcing it this week 🌱</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;">
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#F5DED6,#F5DED6 8px,#EFD3C9 8px,#EFD3C9 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(11,7,5,.4);display:flex;align-items:center;justify-content:center;"><div style="width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#FFFFFF;animation:spin 0.9s linear infinite;"></div></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#F5DED6,#F5DED6 8px,#EFD3C9 8px,#EFD3C9 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(11,7,5,.4);"></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#EFD3C9,#EFD3C9 8px,#E8C9BD 8px,#E8C9BD 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(11,7,5,.4);"></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#EFD3C9,#EFD3C9 8px,#E8C9BD 8px,#E8C9BD 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(11,7,5,.4);"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div style="height:56px;flex:none;border-top:1px solid #ECDBD3;display:flex;align-items:center;justify-content:center;padding:0 16px;opacity:0.4;">
+                <div style="display:flex;align-items:center;gap:20px;"><span class="ms" style="font-size:23px;color:#BB3E1C;">image</span><span class="ms" style="font-size:23px;color:#BB3E1C;">gif_box</span><span class="ms" style="font-size:23px;color:#BB3E1C;">sentiment_satisfied</span><span class="ms" style="font-size:23px;color:#BB3E1C;">poll</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- STATE 3: UPLOADING — dark -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#3D312C;color:#FFDBCF;padding:4px 12px;border-radius:10px;">Uploading</div>
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;">
+                <span class="ms" style="font-size:26px;color:rgba(241,223,216,.38);">close</span>
+                <div style="width:32px;height:32px;border-radius:50%;border:3px solid #3D312C;border-top-color:#FFB59E;animation:spin 0.9s linear infinite;"></div>
+              </div>
+              <div style="height:4px;background:#3D312C;flex:none;position:relative;"><div style="position:absolute;left:0;top:0;height:4px;width:62%;background:#FFB59E;border-radius:0 2px 2px 0;"></div></div>
+              <div style="flex:1;overflow:hidden;padding:12px 16px 0;display:flex;gap:12px;opacity:0.6;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex:none;">MO</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:16px;line-height:1.5;color:#F1DFD8;">Tiny weekend project — reading app that strips everything away. Open-sourcing it this week 🌱</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;">
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#322722,#322722 8px,#3D312C 8px,#3D312C 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;"><div style="width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,181,158,.3);border-top-color:#FFB59E;animation:spin 0.9s linear infinite;"></div></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#322722,#322722 8px,#3D312C 8px,#3D312C 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(0,0,0,.5);"></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(135deg,#3D312C,#3D312C 8px,#453830 8px,#453830 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(0,0,0,.5);"></div></div>
+                    <div style="position:relative;height:100px;border-radius:12px;background:repeating-linear-gradient(45deg,#3D312C,#3D312C 8px,#453830 8px,#453830 16px);"><div style="position:absolute;inset:0;border-radius:12px;background:rgba(0,0,0,.5);"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div style="height:56px;flex:none;border-top:1px solid #2E211C;display:flex;align-items:center;justify-content:center;padding:0 16px;opacity:0.4;">
+                <div style="display:flex;align-items:center;gap:20px;"><span class="ms" style="font-size:23px;color:#FFB59E;">image</span><span class="ms" style="font-size:23px;color:#FFB59E;">gif_box</span><span class="ms" style="font-size:23px;color:#FFB59E;">sentiment_satisfied</span><span class="ms" style="font-size:23px;color:#FFB59E;">poll</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

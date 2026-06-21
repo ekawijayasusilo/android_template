@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{background:#EDE7E3;font-family:'Outfit',system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#231915;}
+  .ms{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}
+</style>
+</helmet>
+
+<div style="max-width:1180px;margin:0 auto;padding:56px 24px 96px;">
+
+  <header style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+    <div style="width:52px;height:52px;border-radius:16px;background:#BB3E1C;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px -10px rgba(187,62,28,.7);flex:none;"><div style="width:26px;height:22px;border-radius:8px 8px 8px 3px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;"><div style="width:7px;height:7px;border-radius:50%;background:#BB3E1C;"></div></div></div>
+    <div><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#231915;">Ember · Profile (extended)</div><div style="font-size:14px;color:#85736C;margin-top:2px;">Screen 07 Profile (other user) · Screen 08 Edit profile · Screen 09 User list</div></div>
+  </header>
+  <div style="background:#FFDBCF;border-radius:14px;padding:12px 18px;margin-bottom:36px;font-size:13px;line-height:1.5;color:#3A0B00;"><b>v1 scope:</b> tabs trimmed to <b>Posts · Likes</b> only. Location field removed from all headers. <b>4-tab nav</b> (Home · Search · Notifications · Profile) throughout. Profile (other user) and User list are drilldowns — no bottom nav shown.</div>
+
+  <!-- ===== PROFILE OTHER USER ===== -->
+  <div data-screen-label="Profile — other user" style="margin-bottom:52px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">Screen 07 — variant</div>
+    <h2 style="font-size:22px;font-weight:700;color:#231915;margin:4px 0 4px;">Profile — other user</h2>
+    <p style="font-size:14px;color:#85736C;margin:0 0 20px;max-width:600px;line-height:1.5;">Follow / Unfollow button replaces "Edit profile". Tappable follower/following counts navigate to the User list screen. Same structure as self-profile otherwise.</p>
+    <div style="display:flex;gap:44px;flex-wrap:wrap;">
+
+      <!-- LIGHT -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;position:relative;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <!-- banner -->
+              <div style="height:100px;flex:none;position:relative;background:repeating-linear-gradient(135deg,#E2C4B8,#E2C4B8 12px,#DAB9AB 12px,#DAB9AB 24px);"><div style="position:absolute;top:10px;left:14px;display:flex;align-items:center;gap:2px;"><div style="width:34px;height:34px;border-radius:50%;background:rgba(11,7,5,.45);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:20px;color:#FFFFFF;">arrow_back</span></div><span style="font-size:15px;font-weight:600;color:#FFFFFF;margin-left:6px;">Devon Park</span></div><div style="position:absolute;top:10px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(11,7,5,.45);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:20px;color:#FFFFFF;">more_horiz</span></div></div>
+              <div style="flex:none;padding:0 16px;">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:-40px;">
+                  <div style="width:84px;height:84px;border-radius:50%;background:#77574E;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;border:4px solid #FFF8F6;">DP</div>
+                  <!-- follow button (filled for "not following") -->
+                  <div style="height:36px;border-radius:18px;background:#231915;color:#FFF8F6;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;margin-bottom:6px;">Follow</div>
+                </div>
+                <div style="margin-top:10px;"><div style="font-size:22px;font-weight:700;color:#231915;">Devon Park</div><div style="font-size:14px;color:#85736C;">@dpark</div></div>
+                <div style="font-size:14px;line-height:1.45;color:#231915;margin-top:8px;">Writes code and words. Compose enthusiast, accessibility advocate. he/him</div>
+                <div style="display:flex;gap:6px;margin-top:6px;color:#85736C;font-size:13px;align-items:center;"><span class="ms" style="font-size:15px;">calendar_month</span>Joined Jan 2022</div>
+                <!-- tappable counts -->
+                <div style="display:flex;gap:18px;margin-top:8px;font-size:14px;color:#85736C;"><span style="text-decoration:underline;text-decoration-color:#ECDBD3;cursor:pointer;"><b style="color:#231915;font-weight:700;">204</b> Following</span><span style="text-decoration:underline;text-decoration-color:#ECDBD3;cursor:pointer;"><b style="color:#231915;font-weight:700;">9.1K</b> Followers</span></div>
+                <!-- "follows you" chip -->
+                <div style="margin-top:8px;display:inline-flex;align-items:center;height:24px;background:#F6E5DD;border-radius:6px;padding:0 8px;font-size:12px;font-weight:600;color:#53433E;">Follows you</div>
+              </div>
+              <!-- tabs (v1: Posts + Likes only) -->
+              <div style="height:46px;flex:none;display:flex;border-bottom:1px solid #ECDBD3;margin-top:10px;">
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:14px;font-weight:700;color:#BB3E1C;">Posts</span><div style="position:absolute;bottom:0;width:30px;height:3px;border-radius:3px 3px 0 0;background:#BB3E1C;"></div></div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:14px;font-weight:600;color:#85736C;">Likes</span></div>
+              </div>
+              <!-- posts -->
+              <div style="flex:1;overflow:hidden;">
+                <div style="padding:12px 16px;display:flex;gap:12px;border-bottom:1px solid #ECDBD3;">
+                  <div style="width:44px;height:44px;border-radius:50%;background:#77574E;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex:none;">DP</div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:15px;font-weight:600;color:#231915;">Devon Park</span><span style="font-size:13px;color:#85736C;">@dpark · 1h</span></div><div style="font-size:14px;line-height:1.45;color:#231915;margin-top:2px;">hot take: good design systems are mostly good naming plus the patience to say no to one-off components.</div><div style="display:flex;align-items:center;margin-top:10px;color:#53433E;"><div style="display:flex;align-items:center;gap:6px;flex:1;"><span class="ms" style="font-size:18px;">chat_bubble</span><span style="font-size:12px;font-weight:600;">54</span></div><div style="display:flex;align-items:center;gap:6px;flex:1;"><span class="ms" style="font-size:18px;">repeat</span><span style="font-size:12px;font-weight:600;">29</span></div><div style="display:flex;align-items:center;gap:6px;flex:1;"><span class="ms" style="font-size:18px;">favorite</span><span style="font-size:12px;font-weight:600;">342</span></div></div></div>
+                </div>
+              </div>
+              <!-- 4-tab nav -->
+              <div style="height:80px;flex:none;display:flex;background:#FBEBE4;border-top:1px solid #ECDBD3;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">home</span></div><span style="font-size:12px;font-weight:500;color:#53433E;">Home</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">search</span></div><span style="font-size:12px;font-weight:500;color:#53433E;">Search</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">notifications</span></div><span style="font-size:12px;font-weight:500;color:#53433E;">Alerts</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;border-radius:16px;background:#FFDBCF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#3A0B00;font-variation-settings:'FILL' 1;">person</span></div><span style="font-size:12px;font-weight:600;color:#231915;">Profile</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- DARK -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;position:relative;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:100px;flex:none;position:relative;background:repeating-linear-gradient(135deg,#3A2A22,#3A2A22 12px,#43312A 12px,#43312A 24px);"><div style="position:absolute;top:10px;left:14px;display:flex;align-items:center;gap:2px;"><div style="width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:20px;color:#F1DFD8;">arrow_back</span></div><span style="font-size:15px;font-weight:600;color:#F1DFD8;margin-left:6px;">Devon Park</span></div><div style="position:absolute;top:10px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:20px;color:#F1DFD8;">more_horiz</span></div></div>
+              <div style="flex:none;padding:0 16px;">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:-40px;">
+                  <div style="width:84px;height:84px;border-radius:50%;background:#E7BDB0;color:#442A20;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;border:4px solid #1A110D;">DP</div>
+                  <div style="height:36px;border-radius:18px;background:#F1DFD8;color:#1A110D;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;margin-bottom:6px;">Follow</div>
+                </div>
+                <div style="margin-top:10px;"><div style="font-size:22px;font-weight:700;color:#F1DFD8;">Devon Park</div><div style="font-size:14px;color:#A08D85;">@dpark</div></div>
+                <div style="font-size:14px;line-height:1.45;color:#F1DFD8;margin-top:8px;">Writes code and words. Compose enthusiast, accessibility advocate. he/him</div>
+                <div style="display:flex;gap:6px;margin-top:6px;color:#A08D85;font-size:13px;align-items:center;"><span class="ms" style="font-size:15px;">calendar_month</span>Joined Jan 2022</div>
+                <div style="display:flex;gap:18px;margin-top:8px;font-size:14px;color:#A08D85;"><span><b style="color:#F1DFD8;font-weight:700;">204</b> Following</span><span><b style="color:#F1DFD8;font-weight:700;">9.1K</b> Followers</span></div>
+                <div style="margin-top:8px;display:inline-flex;align-items:center;height:24px;background:#322722;border-radius:6px;padding:0 8px;font-size:12px;font-weight:600;color:#D8C2BA;">Follows you</div>
+              </div>
+              <div style="height:46px;flex:none;display:flex;border-bottom:1px solid #2E211C;margin-top:10px;">
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:14px;font-weight:700;color:#FFB59E;">Posts</span><div style="position:absolute;bottom:0;width:30px;height:3px;border-radius:3px 3px 0 0;background:#FFB59E;"></div></div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:14px;font-weight:600;color:#A08D85;">Likes</span></div>
+              </div>
+              <div style="flex:1;overflow:hidden;">
+                <div style="padding:12px 16px;display:flex;gap:12px;">
+                  <div style="width:44px;height:44px;border-radius:50%;background:#E7BDB0;color:#442A20;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex:none;">DP</div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">Devon Park</span><span style="font-size:13px;color:#A08D85;">@dpark · 1h</span></div><div style="font-size:14px;line-height:1.45;color:#F1DFD8;margin-top:2px;">hot take: good design systems are mostly good naming plus the patience to say no to one-off components.</div><div style="display:flex;align-items:center;margin-top:10px;color:#D8C2BA;"><div style="display:flex;align-items:center;gap:6px;flex:1;"><span class="ms" style="font-size:18px;">chat_bubble</span><span style="font-size:12px;font-weight:600;">54</span></div><div style="display:flex;align-items:center;gap:6px;flex:1;"><span class="ms" style="font-size:18px;">repeat</span><span style="font-size:12px;font-weight:600;">29</span></div><div style="display:flex;align-items:center;gap:6px;flex:1;"><span class="ms" style="font-size:18px;">favorite</span><span style="font-size:12px;font-weight:600;">342</span></div></div></div>
+                </div>
+              </div>
+              <div style="height:80px;flex:none;display:flex;background:#271C18;border-top:1px solid #2E211C;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">home</span></div><span style="font-size:12px;font-weight:500;color:#D8C2BA;">Home</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">search</span></div><span style="font-size:12px;font-weight:500;color:#D8C2BA;">Search</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">notifications</span></div><span style="font-size:12px;font-weight:500;color:#D8C2BA;">Alerts</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;border-radius:16px;background:#7B2D10;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#FFDBCF;font-variation-settings:'FILL' 1;">person</span></div><span style="font-size:12px;font-weight:600;color:#F1DFD8;">Profile</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EDIT PROFILE ===== -->
+  <div data-screen-label="Edit Profile" style="margin-bottom:52px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">Screen 08</div>
+    <h2 style="font-size:22px;font-weight:700;color:#231915;margin:4px 0 4px;">Edit profile</h2>
+    <p style="font-size:14px;color:#85736C;margin:0 0 20px;max-width:600px;line-height:1.5;">Avatar picker (tap-to-change overlay), OutlinedTextField for display name, bio with 160-char counter, Save button. <b>Spec:</b> <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">ModalBottomSheet</code> or pushed route; <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">viewModel.isSaveEnabled</code> drives the Save btn.</p>
+    <div style="display:flex;gap:44px;flex-wrap:wrap;">
+
+      <!-- LIGHT -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <!-- app bar -->
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #ECDBD3;"><span class="ms" style="font-size:26px;color:#231915;">close</span><span style="font-size:18px;font-weight:700;color:#231915;">Edit profile</span><div style="height:36px;border-radius:18px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Save</div></div>
+              <div style="flex:1;overflow:hidden;padding:24px 20px;">
+                <!-- avatar picker -->
+                <div style="display:flex;justify-content:center;margin-bottom:28px;">
+                  <div style="position:relative;width:90px;height:90px;">
+                    <div style="width:90px;height:90px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:600;">MO</div>
+                    <div style="position:absolute;inset:0;border-radius:50%;background:rgba(11,7,5,.4);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:26px;color:#FFFFFF;">photo_camera</span></div>
+                  </div>
+                </div>
+                <!-- display name -->
+                <div style="margin-bottom:20px;">
+                  <div style="position:relative;border:2px solid #BB3E1C;border-radius:4px;padding:14px 14px 10px;"><span style="position:absolute;top:-9px;left:10px;background:#FFF8F6;padding:0 5px;font-size:12px;font-weight:600;color:#BB3E1C;">Display name</span><span style="font-size:16px;color:#231915;">Maya Okonkwo</span></div>
+                </div>
+                <!-- bio -->
+                <div style="margin-bottom:8px;">
+                  <div style="position:relative;border:1px solid #85736C;border-radius:4px;padding:14px 14px 28px;"><span style="position:absolute;top:-9px;left:10px;background:#FFF8F6;padding:0 5px;font-size:12px;color:#53433E;">Bio</span><span style="font-size:15px;line-height:1.45;color:#231915;">Designer who codes. Building calm little tools 🌱 Currently: a focus-mode reading app. she/her</span><span style="position:absolute;bottom:8px;right:12px;font-size:12px;font-weight:600;color:#85736C;">94 / 160</span></div>
+                  <div style="font-size:12px;color:#85736C;margin-top:5px;padding:0 4px;">Shown on your public profile.</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- DARK -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #2E211C;"><span class="ms" style="font-size:26px;color:#F1DFD8;">close</span><span style="font-size:18px;font-weight:700;color:#F1DFD8;">Edit profile</span><div style="height:36px;border-radius:18px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Save</div></div>
+              <div style="flex:1;overflow:hidden;padding:24px 20px;">
+                <div style="display:flex;justify-content:center;margin-bottom:28px;">
+                  <div style="position:relative;width:90px;height:90px;">
+                    <div style="width:90px;height:90px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:600;">MO</div>
+                    <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:26px;color:#F1DFD8;">photo_camera</span></div>
+                  </div>
+                </div>
+                <div style="margin-bottom:20px;">
+                  <div style="position:relative;border:2px solid #FFB59E;border-radius:4px;padding:14px 14px 10px;"><span style="position:absolute;top:-9px;left:10px;background:#1A110D;padding:0 5px;font-size:12px;font-weight:600;color:#FFB59E;">Display name</span><span style="font-size:16px;color:#F1DFD8;">Maya Okonkwo</span></div>
+                </div>
+                <div style="margin-bottom:8px;">
+                  <div style="position:relative;border:1px solid #A08D85;border-radius:4px;padding:14px 14px 28px;"><span style="position:absolute;top:-9px;left:10px;background:#1A110D;padding:0 5px;font-size:12px;color:#D8C2BA;">Bio</span><span style="font-size:15px;line-height:1.45;color:#F1DFD8;">Designer who codes. Building calm little tools 🌱 Currently: a focus-mode reading app. she/her</span><span style="position:absolute;bottom:8px;right:12px;font-size:12px;font-weight:600;color:#A08D85;">94 / 160</span></div>
+                  <div style="font-size:12px;color:#A08D85;margin-top:5px;padding:0 4px;">Shown on your public profile.</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== USER LIST ===== -->
+  <div data-screen-label="User List" style="margin-bottom:8px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">Screen 09</div>
+    <h2 style="font-size:22px;font-weight:700;color:#231915;margin:4px 0 4px;">User list</h2>
+    <p style="font-size:14px;color:#85736C;margin:0 0 20px;max-width:600px;line-height:1.5;">Followers / Following — top tabs, then a scrollable <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">UserRow</code> list. Each row: avatar · display name · @handle · optional "Follows you" chip · Follow/Unfollow button. <b>Spec:</b> <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">LazyColumn</code>, paged; tabs are <code style="font-size:12px;background:rgba(35,25,21,.08);padding:1px 5px;border-radius:4px;">PrimaryTabRow</code>.</p>
+    <div style="display:flex;gap:44px;flex-wrap:wrap;">
+
+      <!-- LIGHT -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#FFF8F6;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#231915;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#231915;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:56px;flex:none;display:flex;align-items:center;gap:4px;padding:0 6px;border-bottom:1px solid #ECDBD3;"><span class="ms" style="font-size:26px;color:#231915;padding:8px;">arrow_back</span><span style="font-size:18px;font-weight:700;color:#231915;">Maya Okonkwo</span></div>
+              <!-- tabs -->
+              <div style="height:48px;flex:none;display:flex;border-bottom:1px solid #ECDBD3;">
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:14px;font-weight:700;color:#BB3E1C;">Followers</span><span style="font-size:13px;font-weight:600;color:#85736C;margin-left:5px;">18.2K</span><div style="position:absolute;bottom:0;left:10%;right:10%;height:3px;border-radius:3px 3px 0 0;background:#BB3E1C;"></div></div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:14px;font-weight:600;color:#85736C;">Following</span><span style="font-size:13px;font-weight:600;color:#85736C;margin-left:5px;">312</span></div>
+              </div>
+              <!-- user rows -->
+              <div style="flex:1;overflow:hidden;">
+                <!-- row 1 -->
+                <div style="padding:12px 16px;border-bottom:1px solid #ECDBD3;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#77574E;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">DP</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#231915;">Devon Park</div><div style="font-size:13px;color:#85736C;">@dpark</div><div style="margin-top:4px;display:inline-flex;align-items:center;height:20px;background:#F6E5DD;border-radius:5px;padding:0 7px;font-size:11px;font-weight:600;color:#53433E;">Follows you</div></div>
+                  <div style="height:34px;border-radius:17px;background:#231915;color:#FFF8F6;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Follow</div>
+                </div>
+                <!-- row 2 -->
+                <div style="padding:12px 16px;border-bottom:1px solid #ECDBD3;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#6C5D2F;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">PN</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#231915;">Priya Nair</div><div style="font-size:13px;color:#85736C;">@priyaui</div></div>
+                  <div style="height:34px;border-radius:17px;border:1.5px solid #231915;color:#231915;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Following</div>
+                </div>
+                <!-- row 3 -->
+                <div style="padding:12px 16px;border-bottom:1px solid #ECDBD3;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">LC</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#231915;">Lena Cho</div><div style="font-size:13px;color:#85736C;">@lenacho</div></div>
+                  <div style="height:34px;border-radius:17px;background:#231915;color:#FFF8F6;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Follow</div>
+                </div>
+                <!-- row 4 -->
+                <div style="padding:12px 16px;border-bottom:1px solid #ECDBD3;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:repeating-linear-gradient(135deg,#F5DED6,#F5DED6 6px,#EFD3C9 6px,#EFD3C9 12px);display:flex;align-items:center;justify-content:center;flex:none;"><span class="ms" style="font-size:24px;color:#85736C;">person</span></div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#231915;">Sam Rivera</div><div style="font-size:13px;color:#85736C;">@samr</div><div style="margin-top:4px;display:inline-flex;align-items:center;height:20px;background:#F6E5DD;border-radius:5px;padding:0 7px;font-size:11px;font-weight:600;color:#53433E;">Follows you</div></div>
+                  <div style="height:34px;border-radius:17px;background:#231915;color:#FFF8F6;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Follow</div>
+                </div>
+                <!-- row 5 (partial) -->
+                <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#6C5D2F;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">JK</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#231915;">Ji-Yeon Kim</div><div style="font-size:13px;color:#85736C;">@jiyeon</div></div>
+                  <div style="height:34px;border-radius:17px;border:1.5px solid #231915;color:#231915;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Following</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">LIGHT</span>
+      </div>
+
+      <!-- DARK -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="width:339px;height:715px;position:relative;flex:none;">
+          <div style="position:absolute;top:0;left:0;width:413px;height:872px;transform:scale(0.821);transform-origin:top left;border-radius:52px;background:#0B0705;padding:10px;box-shadow:0 30px 60px -30px rgba(35,25,21,.55);">
+            <div style="width:393px;height:852px;border-radius:42px;overflow:hidden;background:#1A110D;display:flex;flex-direction:column;">
+              <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;flex:none;"><span style="font-size:15px;font-weight:600;color:#F1DFD8;">9:41</span><div style="display:flex;align-items:center;gap:7px;color:#F1DFD8;"><span class="ms" style="font-size:17px;">signal_cellular_alt</span><span class="ms" style="font-size:17px;">wifi</span><span class="ms" style="font-size:18px;">battery_full</span></div></div>
+              <div style="height:56px;flex:none;display:flex;align-items:center;gap:4px;padding:0 6px;border-bottom:1px solid #2E211C;"><span class="ms" style="font-size:26px;color:#F1DFD8;padding:8px;">arrow_back</span><span style="font-size:18px;font-weight:700;color:#F1DFD8;">Maya Okonkwo</span></div>
+              <div style="height:48px;flex:none;display:flex;border-bottom:1px solid #2E211C;">
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:14px;font-weight:700;color:#FFB59E;">Followers</span><span style="font-size:13px;font-weight:600;color:#A08D85;margin-left:5px;">18.2K</span><div style="position:absolute;bottom:0;left:10%;right:10%;height:3px;border-radius:3px 3px 0 0;background:#FFB59E;"></div></div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:14px;font-weight:600;color:#A08D85;">Following</span><span style="font-size:13px;font-weight:600;color:#A08D85;margin-left:5px;">312</span></div>
+              </div>
+              <div style="flex:1;overflow:hidden;">
+                <div style="padding:12px 16px;border-bottom:1px solid #2E211C;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#E7BDB0;color:#442A20;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">DP</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#F1DFD8;">Devon Park</div><div style="font-size:13px;color:#A08D85;">@dpark</div><div style="margin-top:4px;display:inline-flex;align-items:center;height:20px;background:#322722;border-radius:5px;padding:0 7px;font-size:11px;font-weight:600;color:#D8C2BA;">Follows you</div></div>
+                  <div style="height:34px;border-radius:17px;background:#F1DFD8;color:#1A110D;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Follow</div>
+                </div>
+                <div style="padding:12px 16px;border-bottom:1px solid #2E211C;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#D9C58D;color:#3A2F05;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">PN</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#F1DFD8;">Priya Nair</div><div style="font-size:13px;color:#A08D85;">@priyaui</div></div>
+                  <div style="height:34px;border-radius:17px;border:1.5px solid #D8C2BA;color:#F1DFD8;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Following</div>
+                </div>
+                <div style="padding:12px 16px;border-bottom:1px solid #2E211C;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">LC</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#F1DFD8;">Lena Cho</div><div style="font-size:13px;color:#A08D85;">@lenacho</div></div>
+                  <div style="height:34px;border-radius:17px;background:#F1DFD8;color:#1A110D;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Follow</div>
+                </div>
+                <div style="padding:12px 16px;border-bottom:1px solid #2E211C;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:repeating-linear-gradient(135deg,#322722,#322722 6px,#3D312C 6px,#3D312C 12px);display:flex;align-items:center;justify-content:center;flex:none;"><span class="ms" style="font-size:24px;color:#A08D85;">person</span></div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#F1DFD8;">Sam Rivera</div><div style="font-size:13px;color:#A08D85;">@samr</div><div style="margin-top:4px;display:inline-flex;align-items:center;height:20px;background:#322722;border-radius:5px;padding:0 7px;font-size:11px;font-weight:600;color:#D8C2BA;">Follows you</div></div>
+                  <div style="height:34px;border-radius:17px;background:#F1DFD8;color:#1A110D;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Follow</div>
+                </div>
+                <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#D9C58D;color:#3A2F05;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex:none;">JK</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:#F1DFD8;">Ji-Yeon Kim</div><div style="font-size:13px;color:#A08D85;">@jiyeon</div></div>
+                  <div style="height:34px;border-radius:17px;border:1.5px solid #D8C2BA;color:#F1DFD8;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;flex:none;">Following</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#85736C;letter-spacing:.06em;">DARK</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

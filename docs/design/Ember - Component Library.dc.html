@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{background:#EDE7E3;font-family:'Outfit',system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#231915;}
+  .ms{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}
+  @keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sk{animation:shimmer 1.4s infinite linear;background:linear-gradient(90deg,#ECDBD3 25%,#F8EDE8 50%,#ECDBD3 75%);background-size:1200px 100%;border-radius:6px;}
+</style>
+</helmet>
+
+<div style="max-width:1280px;margin:0 auto;padding:52px 24px 96px;">
+
+  <!-- =========== HEADER =========== -->
+  <header style="display:flex;align-items:center;gap:18px;margin-bottom:10px;">
+    <div style="width:60px;height:60px;border-radius:19px;background:#BB3E1C;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -10px rgba(187,62,28,.7);flex:none;">
+      <div style="width:30px;height:25px;border-radius:9px 9px 9px 3px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;border-radius:50%;background:#BB3E1C;"></div></div>
+    </div>
+    <div>
+      <h1 style="margin:0;font-size:34px;font-weight:700;letter-spacing:-0.02em;color:#231915;">Ember · Component library</h1>
+      <div style="font-size:14px;color:#85736C;margin-top:3px;">Base atoms for <code style="font-family:ui-monospace,monospace;font-size:13px;background:rgba(35,25,21,.08);padding:1px 6px;border-radius:5px;">:core:designsystem</code> — reverse-engineered from approved screens · 15 components</div>
+    </div>
+  </header>
+
+  <!-- coverage matrix -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin:22px 0 36px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;margin-bottom:14px;">Coverage matrix</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px 28px;">
+      <sc-for list="{{ matrix }}" as="row" hint-placeholder-count="15">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #F4E7E1;">
+          <span style="font-size:14px;min-width:18px;text-align:center;">{{ row.icon }}</span>
+          <div><div style="font-size:13px;font-weight:700;color:#231915;">{{ row.name }}</div><div style="font-size:11px;color:#85736C;line-height:1.3;">{{ row.note }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:#85736C;"><span>✅ fully shown in screens</span><span>🟡 partial — states added here</span><span>❌ not in screens — designed from M3+tokens</span></div>
+  </div>
+
+  <!-- =========== COMPONENT SECTIONS =========== -->
+
+  <!-- helper: section header template -->
+  <!-- each component: [LABEL] [LIGHT panel] [DARK panel] -->
+
+  <!-- ——— 01 BUTTON ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">01</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Button</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 40 · small h 32 · pill (full) · labelLarge 14/600 · touch 48</span>
+    </div>
+    <p style="font-size:13px;color:#85736C;margin:0 0 20px;line-height:1.5;">Thin wrapper over <code style="font-family:ui-monospace,monospace;font-size:12px;">Button / FilledTonalButton / OutlinedButton / TextButton</code>. Exposes <code style="font-family:ui-monospace,monospace;font-size:12px;">isLoading</code> (swaps label→spinner), <code style="font-family:ui-monospace,monospace;font-size:12px;">analyticsId</code> hook, content-description enforcement.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <!-- LIGHT -->
+      <div style="background:#FFF8F6;padding:22px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;margin-bottom:16px;">LIGHT</div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <!-- filled -->
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#85736C;font-weight:600;">Filled</div>
+            <div style="height:40px;border-radius:20px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:8px;">Follow</div>
+            <div style="height:40px;border-radius:20px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 18px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">person_add</span>Follow</div>
+            <div style="height:40px;border-radius:20px;background:rgba(187,62,28,.14);color:#BB3E1C;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;">Pressed</div>
+            <div style="height:40px;border-radius:20px;background:rgba(35,25,21,.12);color:rgba(35,25,21,.38);display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;">Disabled</div>
+            <div style="height:40px;border-radius:20px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:10px;"><div style="width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#FFFFFF;animation:spin 0.9s linear infinite;"></div>Loading</div>
+          </div>
+          <!-- tonal -->
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#85736C;font-weight:600;">Tonal</div>
+            <div style="height:40px;border-radius:20px;background:#FFDBCF;color:#3A0B00;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">passkey</span>Passkey</div>
+            <div style="height:40px;border-radius:20px;background:rgba(255,219,207,.5);color:rgba(58,11,0,.5);display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;">Disabled</div>
+          </div>
+          <!-- outlined -->
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#85736C;font-weight:600;">Outlined</div>
+            <div style="height:40px;border-radius:20px;border:1.5px solid #85736C;color:#231915;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Following</div>
+            <div style="height:40px;border-radius:20px;border:1.5px solid #231915;color:#231915;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Edit profile</div>
+            <div style="height:40px;border-radius:20px;border:1.5px solid #ECDBD3;color:rgba(35,25,21,.38);display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Disabled</div>
+          </div>
+          <!-- text -->
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#85736C;font-weight:600;">Text</div>
+            <div style="height:40px;border-radius:20px;color:#BB3E1C;display:inline-flex;align-items:center;padding:0 12px;font-size:14px;font-weight:600;">Skip</div>
+            <div style="height:40px;border-radius:20px;color:rgba(35,25,21,.38);display:inline-flex;align-items:center;padding:0 12px;font-size:14px;font-weight:600;">Disabled</div>
+          </div>
+          <!-- destructive -->
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#85736C;font-weight:600;">Destructive</div>
+            <div style="height:40px;border-radius:20px;background:#BA1A1A;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">logout</span>Log out</div>
+            <div style="height:40px;border-radius:20px;color:#BA1A1A;display:inline-flex;align-items:center;padding:0 12px;font-size:14px;font-weight:600;">Delete post</div>
+          </div>
+          <!-- small -->
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#85736C;font-weight:600;">Small</div>
+            <div style="height:32px;border-radius:16px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;">Follow</div>
+            <div style="height:32px;border-radius:16px;background:#FFDBCF;color:#3A0B00;display:inline-flex;align-items:center;padding:0 14px;font-size:13px;font-weight:600;">Tonal</div>
+            <div style="height:32px;border-radius:16px;border:1.5px solid #231915;color:#231915;display:inline-flex;align-items:center;padding:0 14px;font-size:13px;font-weight:600;">Outlined</div>
+          </div>
+        </div>
+      </div>
+      <!-- DARK -->
+      <div style="background:#1A110D;padding:22px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;margin-bottom:16px;">DARK</div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#A08D85;font-weight:600;">Filled</div>
+            <div style="height:40px;border-radius:20px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:8px;">Follow</div>
+            <div style="height:40px;border-radius:20px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 18px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">person_add</span>Follow</div>
+            <div style="height:40px;border-radius:20px;background:rgba(255,181,158,.14);color:#FFB59E;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;">Pressed</div>
+            <div style="height:40px;border-radius:20px;background:rgba(241,223,216,.12);color:rgba(241,223,216,.38);display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;">Disabled</div>
+            <div style="height:40px;border-radius:20px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:10px;"><div style="width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(92,25,0,.3);border-top-color:#5C1900;animation:spin 0.9s linear infinite;"></div>Loading</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#A08D85;font-weight:600;">Tonal</div>
+            <div style="height:40px;border-radius:20px;background:#7B2D10;color:#FFDBCF;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">passkey</span>Passkey</div>
+            <div style="height:40px;border-radius:20px;background:rgba(123,45,16,.4);color:rgba(255,219,207,.4);display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;">Disabled</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#A08D85;font-weight:600;">Outlined</div>
+            <div style="height:40px;border-radius:20px;border:1.5px solid #A08D85;color:#F1DFD8;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Following</div>
+            <div style="height:40px;border-radius:20px;border:1.5px solid #D8C2BA;color:#F1DFD8;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Edit profile</div>
+            <div style="height:40px;border-radius:20px;border:1.5px solid #53433E;color:rgba(241,223,216,.38);display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Disabled</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#A08D85;font-weight:600;">Text</div>
+            <div style="height:40px;border-radius:20px;color:#FFB59E;display:inline-flex;align-items:center;padding:0 12px;font-size:14px;font-weight:600;">Skip</div>
+            <div style="height:40px;border-radius:20px;color:rgba(241,223,216,.38);display:inline-flex;align-items:center;padding:0 12px;font-size:14px;font-weight:600;">Disabled</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#A08D85;font-weight:600;">Destructive</div>
+            <div style="height:40px;border-radius:20px;background:#FFB4AB;color:#690005;display:inline-flex;align-items:center;padding:0 24px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">logout</span>Log out</div>
+            <div style="height:40px;border-radius:20px;color:#FFB4AB;display:inline-flex;align-items:center;padding:0 12px;font-size:14px;font-weight:600;">Delete</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="width:80px;flex:none;font-size:11px;color:#A08D85;font-weight:600;">Small</div>
+            <div style="height:32px;border-radius:16px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 16px;font-size:13px;font-weight:600;">Follow</div>
+            <div style="height:32px;border-radius:16px;background:#7B2D10;color:#FFDBCF;display:inline-flex;align-items:center;padding:0 14px;font-size:13px;font-weight:600;">Tonal</div>
+            <div style="height:32px;border-radius:16px;border:1.5px solid #D8C2BA;color:#F1DFD8;display:inline-flex;align-items:center;padding:0 14px;font-size:13px;font-weight:600;">Outlined</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 02 ICON BUTTON ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">02</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Icon button</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">touch 48dp · icon 24dp · standard / filled-tonal</span>
+    </div>
+    <p style="font-size:13px;color:#85736C;margin:0 0 20px;line-height:1.5;">All icon buttons in the screens use a transparent container (standard). State layer is 8% onSurface on hover, 12% on press. <code style="font-family:ui-monospace,monospace;font-size:12px;">contentDescription</code> is mandatory.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;margin-bottom:16px;">LIGHT</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">arrow_back</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">more_horiz</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">settings</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">close</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">share</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(35,25,21,.08);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">more_horiz</span></div>
+          <div style="width:2px;height:40px;background:#ECDBD3;"></div>
+          <!-- filled tonal -->
+          <div style="width:40px;height:40px;border-radius:12px;background:#FFDBCF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:22px;color:#3A0B00;">bookmark</span></div>
+          <div style="width:40px;height:40px;border-radius:50%;background:#FFDBCF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:22px;color:#3A0B00;">photo_camera</span></div>
+          <!-- disabled -->
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:rgba(35,25,21,.38);">image</span></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px;font-size:11px;color:#85736C;"><span>Standard</span><span style="margin-left:120px;">Pressed overlay</span><span style="margin-left:20px;">Filled-tonal</span><span style="margin-left:28px;">Disabled</span></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;margin-bottom:16px;">DARK</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">arrow_back</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">more_horiz</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">settings</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">close</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">share</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(241,223,216,.08);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">more_horiz</span></div>
+          <div style="width:2px;height:40px;background:#2E211C;"></div>
+          <div style="width:40px;height:40px;border-radius:12px;background:#7B2D10;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:22px;color:#FFDBCF;">bookmark</span></div>
+          <div style="width:40px;height:40px;border-radius:50%;background:#7B2D10;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:22px;color:#FFDBCF;">photo_camera</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:rgba(241,223,216,.38);">image</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 03 TEXT FIELD ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">03</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Text field</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">outlined / filled · 4dp radius · bodyLarge 16</span>
+    </div>
+    <p style="font-size:13px;color:#85736C;margin:0 0 20px;line-height:1.5;">Screens use <b>outlined</b> exclusively. Filled shown here for completeness. Char-counter variant (bio, post body) shows <code style="font-family:ui-monospace,monospace;font-size:12px;">n / max</code> bottom-end; progress ring in compose toolbar. Expose <code style="font-family:ui-monospace,monospace;font-size:12px;">onImeAction</code>, <code style="font-family:ui-monospace,monospace;font-size:12px;">maxChars</code>.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px 24px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">OUTLINED — LIGHT</div>
+        <!-- empty/idle -->
+        <div><div style="position:relative;border:1px solid #85736C;border-radius:4px;padding:15px 14px;"><span style="position:absolute;top:-8px;left:10px;background:#FFF8F6;padding:0 5px;font-size:12px;color:#53433E;">Display name</span><span style="font-size:16px;color:#85736C;">Add your name</span></div><div style="font-size:11px;color:#85736C;padding:4px 14px 0;">Idle (placeholder)</div></div>
+        <!-- focused + value -->
+        <div><div style="position:relative;border:2px solid #BB3E1C;border-radius:4px;padding:14px 14px;"><span style="position:absolute;top:-9px;left:10px;background:#FFF8F6;padding:0 5px;font-size:12px;font-weight:600;color:#BB3E1C;">Email</span><span style="font-size:16px;color:#231915;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0568647c644560686760772b647575">[email&#160;protected]</a></span></div><div style="font-size:11px;color:#BB3E1C;padding:4px 14px 0;">Focused + value</div></div>
+        <!-- error -->
+        <div><div style="position:relative;border:2px solid #BA1A1A;border-radius:4px;padding:14px 14px;"><span style="position:absolute;top:-9px;left:10px;background:#FFF8F6;padding:0 5px;font-size:12px;font-weight:600;color:#BA1A1A;">Email</span><span style="font-size:16px;color:#231915;">notvalid</span><span class="ms" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:20px;color:#BA1A1A;">error_outline</span></div><div style="font-size:11px;color:#BA1A1A;padding:4px 14px 0;">Error — Enter a valid email address</div></div>
+        <!-- disabled -->
+        <div><div style="position:relative;border:1px solid rgba(35,25,21,.12);border-radius:4px;padding:15px 14px;background:rgba(35,25,21,.04);"><span style="position:absolute;top:-8px;left:10px;background:#F6F0EE;padding:0 5px;font-size:12px;color:rgba(35,25,21,.38);">Display name</span><span style="font-size:16px;color:rgba(35,25,21,.38);">Maya Okonkwo</span></div><div style="font-size:11px;color:rgba(35,25,21,.38);padding:4px 14px 0;">Disabled</div></div>
+        <!-- char counter -->
+        <div><div style="position:relative;border:2px solid #BB3E1C;border-radius:4px;padding:14px 14px 32px;"><span style="position:absolute;top:-9px;left:10px;background:#FFF8F6;padding:0 5px;font-size:12px;font-weight:600;color:#BB3E1C;">Bio</span><span style="font-size:15px;line-height:1.4;color:#231915;">Designer who codes. Building calm little tools 🌱</span><span style="position:absolute;bottom:8px;right:12px;font-size:12px;font-weight:600;color:#85736C;">56 / 160</span></div><div style="font-size:11px;color:#85736C;padding:4px 14px 0;">Char-counter variant</div></div>
+        <!-- filled -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;margin-top:4px;">FILLED — LIGHT</div>
+        <div><div style="border-radius:4px 4px 0 0;background:#F5DED6;padding:20px 14px 6px;position:relative;border-bottom:1px solid #53433E;"><span style="position:absolute;top:8px;left:14px;font-size:12px;color:#53433E;">Search Ember</span><span style="font-size:16px;color:#231915;">design system</span></div><div style="font-size:11px;color:#85736C;padding:4px 14px 0;">Filled idle + value</div></div>
+        <div><div style="border-radius:4px 4px 0 0;background:#F5DED6;padding:20px 14px 6px;position:relative;border-bottom:2px solid #BB3E1C;"><span style="position:absolute;top:8px;left:14px;font-size:12px;font-weight:600;color:#BB3E1C;">Search Ember</span><span style="font-size:16px;color:#231915;">design system</span></div><div style="font-size:11px;color:#BB3E1C;padding:4px 14px 0;">Filled focused</div></div>
+      </div>
+      <div style="background:#1A110D;padding:22px 24px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">OUTLINED — DARK</div>
+        <div><div style="position:relative;border:1px solid #A08D85;border-radius:4px;padding:15px 14px;"><span style="position:absolute;top:-8px;left:10px;background:#1A110D;padding:0 5px;font-size:12px;color:#D8C2BA;">Display name</span><span style="font-size:16px;color:#A08D85;">Add your name</span></div><div style="font-size:11px;color:#A08D85;padding:4px 14px 0;">Idle</div></div>
+        <div><div style="position:relative;border:2px solid #FFB59E;border-radius:4px;padding:14px 14px;"><span style="position:absolute;top:-9px;left:10px;background:#1A110D;padding:0 5px;font-size:12px;font-weight:600;color:#FFB59E;">Email</span><span style="font-size:16px;color:#F1DFD8;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f994988098b99c949b9c8bd7988989">[email&#160;protected]</a></span></div><div style="font-size:11px;color:#FFB59E;padding:4px 14px 0;">Focused</div></div>
+        <div><div style="position:relative;border:2px solid #FFB4AB;border-radius:4px;padding:14px 14px;"><span style="position:absolute;top:-9px;left:10px;background:#1A110D;padding:0 5px;font-size:12px;font-weight:600;color:#FFB4AB;">Email</span><span style="font-size:16px;color:#F1DFD8;">notvalid</span><span class="ms" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:20px;color:#FFB4AB;">error_outline</span></div><div style="font-size:11px;color:#FFB4AB;padding:4px 14px 0;">Error</div></div>
+        <div><div style="position:relative;border:1px solid rgba(241,223,216,.12);border-radius:4px;padding:15px 14px;background:rgba(241,223,216,.04);"><span style="position:absolute;top:-8px;left:10px;background:#211612;padding:0 5px;font-size:12px;color:rgba(241,223,216,.38);">Display name</span><span style="font-size:16px;color:rgba(241,223,216,.38);">Maya Okonkwo</span></div><div style="font-size:11px;color:rgba(241,223,216,.38);padding:4px 14px 0;">Disabled</div></div>
+        <div><div style="position:relative;border:2px solid #FFB59E;border-radius:4px;padding:14px 14px 32px;"><span style="position:absolute;top:-9px;left:10px;background:#1A110D;padding:0 5px;font-size:12px;font-weight:600;color:#FFB59E;">Bio</span><span style="font-size:15px;line-height:1.4;color:#F1DFD8;">Designer who codes. Building calm little tools 🌱</span><span style="position:absolute;bottom:8px;right:12px;font-size:12px;font-weight:600;color:#A08D85;">56 / 160</span></div><div style="font-size:11px;color:#A08D85;padding:4px 14px 0;">Char-counter</div></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;margin-top:4px;">FILLED — DARK</div>
+        <div><div style="border-radius:4px 4px 0 0;background:#322722;padding:20px 14px 6px;position:relative;border-bottom:1px solid #A08D85;"><span style="position:absolute;top:8px;left:14px;font-size:12px;color:#A08D85;">Search Ember</span><span style="font-size:16px;color:#F1DFD8;">design system</span></div></div>
+        <div><div style="border-radius:4px 4px 0 0;background:#322722;padding:20px 14px 6px;position:relative;border-bottom:2px solid #FFB59E;"><span style="position:absolute;top:8px;left:14px;font-size:12px;font-weight:600;color:#FFB59E;">Search Ember</span><span style="font-size:16px;color:#F1DFD8;">design system</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 04 CARD + POSTCARD ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">04</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Card / surface</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">md 12dp · elevated / filled(surface-container) / outlined</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <div style="background:#FFFFFF;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(35,25,21,.10),0 4px 10px -6px rgba(35,25,21,.22);"><div style="font-size:14px;font-weight:600;color:#231915;margin-bottom:3px;">Elevated (resting)</div><div style="font-size:13px;color:#85736C;line-height:1.4;">Cards like "Suggested for you" use elevation-1 shadow. Surface = #FFFFFF over #FFF8F6 background.</div></div>
+        <div style="background:#FBEBE4;border-radius:12px;padding:16px;"><div style="font-size:14px;font-weight:600;color:#231915;margin-bottom:3px;">Filled (surface container)</div><div style="font-size:13px;color:#85736C;line-height:1.4;">Used for list-group backgrounds in Settings, search bar. No shadow.</div></div>
+        <div style="background:#FFF8F6;border-radius:12px;padding:16px;border:1px solid #ECDBD3;"><div style="font-size:14px;font-weight:600;color:#231915;margin-bottom:3px;">Outlined</div><div style="font-size:13px;color:#85736C;line-height:1.4;">For component demo frames. outline = #D8C2BA.</div></div>
+        <!-- pressed state layer -->
+        <div style="background:#FFFFFF;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(35,25,21,.10),0 4px 10px -6px rgba(35,25,21,.22);position:relative;overflow:hidden;"><div style="position:absolute;inset:0;background:rgba(35,25,21,.08);border-radius:12px;"></div><div style="position:relative;font-size:14px;font-weight:600;color:#231915;margin-bottom:3px;">Pressed (+ 8% state layer)</div><div style="position:relative;font-size:13px;color:#85736C;">onSurface 8% overlay on press.</div></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="background:#271C18;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px -6px rgba(0,0,0,.5);"><div style="font-size:14px;font-weight:600;color:#F1DFD8;margin-bottom:3px;">Elevated</div><div style="font-size:13px;color:#A08D85;line-height:1.4;">Surface container = #271C18. Elevation expressed via tonal surface color, not shadow.</div></div>
+        <div style="background:#271C18;border-radius:12px;padding:16px;"><div style="font-size:14px;font-weight:600;color:#F1DFD8;margin-bottom:3px;">Filled</div><div style="font-size:13px;color:#A08D85;line-height:1.4;">Same surface container tone, no shadow.</div></div>
+        <div style="background:#1A110D;border-radius:12px;padding:16px;border:1px solid #2E211C;"><div style="font-size:14px;font-weight:600;color:#F1DFD8;margin-bottom:3px;">Outlined</div><div style="font-size:13px;color:#A08D85;line-height:1.4;">outlineVariant = #53433E.</div></div>
+        <div style="background:#271C18;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.4);position:relative;overflow:hidden;"><div style="position:absolute;inset:0;background:rgba(241,223,216,.08);border-radius:12px;"></div><div style="position:relative;font-size:14px;font-weight:600;color:#F1DFD8;margin-bottom:3px;">Pressed</div><div style="position:relative;font-size:13px;color:#A08D85;">onSurface 8% state layer.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 05 AVATAR ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">05</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Avatar</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">sm 32 · md 40 · lg 56 · xl 84 · circle · ring 4dp</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <div style="display:flex;align-items:flex-end;gap:14px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:32px;height:32px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">MO</div><span style="font-size:10px;color:#85736C;">sm 32</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;border-radius:50%;background:#77574E;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">DP</div><span style="font-size:10px;color:#85736C;">md 40</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;border-radius:50%;background:#6C5D2F;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;">PN</div><span style="font-size:10px;color:#85736C;">lg 56</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:84px;height:84px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;border:4px solid #FFF8F6;">MO</div><span style="font-size:10px;color:#85736C;">xl 84 + ring</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;border-radius:50%;background:repeating-linear-gradient(135deg,#F5DED6,#F5DED6 6px,#EFD3C9 6px,#EFD3C9 12px);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:26px;color:#85736C;">person</span></div><span style="font-size:10px;color:#85736C;">placeholder</span></div>
+        </div>
+        <div style="font-size:11px;color:#85736C;">Initials color = one of the 3 M3 accent avatar tones: primary <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#BB3E1C;vertical-align:middle;"></span>, secondary <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#77574E;vertical-align:middle;"></span>, tertiary <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6C5D2F;vertical-align:middle;"></span> — assigned deterministically from user ID hash.</div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:18px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="display:flex;align-items:flex-end;gap:14px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:32px;height:32px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">MO</div><span style="font-size:10px;color:#A08D85;">sm 32</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;border-radius:50%;background:#E7BDB0;color:#442A20;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">DP</div><span style="font-size:10px;color:#A08D85;">md 40</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;border-radius:50%;background:#D9C58D;color:#3A2F05;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;">PN</div><span style="font-size:10px;color:#A08D85;">lg 56</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:84px;height:84px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;border:4px solid #1A110D;">MO</div><span style="font-size:10px;color:#A08D85;">xl 84 + ring</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;border-radius:50%;background:repeating-linear-gradient(135deg,#322722,#322722 6px,#3D312C 6px,#3D312C 12px);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:26px;color:#A08D85;">person</span></div><span style="font-size:10px;color:#A08D85;">placeholder</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 06 CHIP ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">06</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Chip</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 32 · sm 8dp radius · assist / filter-selectable · labelMedium</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="height:32px;border-radius:8px;border:1px solid #85736C;display:inline-flex;align-items:center;padding:0 12px;gap:6px;font-size:13px;font-weight:600;color:#231915;"><span class="ms" style="font-size:16px;color:#53433E;">public</span>Everyone can reply</div>
+          <div style="height:32px;border-radius:8px;background:#F6E5DD;display:inline-flex;align-items:center;padding:0 10px;gap:4px;font-size:12px;font-weight:600;color:#53433E;">Follows you</div>
+          <div style="height:32px;border-radius:8px;border:1px solid #ECDBD3;display:inline-flex;align-items:center;padding:0 12px;gap:6px;font-size:13px;font-weight:600;color:#85736C;"><span class="ms" style="font-size:16px;color:#85736C;">push_pin</span>Pinned</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;margin-top:4px;">FILTER — selectable</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="height:32px;border-radius:8px;border:1px solid #85736C;display:inline-flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:#231915;">Technology</div>
+          <div style="height:32px;border-radius:8px;background:#FFDBCF;display:inline-flex;align-items:center;padding:0 12px;gap:6px;font-size:13px;font-weight:600;color:#3A0B00;"><span class="ms" style="font-size:16px;">check</span>Design</div>
+          <div style="height:32px;border-radius:8px;border:1px solid #85736C;display:inline-flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:#231915;">Android</div>
+          <div style="height:32px;border-radius:8px;border:1px solid rgba(35,25,21,.12);display:inline-flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:rgba(35,25,21,.38);">Disabled</div>
+        </div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="height:32px;border-radius:8px;border:1px solid #A08D85;display:inline-flex;align-items:center;padding:0 12px;gap:6px;font-size:13px;font-weight:600;color:#F1DFD8;"><span class="ms" style="font-size:16px;color:#D8C2BA;">public</span>Everyone can reply</div>
+          <div style="height:32px;border-radius:8px;background:#322722;display:inline-flex;align-items:center;padding:0 10px;gap:4px;font-size:12px;font-weight:600;color:#D8C2BA;">Follows you</div>
+          <div style="height:32px;border-radius:8px;border:1px solid #2E211C;display:inline-flex;align-items:center;padding:0 12px;gap:6px;font-size:13px;font-weight:600;color:#A08D85;"><span class="ms" style="font-size:16px;color:#A08D85;">push_pin</span>Pinned</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;margin-top:4px;">FILTER — selectable</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="height:32px;border-radius:8px;border:1px solid #A08D85;display:inline-flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:#F1DFD8;">Technology</div>
+          <div style="height:32px;border-radius:8px;background:#7B2D10;display:inline-flex;align-items:center;padding:0 12px;gap:6px;font-size:13px;font-weight:600;color:#FFDBCF;"><span class="ms" style="font-size:16px;">check</span>Design</div>
+          <div style="height:32px;border-radius:8px;border:1px solid #A08D85;display:inline-flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:#F1DFD8;">Android</div>
+          <div style="height:32px;border-radius:8px;border:1px solid rgba(241,223,216,.12);display:inline-flex;align-items:center;padding:0 12px;font-size:13px;font-weight:600;color:rgba(241,223,216,.38);">Disabled</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 07 SEGMENTED BUTTON ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">07</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Segmented button</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 40 · full radius · primaryContainer selected · 2-3 segments</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <!-- Theme 3-seg -->
+        <div style="display:flex;border:1px solid #85736C;border-radius:20px;overflow:hidden;height:40px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#FFDBCF;border-right:1px solid #85736C;"><span class="ms" style="font-size:17px;color:#3A0B00;">check</span><span style="font-size:13px;font-weight:600;color:#3A0B00;">System</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;border-right:1px solid #85736C;"><span style="font-size:13px;font-weight:600;color:#53433E;">Light</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#53433E;">Dark</span></div></div>
+        <!-- Search 2-seg -->
+        <div style="display:flex;border:1px solid #85736C;border-radius:20px;overflow:hidden;height:40px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#FFDBCF;border-right:1px solid #85736C;"><span class="ms" style="font-size:17px;color:#3A0B00;">check</span><span style="font-size:13px;font-weight:600;color:#3A0B00;">People</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#53433E;">Posts</span></div></div>
+        <!-- both disabled -->
+        <div style="display:flex;border:1px solid rgba(35,25,21,.12);border-radius:20px;overflow:hidden;height:40px;opacity:.5;"><div style="flex:1;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(35,25,21,.12);"><span style="font-size:13px;font-weight:600;color:rgba(35,25,21,.38);">Opt A</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:rgba(35,25,21,.38);">Opt B</span></div></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="display:flex;border:1px solid #A08D85;border-radius:20px;overflow:hidden;height:40px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#7B2D10;border-right:1px solid #A08D85;"><span class="ms" style="font-size:17px;color:#FFDBCF;">check</span><span style="font-size:13px;font-weight:600;color:#FFDBCF;">System</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;border-right:1px solid #A08D85;"><span style="font-size:13px;font-weight:600;color:#D8C2BA;">Light</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#D8C2BA;">Dark</span></div></div>
+        <div style="display:flex;border:1px solid #A08D85;border-radius:20px;overflow:hidden;height:40px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#7B2D10;border-right:1px solid #A08D85;"><span class="ms" style="font-size:17px;color:#FFDBCF;">check</span><span style="font-size:13px;font-weight:600;color:#FFDBCF;">People</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#D8C2BA;">Posts</span></div></div>
+        <div style="display:flex;border:1px solid rgba(241,223,216,.12);border-radius:20px;overflow:hidden;height:40px;opacity:.5;"><div style="flex:1;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(241,223,216,.12);"><span style="font-size:13px;font-weight:600;color:rgba(241,223,216,.38);">Opt A</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:rgba(241,223,216,.38);">Opt B</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 08 TABS ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">08</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Tabs</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 46 · indicator 3dp pill · primary color · PrimaryTabRow</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <!-- profile tabs -->
+        <div><div style="display:flex;border-bottom:1px solid #ECDBD3;height:46px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:13px;font-weight:700;color:#BB3E1C;">Posts</span><div style="position:absolute;bottom:0;width:28px;height:3px;border-radius:3px 3px 0 0;background:#BB3E1C;"></div></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#85736C;">Replies</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#85736C;">Media</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#85736C;">Likes</span></div></div><div style="font-size:11px;color:#85736C;margin-top:6px;">Profile tab row (4 items)</div></div>
+        <!-- notifications tabs -->
+        <div><div style="display:flex;border-bottom:1px solid #ECDBD3;height:46px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:13px;font-weight:700;color:#BB3E1C;">All</span><div style="position:absolute;bottom:0;width:22px;height:3px;border-radius:3px 3px 0 0;background:#BB3E1C;"></div></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#85736C;">Verified</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#85736C;">Mentions</span></div></div><div style="font-size:11px;color:#85736C;margin-top:6px;">Notifications tab row (3 items)</div></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div><div style="display:flex;border-bottom:1px solid #2E211C;height:46px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:13px;font-weight:700;color:#FFB59E;">Posts</span><div style="position:absolute;bottom:0;width:28px;height:3px;border-radius:3px 3px 0 0;background:#FFB59E;"></div></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#A08D85;">Replies</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#A08D85;">Media</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#A08D85;">Likes</span></div></div></div>
+        <div><div style="display:flex;border-bottom:1px solid #2E211C;height:46px;"><div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:13px;font-weight:700;color:#FFB59E;">All</span><div style="position:absolute;bottom:0;width:22px;height:3px;border-radius:3px 3px 0 0;background:#FFB59E;"></div></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#A08D85;">Verified</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#A08D85;">Mentions</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 09 TOP APP BAR ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">09</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Top app bar</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 64 · titleLarge 22/600 · nav icon left · actions right</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <!-- home bar -->
+        <div style="background:#FFF8F6;border-bottom:1px solid #ECDBD3;"><div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:30px;height:30px;border-radius:9px;background:#BB3E1C;display:flex;align-items:center;justify-content:center;"><div style="width:15px;height:13px;border-radius:5px 5px 5px 2px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;"><div style="width:4px;height:4px;border-radius:50%;background:#BB3E1C;"></div></div></div><span style="font-size:22px;font-weight:600;color:#231915;">Home</span></div><div style="width:36px;height:36px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">MO</div></div></div>
+        <div style="font-size:11px;color:#85736C;padding:0 2px;">Home (logo + title · avatar action)</div>
+        <!-- back bar -->
+        <div style="background:#FFF8F6;border-bottom:1px solid #ECDBD3;"><div style="height:64px;display:flex;align-items:center;gap:4px;padding:0 8px;"><span class="ms" style="font-size:26px;color:#231915;padding:8px;">arrow_back</span><span style="font-size:22px;font-weight:600;color:#231915;flex:1;">Post</span><span class="ms" style="font-size:24px;color:#53433E;padding:8px;">more_horiz</span></div></div>
+        <div style="font-size:11px;color:#85736C;padding:0 2px;">Detail (back-nav · title · overflow)</div>
+        <!-- compose bar -->
+        <div style="background:#FFF8F6;border-bottom:1px solid #ECDBD3;"><div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;"><span class="ms" style="font-size:26px;color:#231915;">close</span><div style="height:36px;border-radius:18px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Post</div></div></div>
+        <div style="font-size:11px;color:#85736C;padding:0 2px;">Modal (close · CTA)</div>
+        <!-- scrolled/elevated -->
+        <div style="background:#F6E5DD;box-shadow:0 2px 4px rgba(35,25,21,.14);"><div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;"><span style="font-size:22px;font-weight:600;color:#231915;">Home</span><div style="width:36px;height:36px;border-radius:50%;background:#BB3E1C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">MO</div></div></div>
+        <div style="font-size:11px;color:#85736C;padding:0 2px;">Scrolled — surface container + shadow (M3 elevation-2)</div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="background:#1A110D;border-bottom:1px solid #2E211C;"><div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:30px;height:30px;border-radius:9px;background:#BB3E1C;display:flex;align-items:center;justify-content:center;"><div style="width:15px;height:13px;border-radius:5px 5px 5px 2px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;"><div style="width:4px;height:4px;border-radius:50%;background:#BB3E1C;"></div></div></div><span style="font-size:22px;font-weight:600;color:#F1DFD8;">Home</span></div><div style="width:36px;height:36px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">MO</div></div></div>
+        <div style="font-size:11px;color:#A08D85;padding:0 2px;">Home</div>
+        <div style="background:#1A110D;border-bottom:1px solid #2E211C;"><div style="height:64px;display:flex;align-items:center;gap:4px;padding:0 8px;"><span class="ms" style="font-size:26px;color:#F1DFD8;padding:8px;">arrow_back</span><span style="font-size:22px;font-weight:600;color:#F1DFD8;flex:1;">Post</span><span class="ms" style="font-size:24px;color:#D8C2BA;padding:8px;">more_horiz</span></div></div>
+        <div style="font-size:11px;color:#A08D85;padding:0 2px;">Detail</div>
+        <div style="background:#1A110D;border-bottom:1px solid #2E211C;"><div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;"><span class="ms" style="font-size:26px;color:#F1DFD8;">close</span><div style="height:36px;border-radius:18px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 20px;font-size:14px;font-weight:600;">Post</div></div></div>
+        <div style="font-size:11px;color:#A08D85;padding:0 2px;">Modal</div>
+        <div style="background:#271C18;box-shadow:0 2px 4px rgba(0,0,0,.4);"><div style="height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;"><span style="font-size:22px;font-weight:600;color:#F1DFD8;">Home</span><div style="width:36px;height:36px;border-radius:50%;background:#FFB59E;color:#5C1900;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">MO</div></div></div>
+        <div style="font-size:11px;color:#A08D85;padding:0 2px;">Scrolled</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 10 BOTTOM NAV ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">10</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Bottom navigation bar</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 80 · 3 items · indicator pill 64×32 · badge option</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <!-- home selected -->
+        <div style="background:#FBEBE4;border-top:1px solid #ECDBD3;height:80px;display:flex;">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;border-radius:16px;background:#FFDBCF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#3A0B00;font-variation-settings:'FILL' 1;">home</span></div><span style="font-size:12px;font-weight:600;color:#231915;">Home</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#53433E;">search</span></div><span style="font-size:12px;font-weight:500;color:#53433E;">Search</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;position:relative;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;"><span class="ms" style="font-size:24px;color:#53433E;">person</span><div style="position:absolute;top:-2px;right:8px;width:8px;height:8px;border-radius:50%;background:#BB3E1C;border:1.5px solid #FBEBE4;"></div></div><span style="font-size:12px;font-weight:500;color:#53433E;">Profile</span></div>
+        </div>
+        <div style="font-size:11px;color:#85736C;">Home selected · Profile has badge (unread notification count)</div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="background:#271C18;border-top:1px solid #2E211C;height:80px;display:flex;">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;border-radius:16px;background:#7B2D10;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#FFDBCF;font-variation-settings:'FILL' 1;">home</span></div><span style="font-size:12px;font-weight:600;color:#F1DFD8;">Home</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;color:#D8C2BA;">search</span></div><span style="font-size:12px;font-weight:500;color:#D8C2BA;">Search</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:13px;"><div style="width:64px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;"><span class="ms" style="font-size:24px;color:#D8C2BA;">person</span><div style="position:absolute;top:-2px;right:8px;width:8px;height:8px;border-radius:50%;background:#FFB59E;border:1.5px solid #271C18;"></div></div><span style="font-size:12px;font-weight:500;color:#D8C2BA;">Profile</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 11 FAB ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">11</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">FAB</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">56dp · lg 16dp · primaryContainer · shadow elevation-3</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;width:100%;">LIGHT</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:56px;height:56px;border-radius:16px;background:#FFDBCF;color:#3A0B00;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px -6px rgba(187,62,28,.45);"><span class="ms" style="font-size:24px;">edit</span></div><span style="font-size:10px;color:#85736C;">Standard</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="height:56px;border-radius:16px;background:#FFDBCF;color:#3A0B00;display:inline-flex;align-items:center;gap:10px;padding:0 20px;box-shadow:0 6px 14px -6px rgba(187,62,28,.45);"><span class="ms" style="font-size:22px;">edit</span><span style="font-size:15px;font-weight:600;">Post</span></div><span style="font-size:10px;color:#85736C;">Extended</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:56px;height:56px;border-radius:16px;background:rgba(255,219,207,.7);color:rgba(58,11,0,.7);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px -2px rgba(187,62,28,.3);"><span class="ms" style="font-size:24px;">edit</span></div><span style="font-size:10px;color:#85736C;">Pressed</span></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;width:100%;">DARK</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:56px;height:56px;border-radius:16px;background:#7B2D10;color:#FFDBCF;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -8px rgba(0,0,0,.6);"><span class="ms" style="font-size:24px;">edit</span></div><span style="font-size:10px;color:#A08D85;">Standard</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="height:56px;border-radius:16px;background:#7B2D10;color:#FFDBCF;display:inline-flex;align-items:center;gap:10px;padding:0 20px;box-shadow:0 6px 16px -8px rgba(0,0,0,.6);"><span class="ms" style="font-size:22px;">edit</span><span style="font-size:15px;font-weight:600;">Post</span></div><span style="font-size:10px;color:#A08D85;">Extended</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:56px;height:56px;border-radius:16px;background:rgba(123,45,16,.6);color:rgba(255,219,207,.7);display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px;">edit</span></div><span style="font-size:10px;color:#A08D85;">Pressed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 12 DIALOG ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">12</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Dialog</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">xl 28dp · surfaceContainerHigh · M3 AlertDialog</span>
+    </div>
+    <p style="font-size:13px;color:#85736C;margin:0 0 20px;line-height:1.5;">Not used in current screens but required for delete-post, logout confirmation, and permission rationale flows. Uses M3 <code style="font-family:ui-monospace,monospace;font-size:12px;">AlertDialog</code> with scrim.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:30px;display:flex;flex-direction:column;gap:20px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT — confirmation</div>
+        <div style="background:#F6E5DD;border-radius:28px;padding:24px;max-width:320px;box-shadow:0 6px 20px rgba(35,25,21,.2);">
+          <div style="width:44px;height:44px;border-radius:50%;background:#FFDAD6;display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><span class="ms" style="font-size:24px;color:#BA1A1A;">delete</span></div>
+          <div style="font-size:22px;font-weight:600;color:#231915;margin-bottom:10px;">Delete post?</div>
+          <div style="font-size:14px;color:#53433E;line-height:1.5;margin-bottom:22px;">This can't be undone. Your post and all replies will be permanently removed.</div>
+          <div style="display:flex;justify-content:flex-end;gap:12px;">
+            <div style="height:40px;border-radius:20px;color:#BB3E1C;display:inline-flex;align-items:center;padding:0 14px;font-size:14px;font-weight:600;">Cancel</div>
+            <div style="height:40px;border-radius:20px;background:#BA1A1A;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Delete</div>
+          </div>
+        </div>
+        <div style="background:#F6E5DD;border-radius:28px;padding:24px;max-width:320px;box-shadow:0 6px 20px rgba(35,25,21,.2);">
+          <div style="font-size:22px;font-weight:600;color:#231915;margin-bottom:10px;">Log out?</div>
+          <div style="font-size:14px;color:#53433E;line-height:1.5;margin-bottom:22px;">You'll need to sign in again with Google or your passkey.</div>
+          <div style="display:flex;justify-content:flex-end;gap:12px;">
+            <div style="height:40px;border-radius:20px;color:#BB3E1C;display:inline-flex;align-items:center;padding:0 14px;font-size:14px;font-weight:600;">Cancel</div>
+            <div style="height:40px;border-radius:20px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Log out</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#1A110D;padding:30px;display:flex;flex-direction:column;gap:20px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div style="background:#322722;border-radius:28px;padding:24px;max-width:320px;box-shadow:0 6px 20px rgba(0,0,0,.5);">
+          <div style="width:44px;height:44px;border-radius:50%;background:#93000A;display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><span class="ms" style="font-size:24px;color:#FFB4AB;">delete</span></div>
+          <div style="font-size:22px;font-weight:600;color:#F1DFD8;margin-bottom:10px;">Delete post?</div>
+          <div style="font-size:14px;color:#D8C2BA;line-height:1.5;margin-bottom:22px;">This can't be undone. Your post and all replies will be permanently removed.</div>
+          <div style="display:flex;justify-content:flex-end;gap:12px;">
+            <div style="height:40px;border-radius:20px;color:#FFB59E;display:inline-flex;align-items:center;padding:0 14px;font-size:14px;font-weight:600;">Cancel</div>
+            <div style="height:40px;border-radius:20px;background:#FFB4AB;color:#690005;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Delete</div>
+          </div>
+        </div>
+        <div style="background:#322722;border-radius:28px;padding:24px;max-width:320px;box-shadow:0 6px 20px rgba(0,0,0,.5);">
+          <div style="font-size:22px;font-weight:600;color:#F1DFD8;margin-bottom:10px;">Log out?</div>
+          <div style="font-size:14px;color:#D8C2BA;line-height:1.5;margin-bottom:22px;">You'll need to sign in again with Google or your passkey.</div>
+          <div style="display:flex;justify-content:flex-end;gap:12px;">
+            <div style="height:40px;border-radius:20px;color:#FFB59E;display:inline-flex;align-items:center;padding:0 14px;font-size:14px;font-weight:600;">Cancel</div>
+            <div style="height:40px;border-radius:20px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Log out</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 13 BOTTOM SHEET ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">13</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Bottom sheet</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">xl 28dp top · surfaceContainerLow · drag handle · M3 ModalBottomSheet</span>
+    </div>
+    <p style="font-size:13px;color:#85736C;margin:0 0 20px;line-height:1.5;">Used for post actions menu (more_horiz tap) and image picker. Drag handle is required. Scrim covers content behind it.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;margin-bottom:16px;">LIGHT — post actions</div>
+        <div style="background:#FFF1EC;border-radius:28px 28px 0 0;padding:16px 0 8px;max-width:360px;box-shadow:0 -4px 20px rgba(35,25,21,.14);">
+          <div style="display:flex;justify-content:center;margin-bottom:12px;"><div style="width:32px;height:4px;border-radius:2px;background:#D8C2BA;"></div></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#53433E;">bookmark_add</span><span style="font-size:15px;font-weight:600;color:#231915;">Save post</span></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#53433E;">link</span><span style="font-size:15px;font-weight:600;color:#231915;">Copy link</span></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#53433E;">share</span><span style="font-size:15px;font-weight:600;color:#231915;">Share via…</span></div>
+          <div style="height:1px;background:#ECDBD3;margin:4px 0;"></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#BA1A1A;">flag</span><span style="font-size:15px;font-weight:600;color:#BA1A1A;">Report post</span></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#BA1A1A;">delete</span><span style="font-size:15px;font-weight:600;color:#BA1A1A;">Delete post</span></div>
+        </div>
+      </div>
+      <div style="background:#1A110D;padding:22px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;margin-bottom:16px;">DARK — post actions</div>
+        <div style="background:#271C18;border-radius:28px 28px 0 0;padding:16px 0 8px;max-width:360px;box-shadow:0 -4px 20px rgba(0,0,0,.5);">
+          <div style="display:flex;justify-content:center;margin-bottom:12px;"><div style="width:32px;height:4px;border-radius:2px;background:#53433E;"></div></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#D8C2BA;">bookmark_add</span><span style="font-size:15px;font-weight:600;color:#F1DFD8;">Save post</span></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#D8C2BA;">link</span><span style="font-size:15px;font-weight:600;color:#F1DFD8;">Copy link</span></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#D8C2BA;">share</span><span style="font-size:15px;font-weight:600;color:#F1DFD8;">Share via…</span></div>
+          <div style="height:1px;background:#2E211C;margin:4px 0;"></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#FFB4AB;">flag</span><span style="font-size:15px;font-weight:600;color:#FFB4AB;">Report post</span></div>
+          <div style="height:56px;display:flex;align-items:center;gap:16px;padding:0 22px;"><span class="ms" style="font-size:22px;color:#FFB4AB;">delete</span><span style="font-size:15px;font-weight:600;color:#FFB4AB;">Delete post</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 14 SNACKBAR ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">14</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">Snackbar</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">h 52 · xs 4dp · inverseSurface · bodyMedium + labelLarge action</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT — shown floating bottom-16</div>
+        <!-- neutral -->
+        <div style="height:52px;border-radius:4px;background:#3A2F2B;display:flex;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 4px 12px rgba(35,25,21,.3);"><span style="font-size:14px;color:#F1DFD8;font-weight:500;">Post published</span><span style="font-size:14px;font-weight:700;color:#FFB59E;margin-left:16px;flex:none;">View</span></div>
+        <!-- with icon -->
+        <div style="height:52px;border-radius:4px;background:#3A2F2B;display:flex;align-items:center;gap:12px;padding:0 16px;box-shadow:0 4px 12px rgba(35,25,21,.3);"><span class="ms" style="font-size:20px;color:#F1DFD8;">check_circle</span><span style="font-size:14px;color:#F1DFD8;font-weight:500;flex:1;">Image uploaded</span></div>
+        <!-- error -->
+        <div style="height:52px;border-radius:4px;background:#3A2F2B;display:flex;align-items:center;gap:12px;padding:0 16px;box-shadow:0 4px 12px rgba(35,25,21,.3);"><span class="ms" style="font-size:20px;color:#FFDAD6;">error</span><span style="font-size:14px;color:#F1DFD8;font-weight:500;flex:1;">Couldn't sign in. Try again.</span><span style="font-size:14px;font-weight:700;color:#FFB59E;margin-left:8px;flex:none;">Retry</span></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK — inverseSurface = #F1DFD8</div>
+        <!-- neutral dark -->
+        <div style="height:52px;border-radius:4px;background:#F1DFD8;display:flex;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 4px 12px rgba(0,0,0,.4);"><span style="font-size:14px;color:#231915;font-weight:500;">Post published</span><span style="font-size:14px;font-weight:700;color:#BB3E1C;margin-left:16px;flex:none;">View</span></div>
+        <!-- with icon dark -->
+        <div style="height:52px;border-radius:4px;background:#F1DFD8;display:flex;align-items:center;gap:12px;padding:0 16px;box-shadow:0 4px 12px rgba(0,0,0,.4);"><span class="ms" style="font-size:20px;color:#231915;">check_circle</span><span style="font-size:14px;color:#231915;font-weight:500;flex:1;">Image uploaded</span></div>
+        <!-- error dark -->
+        <div style="height:52px;border-radius:4px;background:#F1DFD8;display:flex;align-items:center;gap:12px;padding:0 16px;box-shadow:0 4px 12px rgba(0,0,0,.4);"><span class="ms" style="font-size:20px;color:#BA1A1A;">error</span><span style="font-size:14px;color:#231915;font-weight:500;flex:1;">Couldn't sign in.</span><span style="font-size:14px;font-weight:700;color:#BB3E1C;margin-left:8px;flex:none;">Retry</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ——— 15 STATE COMPOSABLES ——— -->
+  <div style="background:#FFF8F6;border-radius:22px;padding:28px 30px;margin-bottom:22px;box-shadow:0 1px 2px rgba(35,25,21,.05),0 12px 32px -20px rgba(35,25,21,.3);">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+      <div><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BB3E1C;">15</span><span style="font-size:22px;font-weight:700;color:#231915;margin-left:10px;">State composables</span></div>
+      <span style="font-size:12px;color:#85736C;font-family:ui-monospace,monospace;">Loading (shimmer/spinner) · Empty · Error+retry</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:14px;overflow:hidden;background:#ECDBD3;">
+      <div style="background:#FFF8F6;padding:22px;display:flex;flex-direction:column;gap:20px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#85736C;">LIGHT</div>
+        <!-- skeleton row -->
+        <div><div style="font-size:11px;color:#85736C;margin-bottom:8px;font-weight:600;">Skeleton — PostCard</div><div style="display:flex;gap:12px;"><div style="width:44px;height:44px;border-radius:50%;flex:none;" class="sk"></div><div style="flex:1;"><div style="height:12px;width:120px;margin-bottom:8px;" class="sk"></div><div style="height:10px;width:80px;margin-bottom:10px;" class="sk"></div><div style="height:10px;width:100%;margin-bottom:5px;" class="sk"></div><div style="height:10px;width:85%;margin-bottom:5px;" class="sk"></div><div style="height:120px;border-radius:12px;width:100%;margin-top:4px;" class="sk"></div></div></div></div>
+        <!-- spinner -->
+        <div><div style="font-size:11px;color:#85736C;margin-bottom:8px;font-weight:600;">Spinner — inline / full-screen</div><div style="display:flex;align-items:center;gap:16px;"><div style="width:24px;height:24px;border-radius:50%;border:3px solid #FFDBCF;border-top-color:#BB3E1C;animation:spin 0.9s linear infinite;"></div><div style="width:36px;height:36px;border-radius:50%;border:3.5px solid #FFDBCF;border-top-color:#BB3E1C;animation:spin 0.9s linear infinite;"></div><div style="width:48px;height:48px;border-radius:50%;border:4px solid #FFDBCF;border-top-color:#BB3E1C;animation:spin 0.9s linear infinite;"></div></div></div>
+        <!-- empty -->
+        <div><div style="font-size:11px;color:#85736C;margin-bottom:8px;font-weight:600;">Empty state</div><div style="border:1px dashed #ECDBD3;border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;"><div style="width:60px;height:60px;border-radius:50%;background:#FFDBCF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:30px;color:#BB3E1C;">chat_bubble</span></div><div style="font-size:17px;font-weight:700;color:#231915;text-align:center;">Nothing here yet</div><div style="font-size:13px;color:#85736C;text-align:center;line-height:1.5;">Follow people to see their posts.</div><div style="height:40px;border-radius:20px;background:#BB3E1C;color:#FFFFFF;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Explore</div></div></div>
+        <!-- error retry -->
+        <div><div style="font-size:11px;color:#85736C;margin-bottom:8px;font-weight:600;">Error + retry</div><div style="border:1px dashed #FFDAD6;border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;"><div style="width:60px;height:60px;border-radius:50%;background:#FFDAD6;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:30px;color:#BA1A1A;">cloud_off</span></div><div style="font-size:17px;font-weight:700;color:#231915;text-align:center;">Something went wrong</div><div style="font-size:13px;color:#85736C;text-align:center;line-height:1.5;">Couldn't load your feed. Check your connection.</div><div style="height:40px;border-radius:20px;border:1.5px solid #BA1A1A;color:#BA1A1A;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">refresh</span>Try again</div></div></div>
+      </div>
+      <div style="background:#1A110D;padding:22px;display:flex;flex-direction:column;gap:20px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#A08D85;">DARK</div>
+        <div><div style="font-size:11px;color:#A08D85;margin-bottom:8px;font-weight:600;">Skeleton</div><div style="display:flex;gap:12px;"><div style="width:44px;height:44px;border-radius:50%;flex:none;animation:shimmer 1.4s infinite linear;background:linear-gradient(90deg,#2E211C 25%,#3D312C 50%,#2E211C 75%);background-size:1200px 100%;"></div><div style="flex:1;"><div style="height:12px;width:120px;margin-bottom:8px;animation:shimmer 1.4s infinite linear;background:linear-gradient(90deg,#2E211C 25%,#3D312C 50%,#2E211C 75%);background-size:1200px 100%;border-radius:6px;"></div><div style="height:10px;width:80px;margin-bottom:10px;animation:shimmer 1.4s infinite linear;background:linear-gradient(90deg,#2E211C 25%,#3D312C 50%,#2E211C 75%);background-size:1200px 100%;border-radius:6px;"></div><div style="height:10px;width:100%;margin-bottom:5px;animation:shimmer 1.4s infinite linear;background:linear-gradient(90deg,#2E211C 25%,#3D312C 50%,#2E211C 75%);background-size:1200px 100%;border-radius:6px;"></div><div style="height:120px;border-radius:12px;width:100%;margin-top:4px;animation:shimmer 1.4s infinite linear;background:linear-gradient(90deg,#2E211C 25%,#3D312C 50%,#2E211C 75%);background-size:1200px 100%;"></div></div></div></div>
+        <div><div style="font-size:11px;color:#A08D85;margin-bottom:8px;font-weight:600;">Spinner</div><div style="display:flex;align-items:center;gap:16px;"><div style="width:24px;height:24px;border-radius:50%;border:3px solid #3D312C;border-top-color:#FFB59E;animation:spin 0.9s linear infinite;"></div><div style="width:36px;height:36px;border-radius:50%;border:3.5px solid #3D312C;border-top-color:#FFB59E;animation:spin 0.9s linear infinite;"></div><div style="width:48px;height:48px;border-radius:50%;border:4px solid #3D312C;border-top-color:#FFB59E;animation:spin 0.9s linear infinite;"></div></div></div>
+        <div><div style="font-size:11px;color:#A08D85;margin-bottom:8px;font-weight:600;">Empty state</div><div style="border:1px dashed #2E211C;border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;"><div style="width:60px;height:60px;border-radius:50%;background:#7B2D10;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:30px;color:#FFB59E;">chat_bubble</span></div><div style="font-size:17px;font-weight:700;color:#F1DFD8;text-align:center;">Nothing here yet</div><div style="font-size:13px;color:#A08D85;text-align:center;line-height:1.5;">Follow people to see their posts.</div><div style="height:40px;border-radius:20px;background:#FFB59E;color:#5C1900;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;">Explore</div></div></div>
+        <div><div style="font-size:11px;color:#A08D85;margin-bottom:8px;font-weight:600;">Error + retry</div><div style="border:1px dashed #93000A;border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;"><div style="width:60px;height:60px;border-radius:50%;background:#93000A;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:30px;color:#FFB4AB;">cloud_off</span></div><div style="font-size:17px;font-weight:700;color:#F1DFD8;text-align:center;">Something went wrong</div><div style="font-size:13px;color:#A08D85;text-align:center;line-height:1.5;">Couldn't load your feed. Check your connection.</div><div style="height:40px;border-radius:20px;border:1.5px solid #FFB4AB;color:#FFB4AB;display:inline-flex;align-items:center;padding:0 22px;font-size:14px;font-weight:600;gap:8px;"><span class="ms" style="font-size:18px;">refresh</span>Try again</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <div style="background:#231915;border-radius:22px;padding:28px 30px;">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#FFB59E;margin-bottom:14px;">Compose wrapper notes</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+      <div><div style="font-size:14px;font-weight:700;color:#FFF8F6;margin-bottom:5px;">Hook surface</div><div style="font-size:13px;color:#D8C2BA;line-height:1.5;">Every component exposes <code style="font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">analyticsId: String?</code> and <code style="font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">onImpression: () → Unit</code> as optional lambdas. Wrapper logs them via the DI'd analytics client.</div></div>
+      <div><div style="font-size:14px;font-weight:700;color:#FFF8F6;margin-bottom:5px;">Accessibility</div><div style="font-size:13px;color:#D8C2BA;line-height:1.5;"><code style="font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">contentDescription</code> is non-nullable on icon buttons. Buttons have minimum <code style="font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">minHeight = 48.dp</code> enforced by the wrapper. State announcements wired to <code style="font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">LocalAccessibilityManager</code>.</div></div>
+      <div><div style="font-size:14px;font-weight:700;color:#FFF8F6;margin-bottom:5px;">Dynamic color</div><div style="font-size:13px;color:#D8C2BA;line-height:1.5;">All tokens are resolved at call-site from <code style="font-family:ui-monospace,monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">MaterialTheme.colorScheme</code>. When dynamic color is on (S+), M3 replaces the coral seed automatically — no component code change needed.</div></div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      matrix: [
+        { icon: '🟡', name: 'Button', note: 'filled/tonal/outlined/text seen; loading+destructive added' },
+        { icon: '🟡', name: 'Icon button', note: 'standard seen; filled-tonal added' },
+        { icon: '🟡', name: 'Text field', note: 'outlined seen; filled+all states added' },
+        { icon: '🟡', name: 'Card / surface', note: 'elevated+PostCard seen; states added' },
+        { icon: '🟡', name: 'Avatar', note: 'initials sizes seen; image placeholder+ring added' },
+        { icon: '🟡', name: 'Chip', note: 'assist seen; filter+selectable added' },
+        { icon: '✅', name: 'Segmented button', note: '2-seg (Search) + 3-seg (Settings)' },
+        { icon: '✅', name: 'Tabs', note: 'Profile (4-tab) + Notifications (3-tab)' },
+        { icon: '🟡', name: 'Top app bar', note: 'small seen; center-aligned+scrolled added' },
+        { icon: '🟡', name: 'Bottom nav bar', note: '3-tab seen; badge added' },
+        { icon: '✅', name: 'FAB', note: 'standard + extended both in screens' },
+        { icon: '❌', name: 'Dialog', note: 'not in screens — delete/logout patterns specced' },
+        { icon: '❌', name: 'Bottom sheet', note: 'not in screens — post actions menu specced' },
+        { icon: '🟡', name: 'Snackbar', note: 'error seen in Auth; neutral + action added' },
+        { icon: '🟡', name: 'State composables', note: 'skeleton+empty seen; error+retry added' },
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
