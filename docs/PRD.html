@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modern Android Template — PRD</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<style>
+  :root{
+    --coral:#BB3E1C; --coral-c:#FFDBCF; --ink:#231915; --muted:#85736C;
+    --bg:#FFF8F6; --surface:#fff; --line:#ECDBD3; --code-bg:#FBEBE4;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:0;max-width:1280px;margin:0 auto}
+  nav#toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;
+    padding:24px 16px;border-right:1px solid var(--line);background:var(--surface);font-size:13px}
+  nav#toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 8px;border-radius:6px;
+    border-left:2px solid transparent;line-height:1.4}
+  nav#toc a:hover{color:var(--coral);background:var(--coral-c)}
+  nav#toc a.toc-h1{font-weight:700;color:var(--ink);margin-top:6px}
+  nav#toc a.toc-h2{font-weight:600;color:var(--ink);margin-top:6px}
+  nav#toc a.toc-h3{padding-left:20px;font-size:12px}
+  main{padding:40px 56px;min-width:0}
+  main h1,main h2,main h3,main h4{line-height:1.25;scroll-margin-top:16px}
+  main h1{font-size:30px;border-bottom:2px solid var(--coral);padding-bottom:.3em}
+  main h2{font-size:23px;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.25em}
+  main h3{font-size:18px;margin-top:1.6em;color:var(--coral)}
+  main h4{font-size:15px;margin-top:1.3em}
+  main a{color:var(--coral)}
+  code{background:var(--code-bg);padding:.12em .4em;border-radius:5px;font-size:.86em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto}
+  pre code{background:none;padding:0;font-size:13px;line-height:1.5}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:14px;display:block;overflow:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--coral-c);color:#3A0B00;font-weight:700}
+  tr:nth-child(even) td{background:#FFFCFB}
+  blockquote{margin:1em 0;padding:.5em 1em;border-left:4px solid var(--coral);
+    background:var(--surface);color:var(--muted);border-radius:0 8px 8px 0}
+  hr{border:none;border-top:1px solid var(--line);margin:2.2em 0}
+  ul,ol{padding-left:1.4em}
+  li{margin:.2em 0}
+  .mermaid{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin:1em 0;text-align:center}
+  .topbar{grid-column:1/-1;background:var(--coral);color:#fff;padding:10px 24px;font-size:13px;
+    display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+  .topbar b{font-weight:700}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    nav#toc{display:none}
+    main{padding:24px 18px}
+  }
+</style>
+</head>
+<body>
+<script id="md" type="text/markdown">
+# Modern Android Project Template — Product Requirements Document
+
+> **Version:** 1.1 · **Date:** 2026-06-21 · **Status:** Approved for build
+> **Upstream:** [`docs/IDEATION.md`](./IDEATION.md). This PRD is the **single source of truth** — the stack-validation decision record and the RFC proposals have been folded in and removed.
+> **v1.1 change:** the repository is split into two runnable targets — a **product-neutral base starter** (`:app`) and a **Twitter-lite demo** (`:demo:twitter:*`). Supabase + all social domain live only in the demo; the base is product-neutral and runs with no cloud (see §1, §6, [`docs/demo-isolation-revision-proposal.md`](./demo-isolation-revision-proposal.md)).
+> All library versions reflect June 2026 research. Entries marked **†** in Appendix A must be pinned to latest stable at implementation time.
+
+---
+
+## 1. Overview
+
+A production-grade, modular Android **reference template** that scaffolds new apps with the current (2026) recommended architecture, libraries, tooling, testing, performance, and CI/CD already wired. It is one repository and one Gradle build with **two runnable app targets**:
+
+1. **Base starter (`:app`)** — the **product-neutral** template a team keeps. It proves the full stack — app shell, theming, Nav3, DI, settings, devtools, observability, push transport, ads, deep links, in-app update/review, feature flags, account deletion, **Credential Manager (username/password) auth**, and one **generic sample feature** (a posts/users browser) — all against the public **DummyJSON** API (no account, no key). It **builds and runs on a clean clone with no cloud setup and no committed secrets**.
+2. **Twitter-lite demo (`:demo:twitter:*` + `:demo:twitter:app`)** — a full-stack **showcase** of the same foundation under realistic feature pressure: Supabase auth/PostgREST/realtime/storage/RLS, Google SSO + passkey (P1), social features (feed/post/profile/search/notifications), onboarding, and an optional dynamic-feature image cropper.
+
+**The base is the template you keep; the demo is the showcase you study, copy patterns from, run, or delete.** The guiding rule: **reusable base modules are product-neutral; product-specific code (anything social — post, comment, like, follow, feed, activity) lives only in the demo boundary.** Supabase and the entire social domain are demo-only — a team forking the base for a finance, health, commerce, or productivity app inherits a neutral Android foundation, not a social-app skeleton. Deleting `:demo:twitter:*` leaves a clean, compiling starter (SC-ISOLATION-1).
+
+---
+
+## 2. Goals & Non-Goals
+
+### Goals
+- **G1** — Encode current modern-Android best practice (architecture, DI, navigation, state, data, testing, performance, CI) as a working, idiomatic reference.
+- **G2** — Be reusable: clean module boundaries, vendor SDKs behind interfaces, removable features, no hard-coded product assumptions.
+- **G3** — Be complete: every listed feature scaffolded and demonstrated, not stubbed.
+- **G4** — Be verifiable: unit + UI + screenshot + E2E tests, coverage gating, baseline profiles, all green in CI.
+- **G5** — Onboard a developer to a buildable app in < 30 minutes following the setup checklist.
+- **G6** — **Keep the reusable base product-neutral and the demo isolated.** `:core:*` and base `:feature:*` must not expose social/Twitter-lite concepts; the base starter builds and runs with **no cloud setup and no committed secrets**; removing `:demo:twitter:*` leaves the base compiling and green (SC-ISOLATION-1/2).
+
+### Non-Goals
+- **NG1** — Kotlin Multiplatform / Compose Multiplatform support (Android-only by decision).
+- **NG2** — A polished consumer product. The demo is a stack showcase.
+- **NG3** — **Custom backend for the demo, beyond Supabase.** *(Demo scope only — the base starter has no first-party backend; it reads the public DummyJSON API, §5/§8.)* The demo's backend is Supabase-managed schema, RLS policies, triggers, RPCs, storage bucket config, **one `send-push` Edge Function (Deno) for FCM delivery**, and migration/policy tests (no separate custom server). **Supabase-only is an intentional demo boundary**, valid while the backend stays within authenticated CRUD, RLS reads/writes, simple RPCs, storage-ownership rules, realtime, trigger-driven side effects, and a single thin Edge Function. Escalate to **a custom backend** when any gate trips: `service_role` needed outside tightly-scoped SQL; background jobs needing queues/retries/DLQ; notification fanout beyond the single `send-push` Edge Function; server-side media processing (resize/scan/moderation); privileged moderation/admin; search needing ranking/typo-tolerance beyond Postgres; external private-API credentials; or RLS/RPC logic too complex to test safely (§17).
+- **NG4** — iOS, Wear, TV, Auto. (Adaptive support **is** in scope as P0 — window size classes, `NavigationSuiteScaffold`, edge-to-edge, one list-detail showcase, §8.12 — but bespoke large-screen/foldable UX beyond that, e.g. multi-pane everywhere, stylus, drag-and-drop, desktop windowing, is out.)
+- **NG5** — Multi-language content; i18n *plumbing* is included, translations are not.
+- **NG6** — **Product-specific domain in the base.** Social nouns (post, comment, like, follow, feed, activity, profile) and Supabase are **out of scope for `:core:*` and base `:feature:*`** — they belong only inside `:demo:twitter:*`. The base sample feature is a deliberately generic posts/users browser, not a social graph.
+
+---
+
+## 3. Target Users & Use Cases
+
+| User | Use case |
+|---|---|
+| Senior/lead Android engineer | Forks the base starter; keeps architecture + CI; studies the demo for patterns; deletes `:demo:twitter:*`; builds their product. |
+| Mid-level engineer | Learns idiomatic 2026 patterns from both the runnable base and the full demo. |
+| Team starting greenfield | Standardizes on one architecture + tooling baseline; keeps the product-neutral base, treats the demo as a worked example. |
+
+**Primary flow:** clone → `./gradlew :app:assembleDevDebug` runs the **base starter immediately, no cloud** (DummyJSON-backed auth + sample) → optionally configure + run the **`:demo:twitter:app`** to study the full Supabase/social showcase → copy the patterns you need → **delete `:demo:twitter:*`** → build your product on the clean base.
+
+---
+
+## 4. Success Criteria
+
+- **SC1** — `./gradlew :app:assembleDevDebug` succeeds on a **clean clone with no cloud services and no committed secrets**.
+- **SC-STARTER-1** — The base starter runs end-to-end with **no cloud**: Credential Manager username/password sign-in against **DummyJSON** (token persisted, refresh, logout) → the sample **posts/users browser** lists, paginates, opens detail, and searches (Room-cached) → settings (theme/language) and devtools work. Firebase/Measure/Ads degrade to **no-op** when unconfigured.
+- **SC2** — `./gradlew check` runs Spotless, detekt, Android Lint, unit tests, Roborazzi, and Kover with the configured gates passing (base + demo).
+- **SC-DEMO-1** — Twitter-lite demo (`:demo:twitter:app`) builds and runs with documented demo service setup: sign in with **Google SSO** → (first run) choose a unique username → browse a paged feed → open a post and its comment thread → reply, like/unlike, follow/unfollow → search people and posts → view and edit a profile → compose a post with up to 4 images — all against live Supabase.
+- **SC-ISOLATION-1** — Removing `:demo:twitter:*` (drop the includes in `settings.gradle.kts` + demo config/docs) leaves the base starter compiling and `:app` checks passing.
+- **SC-ISOLATION-2** — No `:core:*` or base `:feature:*` module depends on `:demo:twitter:*`, and no base public API exposes social/Twitter-lite domain nouns (enforced by a dependency/architecture test, §10).
+- **SC4** — CI is green across `base`, `demo-compile`, `demo-integration` (when secrets configured), and `pr-check`/`main-ci`; `release` produces a signed AAB.
+- **SC5** — A baseline profile is generated and bundled; a macrobenchmark startup test runs (per app target).
+- **SC6** — **Two removal contracts (§6.11):** (a) **whole demo** — removing `:demo:twitter:*` leaves the base compiling (SC-ISOLATION-1); (b) **one demo feature** — removing a single `:demo:twitter:feature:*:impl`, its Koin module, and its nav registration leaves the demo app compiling; demo feature `:api` modules may remain as stable contracts when other demo features still reference their route keys.
+- **SC7** — Accessibility + adaptive gates pass: ATF-backed a11y checks (Compose + Roborazzi) and Lint a11y rules green; key screens render correctly at compact/medium/expanded widths and 2.0× font scale; app runs edge-to-edge with predictive back.
+
+---
+
+## 5. Tech Stack (locked)
+
+**Scope key:** unless a row is marked **[demo]**, the layer is **base** (product-neutral, ships in `:app` and `:core:*`/base `:feature:*`). **[demo]** rows live only in `:demo:twitter:*`. **[base, optional cloud]** = base layer that runs no-op/offline until a cloud account is configured.
+
+| Layer | Choice |
+|---|---|
+| Language / build | Kotlin 2.3 (K2), AGP 9.2.0, **Gradle 9.4.1** (AGP 9.2 requires it), KSP2, JDK 21, Kotlin DSL + version catalog + `build-logic` convention plugins |
+| SDK policy | `compileSdk`/`targetSdk` **36** default (stable-by-default); API 37/Android 17 shipped stable (Jun 2026) but adoption is opt-in only until the ecosystem settles |
+| UI | Jetpack Compose, Material 3 (1.4.0; M3 Expressive deferred to 1.5.0 stable) |
+| Adaptive & accessibility (**P0**) | Material 3 Adaptive (window size classes, `NavigationSuiteScaffold`), edge-to-edge + insets (enforced at API 36), predictive back, large-font resilience; a11y = semantics baseline + ATF-backed automated checks (§8.12–8.13) |
+| Presentation | UDF-MVVM — ViewModel + immutable `UiState` + `StateFlow` |
+| Navigation | Navigation 3 (1.1.2) + `koin-compose-navigation3` |
+| DI | Koin (BOM 4.1.x), runtime DSL |
+| Async | Coroutines + Flow |
+| Networking (base) | **Ktor 3** client on the **OkHttp engine** + kotlinx.serialization — generic REST conventions (interceptors, auth/Bearer, error mapping), shared `OkHttpClient`/pool with Coil. No Retrofit. |
+| Networking **[demo]** | supabase-kt over **Ktor 3** + kotlinx.serialization — single PostgREST data path (no Retrofit) |
+| Sample backend (base) | **DummyJSON** (`https://dummyjson.com`) — public fake REST API, **no account/key**: `/auth/login`+`/auth/me`+`/auth/refresh` (username/password → JWT) for base auth, `/posts`+`/users` for the sample feature. Runtime hits it live; CI/tests use Ktor `MockEngine`. Documented as a swappable illustrative backend. |
+| Persistence | Room 2.8 (KSP2) |
+| Paging | Paging 3.5 |
+| Prefs / flags | DataStore (Preferences for settings, Proto+serialization for flag cache) |
+| Background | WorkManager 2.11 + Koin worker factory — base: FCM token-sync worker; **[demo]**: resilient post-image upload (constraints + backoff + foreground progress) |
+| Images | Coil 3.5 (+ `coil-network-okhttp`) |
+| Backend **[demo]** | Supabase (`supabase-kt` 3.6) — auth, postgrest (data), realtime, storage. **Supabase is demo-only**; the base has no first-party backend. |
+| Firebase **[base, optional cloud]** | Remote Config, Cloud Messaging, Analytics, Crashlytics, Performance (BOM 34.14). No-op bindings until `google-services.json` is supplied. |
+| Observability **[base, optional cloud]** | **Measure.sh** (crash + ANR + perf + session timeline) **and** Firebase Crashlytics + Performance — both run via a **composite** behind `CrashReporter`/`PerformanceTracer` for side-by-side comparison; `AnalyticsLogger` over Firebase Analytics. No-op binding until configured. |
+| Code security | **Semgrep OSS** (SAST; OWASP MASTG + Kotlin rules) — gate in CI |
+| Docs | **Dokka 2.2** (multi-module API reference → GitHub Pages) + per-module READMEs (architecture prose / AI context) |
+| Auth (base) | **Credential Manager 1.6 — username/password** flow (saved-password get/create) → **DummyJSON** token auth (access+refresh, encrypted DataStore, Bearer interceptor, silent refresh, logout). The common token-REST pattern, runnable with no cloud. |
+| Auth **[demo]** | Credential Manager — **Google SSO** (federated) → Supabase session, + **passkeys (P1, §22)**: Supabase Auth is the WebAuthn relying party (beta), `supabase-kt` passkey API pending [PR #1327](https://github.com/supabase-community/supabase-kt/pull/1327). Google SSO/passkey need an OAuth/WebAuthn RP (Supabase) → demo-only. |
+| Ads **[base, optional]** | Google Mobile Ads 25.3 + UMP 3.2 (optional `:ads` module) |
+| Testing | JUnit4, MockK, Turbine, Robolectric, Compose UI test, Ktor `MockEngine`, Roborazzi (+ ComposablePreviewScanner), Maestro |
+| Design-system catalog | Showkase (in-app, debug) + `@PreviewParameter`/multipreview; optional `:app-catalog` standalone APK |
+| Dynamic delivery **[demo]** | Play Feature Delivery — one on-demand module (`:demo:twitter:feature:imagecrop`) via `:core:dynamicdelivery` plumbing (api-in-base + Koin + Nav3 gate); removable showcase (§6.10). The `:core:dynamicdelivery` plumbing is product-neutral base; the cropper itself is demo. |
+| Performance | Baseline Profiles + Macrobenchmark |
+| Quality | Spotless+ktfmt (format), detekt + Android Lint (analysis), Kover (coverage) |
+| CI/CD | GitHub Actions; Codecov; supply-chain (wrapper-validation, dependency-submission/review, **Renovate self-hosted as a GitHub Action** — free, full features); **Semgrep** SAST; **Dokka** docs publish; release automation (release-please); PR hygiene (semantic PR title, labeler, reviewdog, test-reporter); Firebase App Distribution + APK size diff |
+
+Full catalog: **Appendix A**.
+
+---
+
+## 6. Architecture
+
+### 6.1 Principles
+- **Two targets, one foundation:** a **product-neutral base** (`:app` + `:core:*` + base `:feature:*`) and a **Twitter-lite demo** (`:demo:twitter:*`) share the same architecture, design system, DI, testing, and observability abstractions. The demo proves the foundation under real feature pressure without shaping it.
+- **Product-neutral base (G6):** `:core:*` and base `:feature:*` must make sense in a banking / fitness / commerce / media app and must **not** name social nouns (post, comment, like, follow, feed, activity, profile) in their public APIs. Supabase and all social domain live only in `:demo:twitter:*`. Enforced by a dependency/architecture test (§10) and SC-ISOLATION-2.
+- **Unidirectional Data Flow (UDF):** state flows down (`UiState`), events flow up (lambdas).
+- **Layered data with a deliberate, per-screen cache policy:** UI → ViewModel → Repository (interface) → DataSources (network + DB). Room is the **single source of truth where offline history matters**, network-direct where data is inherently live — the choice is explicit, not blanket-cached. Concrete policies: base sample feature in §6.7; demo (feed / post / search / profile / notifications) in §9.4.
+- **Modularization for build speed + ownership + decoupling**, following the Now in Android hybrid (feature + core + build-logic), **not** by-layer modules.
+- **Vendor SDKs behind interfaces** in `:core` or optional modules, so apps swap/remove them in one place.
+- **Dependency rule:** dependencies point inward/downward; feature modules never depend on each other's implementations; **base modules never depend on `:demo:twitter:*`.**
+- **Adaptive + accessible by default (P0):** screens survive compact/medium/expanded widths, fold posture, landscape, edge-to-edge insets, predictive back, and large font scale; every interactive element carries correct semantics and a ≥48dp touch target. Not an afterthought — built into `:core:designsystem`/`:core:ui` and verified in CI (§8.12–8.13, §10).
+
+### 6.2 Module structure
+
+```
+── BASE (product-neutral template; the :app target) ──────────────────────────
+:app                          Base starter — Application, MainActivity, root NavDisplay, adaptive shell, Koin startup
+:build-logic                  Included build — convention plugins (shared by both targets)
+:core:model                   Pure Kotlin models — GENERIC only (no Post/Comment/Follow). e.g. Result payloads, paging keys
+:core:common                  Dispatchers, Result<T>, extensions, safeApiCall, base utils
+:core:designsystem            Ember theme, color/type/shape/spacing tokens, Outfit font, themed App* atoms
+:core:ui                      Generic composite composables (list/detail scaffolds, empty/error/loading states)
+:core:network                 GENERIC Ktor (OkHttp engine) client — interceptors, Bearer/auth, error mapping, serialization. NO supabase-kt
+:core:database                Room AppDatabase, DAO/migration conventions (base: sample cache)
+:core:datastore               Preferences + Proto datastores (settings, flag cache, encrypted token store)
+:core:data                    Generic repository patterns + Result; SessionProvider/AuthRepository interface + token store
+:core:observability           CrashReporter, PerformanceTracer, AnalyticsLogger interfaces; Measure.sh + Firebase impls; composite; NoOp
+:core:push                    GENERIC FCM transport — FirebaseMessagingService, channels, builder; PushMessagingRegistrar; TokenSyncWorker
+:core:playservices            Play Core wrappers — AppUpdateCoordinator (in-app/force update), ReviewPrompter (in-app review)
+:core:dynamicdelivery         FeatureInstaller (SplitInstallManager wrapper) + Nav3 openDynamic() + InstallingKey (DFM plumbing; neutral)
+:core:testing                 Shared fakes, rules, Koin test rule, Roborazzi config, Ktor MockEngine helpers
+:feature:splash:{api,impl}    Hold until readiness (session/flags) resolves, then route — routing logic injected per target
+:feature:auth:{api,impl}      Credential Manager USERNAME/PASSWORD → DummyJSON token auth (access+refresh, encrypted store, logout)
+:feature:account:{api,impl}   Account deletion flow (confirm → delete → clear session)
+:feature:sample:{api,impl}    GENERIC posts/users browser (DummyJSON): list → detail, search, offset-paged, Room-cached
+:feature:settings:{api,impl}  Theme / dynamic color / language, logout, account-deletion entry, force/in-app update entry, review trigger
+:feature:devtools:{api,impl}  Staging/dev only — copy FCM token, flag overrides, env info, test crash/notification
+:ads                          OPTIONAL — AdManager (AdMob + UMP) impl; not in core
+:deeplink-branch              OPTIONAL — Branch.io DeepLinkResolver impl (App Links work without it)
+:app-catalog                  OPTIONAL — standalone design-system showcase APK (NiA-style); skeleton, off by default
+:macrobenchmark               com.android.test — baseline profile generator + benchmarks
+
+── DEMO (Twitter-lite showcase; the :demo:twitter:app target — deletable) ────
+:demo:twitter:app             Demo app — wires base features with REAL Supabase bindings + social features
+:demo:twitter:supabase        supabase-kt client (Ktor) — auth / postgrest / realtime / storage; the Supabase integration the base lacks
+:demo:twitter:model           Social domain models (Post, Profile, Comment, Like, Follow, Notification)
+:demo:twitter:network         Social @Serializable DTOs, PostgREST queries, RPC calls (over :demo:twitter:supabase)
+:demo:twitter:database        Social Room entities/DAOs (feed cache, notifications)
+:demo:twitter:data            Social repos: Post/Comment/Like/Follow/Profile/Search/Notification + real AuthRepository (Supabase) binding
+:demo:twitter:feature:auth:{api,impl}          Google SSO (federated) + passkey (P1) → Supabase session
+:demo:twitter:feature:onboarding:{api,impl}    Post-SSO profile completion gate (unique username + display name; complete_profile RPC)
+:demo:twitter:feature:feed:{api,impl}          Home feed (Paging 3 + Supabase + realtime), like, compose FAB entry
+:demo:twitter:feature:post:{api,impl}          Post detail + comment thread + inline reply; compose-post (text + ≤4 images)
+:demo:twitter:feature:profile:{api,impl}       Profile view, edit profile, follow/unfollow, followers/following lists
+:demo:twitter:feature:search:{api,impl}        Search people + posts (debounced)
+:demo:twitter:feature:notifications:{api,impl} In-app activity feed (likes/follows/comments), unread badge, mark-read
+:demo:twitter:feature:imagecrop:api            Crop contract + CropKey (demo-base-resident; consumed by :demo:twitter:feature:post)
+:demo:twitter:feature:imagecrop:impl           DYNAMIC FEATURE — on-demand crop for post images (depends on :demo:twitter:app)
+supabase/                     Demo backend — migrations, RLS, triggers, RPCs, send-push Edge Function, seeds
+```
+
+**Module types & layering.** Five kinds of module, each with a fixed role and a one-directional dependency rule:
+
+| Type | Modules | May depend on | Never depends on |
+|---|---|---|---|
+| **App** | `:app`, `:demo:twitter:app` | `:feature:*:impl` (own target), optional modules, `:core:*` | — (top of the graph) |
+| **Base feature** | `:feature:*` (`:api` + `:impl`) | own `:api`, other base features' `:api`, `:core:*` | another feature's `:impl`, **any `:demo:twitter:*`** |
+| **Core** | `:core:*` | lower `:core:*` | any `:feature:*`, `:app`, **any `:demo:twitter:*`** |
+| **Demo** | `:demo:twitter:*` | `:core:*`, base `:feature:*:api`, own demo modules' `:api` | another demo feature's `:impl` |
+| **Build/Test** | `:build-logic`, `:macrobenchmark` | — (build-only / test-only) | runtime modules |
+
+Dependencies always point **downward** (`:app`/`:demo:twitter:app` → `:feature` → `:core`) and **inward** within core (`data` → `network`/`database`/`datastore` → `model`/`common`). The demo may depend on the base; **the base never depends on the demo.** No cycles; no sideways `impl`→`impl` edges.
+
+```mermaid
+graph TD
+    subgraph BASE["BASE (kept)"]
+      app[":app"]
+      bfeat[":feature:* (auth/account/sample/settings/devtools)"]
+      subgraph CORE["core layer (product-neutral)"]
+        data[":core:data"]
+        net[":core:network (generic Ktor/OkHttp)"]
+        db[":core:database"]
+        store[":core:datastore"]
+        ui[":core:ui"]
+        ds[":core:designsystem"]
+        model[":core:model (generic)"]
+        common[":core:common"]
+        misc[":core:observability/push/playservices/dynamicdelivery"]
+        data --> net
+        data --> db
+        data --> store
+        ui --> ds
+        net --> model
+        ds --> common
+        model --> common
+      end
+      app --> bfeat
+      bfeat --> data
+      bfeat --> ui
+      bfeat --> misc
+    end
+    subgraph DEMO["DEMO (:demo:twitter:* — deletable)"]
+      dapp[":demo:twitter:app"]
+      dfeat[":demo:twitter:feature:* (feed/post/profile/...)"]
+      ddata[":demo:twitter:data + :network + :database + :model"]
+      sb[":demo:twitter:supabase (supabase-kt)"]
+      dapp --> dfeat
+      dapp --> bfeat
+      dfeat --> ddata
+      ddata --> sb
+    end
+    dfeat --> data
+    dfeat --> ui
+    dfeat --> misc
+    bl([":build-logic"]):::build
+    bl -.convention plugins.-> app
+    bl -.-> dapp
+    DEMO -. "base NEVER depends on demo" .-> BASE
+    classDef build fill:#eee,stroke:#999,stroke-dasharray:4;
+```
+
+**Cross-feature navigation** goes only through `:api` modules, which expose Nav3 keys + entry contracts (depending only on the relevant `:*:model`). An `:impl` navigates to another feature by referencing that feature's `:api` key — never its `:impl` (shown for the demo's social features):
+
+```mermaid
+graph LR
+    feed[":demo:twitter:feature:feed:impl"] --> postApi[":demo:twitter:feature:post:api"]
+    feed --> profApi[":demo:twitter:feature:profile:api"]
+    search[":demo:twitter:feature:search:impl"] --> postApi
+    search --> profApi
+    postImpl[":demo:twitter:feature:post:impl"] --> profApi
+    profImpl[":demo:twitter:feature:profile:impl"] --> postApi
+```
+
+This is what makes **SC6** hold (§6.11): deleting any one feature implementation (`:*:feature:*:impl`) plus its Koin module and nav wiring leaves the rest compiling, because nobody imports its `:impl`; feature `:api` modules are stable contracts that may remain. And deleting **all** of `:demo:twitter:*` leaves the base compiling (SC-ISOLATION-1) because no base module imports the demo.
+
+### 6.3 Presentation pattern (UDF-MVVM)
+
+```kotlin
+data class FeedUiState(
+    val isRefreshing: Boolean = false,
+    val userMessage: String? = null,        // transient; cleared after shown
+)
+
+class FeedViewModel(pager: FeedPager, private val likes: LikeRepository) : ViewModel() {
+    val posts = pager.flow.cachedIn(viewModelScope)            // Flow<PagingData<Post>>
+    private val _uiState = MutableStateFlow(FeedUiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun onLike(id: Long) = viewModelScope.launch {
+        likes.toggle(id).onFailure { e -> _uiState.update { it.copy(userMessage = e.message) } }
+    }
+    fun onMessageShown() = _uiState.update { it.copy(userMessage = null) }
+}
+```
+
+- **State holder:** one immutable `data class` (or `sealed interface` when screens have structurally distinct Loading/Success/Error trees).
+- **`stateIn`** with `SharingStarted.WhileSubscribed(5_000)` for derived flows.
+- **One-time events** (navigation, snackbar) are modeled as nullable/list state fields consumed in `LaunchedEffect` then cleared — **never** `Channel`/`SharedFlow` (per Google UI-events guidance).
+- **Composables** receive `state` + lambdas; never the ViewModel below the screen entry.
+
+### 6.4 DI (Koin, runtime DSL)
+- One Koin module per feature `:impl` and per `:core` module; `:app` calls `startKoin { modules(allModules) }`.
+- `koinViewModel()` in composables; `workManagerFactory()` for workers (`TokenSyncWorker` in `:core:push`; demo's `PostImageUploadWorker` in `:demo:twitter:feature:post:impl` — both `CoroutineWorker`); `koin-compose-navigation3` for nav entries.
+- Runtime DSL (no annotations/KSP per module). A `checkModules()` test verifies the graph.
+
+### 6.5 Navigation (Nav3)
+- Back stack = `SnapshotStateList<Any>` owned by an app-scoped `Navigator`.
+- `NavDisplay(backStack, onBack, entryProvider = getEntryProvider())` at the root.
+- Each feature contributes entries via its Koin module (`navigation<HomeKey> { HomeScreen() }`).
+- Multiple back stacks for bottom-nav sections per the Nav3 recipes.
+- **Glue replaceability:** the nav *contract* (`:api` keys + entry definitions) depends only on Nav3, not on `koin-compose-navigation3`. If the Koin-nav glue lags a Nav3 release, fall back to plain Nav3 entry providers with manual Koin `get()` in the entry lambda — no feature code changes. (The two are Renovate-grouped to co-bump; see §13.)
+- **Profile-completion gate:** an app-level check (session present + does a `profiles` row exist for `auth.uid()`) routes first-run users to `ProfileSetupKey` before the tab scaffold; incomplete users cannot reach any feature route (§9, Demo onboarding). Google SSO and (future P1) passkey sign-in both funnel through this one gate. (This gate is demo-only; the base starter routes splash → auth → sample home.)
+
+### 6.6 Error handling
+- `sealed interface Result<out T> { Success; Error }` at the data/domain boundary via a `safeApiCall {}` wrapper that maps `HttpException`/`IOException`/Supabase errors to typed domain errors.
+- `sealed interface UiState<out T> { Loading; Success; Error }` at the UI boundary. Loading belongs to UI, not to a network result — do not collapse the two.
+- No `kotlin.Result`; no Arrow (may be added per-app later).
+
+### 6.7 Data access
+
+**Base — generic REST (DummyJSON).** `:core:network` is a **generic Ktor `HttpClient` on the OkHttp engine** (interceptors, Bearer/auth header, error mapping to `Result`, kotlinx.serialization) — **no supabase-kt**. It shares one `OkHttpClient`/connection pool with Coil (keeps Measure.sh HTTP auto-capture working). Feature-specific `@Serializable` DTOs live in each base feature's data layer and map to generic models before crossing into the repository; DTOs never leak past the network layer.
+- **Auth (`:feature:auth`):** Credential Manager retrieves a saved username/password → `POST /auth/login` (DummyJSON) → access+refresh JWT stored in **encrypted DataStore**; a Bearer interceptor attaches the token; silent refresh on 401 via `/auth/refresh`; `/auth/me` bootstraps the session on launch.
+- **Sample (`:feature:sample`):** `/posts` + `/users` via the generic client; **Room is the SSOT** (list cached + offset-paged via Paging 3 + RemoteMediator), detail by id, debounced search. DummyJSON writes are simulated (not persisted) → the sample is read-focused; any "create" is local-only and documented. Demonstrates the full network→Room→repo→VM→UI path **with no cloud**.
+- **CI/tests** use Ktor `MockEngine` with recorded DummyJSON payloads — never the live API.
+
+**Demo — PostgREST via supabase-kt** (in `:demo:twitter:*`).
+- **Single data path:** all social data (feed, posts, likes, follows, profile reads/writes) uses supabase-kt `postgrest-kt` over **Ktor** (no Retrofit), in `:demo:twitter:supabase`/`:network`/`:data`. The enriched home feed is the `get_home_feed` RPC (handles `auth.uid()` for `liked_by_me`).
+- **DTOs + mapping:** `@Serializable` DTOs live in `:demo:twitter:network`, mapped to `:demo:twitter:model` before crossing into `:demo:twitter:data`.
+- **HTTP engine + caching:** supabase-kt's Ktor `HttpClient` runs on the OkHttp engine, sharing the pool with Coil. Response caching available but off by default — Room (data) + Coil (images) are the real caches.
+- **GraphQL (optional showcase — see §17):** Supabase ships `pg_graphql`, but it has **no subscriptions** and maps per-user computed fields (`liked_by_me`) awkwardly, so realtime/auth/storage stay on supabase-kt regardless. A GraphQL data source would sit in `:demo:twitter:network` behind the same repository interface as the PostgREST one — structurally identical — so a fork can add it (Apollo + `.graphql`) with no architectural change.
+
+### 6.8 Module catalog
+
+Brief role of every module. Feature modules link to their detailed requirements (§8/§9) and to a design doc placeholder that Claude design will fill in screen-by-screen.
+
+**Core modules — BASE, product-neutral** (no feature logic, no social nouns; reused by base features and the demo):
+
+| Module | Responsibility | Depends on |
+|---|---|---|
+| `:core:model` | Pure-Kotlin **generic** models (`Result` payloads, paging keys, common value types). **No social nouns.** | `:core:common` |
+| `:core:common` | `Result<T>`, dispatchers, coroutine utils, extensions, `safeApiCall`. | — |
+| `:core:designsystem` | Ember theme: color/type/shape/spacing tokens, Outfit font, themed `App*` atoms (button, field, avatar, top bar). | `:core:common` |
+| `:core:ui` | **Generic** composite composables (list/detail scaffolds, `UserRow`-style generic rows, empty/error/loading states). No social cards. | `:core:designsystem`, `:core:model` |
+| `:core:network` | **Generic** Ktor client on the OkHttp engine — interceptors, Bearer/auth, error mapping, serialization conventions. **No supabase-kt.** | `:core:common`, `:core:model` |
+| `:core:database` | Room `AppDatabase`, DAO/migration/converter conventions. | `:core:common`, `:core:model` |
+| `:core:datastore` | Preferences (settings) + Proto (flag cache) + **encrypted token store**. | `:core:common`, `:core:model` |
+| `:core:data` | **Generic** repository patterns + `Result`; `SessionProvider`/`AuthRepository` interface (token store). No social repositories. | `:core:network`, `:core:database`, `:core:datastore`, `:core:model`, `:core:common` |
+| `:core:observability` | `CrashReporter`, `PerformanceTracer`, `AnalyticsLogger` interfaces; **Measure.sh** + **Firebase** impls; **composite**; `NoOp` (base default until configured). | `:core:common` |
+| `:core:push` | **Generic FCM transport** — `FirebaseMessagingService`, channel setup, notification builder; `PushMessagingRegistrar`; `TokenSyncWorker`. No activity-feed semantics. | `:core:common`, `:core:data` |
+| `:core:playservices` | Play Core facades: `AppUpdateCoordinator` (in-app + force-update over `AppUpdateManager` + Remote Config gate), `ReviewPrompter` (in-app review). Fakes for tests. | `:core:common`, `:core:data` |
+| `:core:dynamicdelivery` | DFM plumbing: `FeatureInstaller` + `PlayFeatureInstaller` (wraps `SplitInstallManager`), `InstallStatus`, Nav3 `openDynamic()` + `InstallingKey`. Neutral; `Fake` for tests. (§6.10) | `:core:common`, `:core:ui`, navigation |
+| `:core:testing` | Shared fakes, Koin test rule, coroutine/Roborazzi rules, **Ktor `MockEngine` helpers**. (test-only) | most `:core:*` |
+
+**Base feature modules** (each = `:api` keys/contracts + `:impl` screens/ViewModels/Koin module). Kept by teams forking the template:
+
+#### `:feature:splash`
+- **Does:** holds the splash until readiness (session/flags) resolves, then routes via an **injected** route decision (base → auth or sample home; demo injects auth/onboarding/feed).
+- **Contains:** `SplashKey`, splash entry, readiness ViewModel + a `SplashRouter` interface.
+- **Depends on:** `:core:data` (session/flags), `:feature:auth:api`. **Requirements:** §8.1. **Design:** `docs/design/splash.md` _(TBD)_.
+
+#### `:feature:auth` (base)
+- **Does:** **Credential Manager username/password** sign-in → DummyJSON token auth (access+refresh in encrypted DataStore, Bearer interceptor, silent refresh, `/auth/me` bootstrap, logout). Save-password prompt via `CreatePasswordRequest`.
+- **Contains:** `AuthKey`, sign-in screen, `AuthViewModel`, Credential Manager wrapper; provides the `AuthRepository` binding (DummyJSON).
+- **Depends on:** `:core:data`, `:core:network`, `:core:designsystem`. **Requirements:** §8.2. **Design:** `docs/design/auth.md` _(TBD)_.
+
+#### `:feature:account`
+- **Does:** account-deletion flow (confirm → delete → clear session + credential state). Base binding hits DummyJSON simulated delete; real deletion is provided by the demo (Supabase).
+- **Contains:** `AccountKey`, delete-account screen, `AccountViewModel`.
+- **Depends on:** `:core:data` (`AuthRepository`/`SessionProvider`), `:core:designsystem`. **Requirements:** §8.15. **Design:** `docs/design/account.md` _(TBD)_.
+
+#### `:feature:sample`
+- **Does:** **generic posts/users browser** (DummyJSON) — list → detail, debounced search, offset-paged, **Room-cached** (SSOT). The neutral vertical slice proving repo→VM→UiState→DI→test with no cloud. Replace-or-delete starting point for a real product feature.
+- **Contains:** `SampleListKey`, `SampleDetailKey`, screens + ViewModels, `SampleRepository` (generic).
+- **Depends on:** `:core:data`, `:core:network`, `:core:ui`, `:core:database`. **Requirements:** §8.16. **Design:** `docs/design/sample.md` _(TBD)_.
+
+#### `:feature:settings`
+- **Does:** theme / dynamic color / language, logout, **account-deletion entry**, update + review entry points.
+- **Contains:** `SettingsKey`, settings screen, `SettingsViewModel`.
+- **Depends on:** `:core:data`, `:core:designsystem`, `:feature:account:api`, update/review services. **Requirements:** §8.4. **Design:** `docs/design/settings.md` _(TBD)_.
+
+#### `:feature:devtools`
+- **Does:** dev/staging-only diagnostics — FCM token, flag overrides, env info, test crash/notification.
+- **Contains:** `DevtoolsKey`, devtools screen (gated by `DEVTOOLS_ENABLED`).
+- **Depends on:** `:core:data`, `:core:push`, `:core:observability`. **Requirements:** §8.10. **Design:** minimal/utility — none.
+
+**Demo modules** — `:demo:twitter:*`, the Twitter-lite showcase (deletable). Detailed requirements + screens + backend in **§9**.
+
+| Module | Responsibility |
+|---|---|
+| `:demo:twitter:supabase` | supabase-kt client (auth/postgrest/realtime/storage) — the Supabase integration base lacks. |
+| `:demo:twitter:model` / `:network` / `:database` / `:data` | Social domain models; `@Serializable` DTOs + PostgREST/RPC queries; social Room cache; social repositories (`Post/Comment/Like/Follow/Profile/Search/Notification`) + the real Supabase `AuthRepository` binding. |
+| `:demo:twitter:feature:auth` | Google SSO (federated) + passkey (P1) → Supabase session (binds the base `:feature:auth` contract to Supabase). |
+| `:demo:twitter:feature:onboarding` | Post-SSO profile completion (unique username + display name; `complete_profile` RPC). §9. |
+| `:demo:twitter:feature:{feed,post,profile,search,notifications}` | Social screens. Cross-feature nav through demo `:api` modules. §9. |
+| `:demo:twitter:feature:imagecrop:{api,impl}` | DFM image cropper for post images (§6.10). |
+| `:demo:twitter:app` | Demo app target — wires base core + base features (with Supabase bindings) + social features. |
+
+**Optional & infra modules (base):**
+
+| Module | Role | Notes |
+|---|---|---|
+| `:ads` | `AdManager` (AdMob + UMP) impl | Absent → `NoOpAdManager` default; §8.8. |
+| `:deeplink-branch` | Branch.io `DeepLinkResolver` impl | Native App Links work without it; §8.9. |
+| `:app-catalog` | Standalone design-system showcase APK (NiA-style) | Optional skeleton, **off by default**; depends on `:core:designsystem` + `:core:ui`. Default catalog is in-app Showkase (debug); §8.11. |
+| `:build-logic` | Convention plugins (included build) | Applies AGP 9 `ApplicationExtension`/`androidComponents`; shared by both app targets; §7. |
+| `:macrobenchmark` | `com.android.test` — baseline profiles + benchmarks | §11. |
+| `:app` | Base starter — Application, `MainActivity`, root `NavDisplay`, adaptive scaffold, Koin startup | Wires base `:impl` + optional modules; no demo deps. |
+
+### 6.9 Service / platform facades
+
+**Principle: facades wrap service/platform edges, not every dependency.** A facade is justified only where an SDK brings vendor lock-in, credentials, global state, callbacks, lifecycle side effects, or test-hostile (final/listener) APIs. Common Jetpack/Kotlin libraries are used **directly** (or hidden by normal repository/data-source boundaries) — **do not** add generic facades for Compose, Material 3, Navigation 3, Koin, Coroutines/Flow, Paging, Room, DataStore, WorkManager, Ktor/supabase-kt, Coil, or Credential Manager. Transport/persistence stays behind data sources: supabase-kt DTOs → remote data source, Room entities/DAOs → local data source.
+
+Facade inventory (interface → module → backing SDK):
+
+| Interface | Module | Backs | Notes |
+|---|---|---|---|
+| `CrashReporter` | `:core:observability` | Measure.sh + Firebase Crashlytics | **Composite** runs both (comparison); flip to one binding for prod. |
+| `PerformanceTracer` | `:core:observability` | Measure.sh + Firebase Performance | HTTP auto-captured (Measure interceptor); composite as above. |
+| `AnalyticsLogger` | `:core:observability` | Firebase Analytics | Product event logging; `NoOp` for tests/opt-out. |
+| `FeatureFlagProvider` | `:core:data` (+ `:core:datastore`) | Firebase Remote Config | Cached to Proto DataStore; typed `Flow`s (§8.7). |
+| `PushMessagingRegistrar` | `:core:push` | FCM | Token/topic registration; Service stays concrete. |
+| `AppUpdateCoordinator` | `:core:playservices` | Play Core `AppUpdateManager` + Remote Config | Update/force-update policy (§8.5). |
+| `ReviewPrompter` | `:core:playservices` | Play Core `ReviewManager` | In-app review opportunities (§8.6). |
+| `AdManager` | `:ads` (interface in `:core`) | AdMob | `NoOpAdManager` when `:ads` absent (§8.8). |
+| `ConsentManager` | `:ads` | UMP | Consent before `MobileAds.initialize()`. |
+| `DeepLinkResolver` | `:core` (+ optional `:deeplink-branch`) | App Links / Branch | App Links default; Branch optional impl (§8.9). |
+
+All facade **interfaces** above are **base** (`:core:*`). Bindings differ by target: the base starter binds `NoOp`/DummyJSON/fake impls (runs with no cloud); the demo binds the real cloud impls (Firebase/Measure/Play + Supabase). The `AuthRepository`/`SessionProvider` abstraction is base; its **DummyJSON** binding ships in base `:feature:auth`, its **Supabase** binding in `:demo:twitter:data`. Supabase itself is reached only through demo repositories/data sources — that *is* its facade; there is no monolithic "SupabaseFacade", and no Supabase type appears in any base module.
+
+### 6.10 Dynamic feature delivery (optional demo showcase)
+
+The **demo** demonstrates **Play Feature Delivery** with **one** small on-demand module — **`:demo:twitter:feature:imagecrop`**, an image cropper fetched the first time a user crops a selected image in the compose-post flow. The *feature* is deliberately trivial (crop only); the point is to encode the **DFM pattern** correctly. The **plumbing** (`:core:dynamicdelivery`) is product-neutral base and reusable by any future DFM; the **cropper** is demo. It is **optional, advanced, and removable** (delete `:demo:twitter:feature:imagecrop:impl` + its `:api` + flip the compose-post flow to attach without crop).
+
+**This is isolated, not pervasive** — non-DFM features, the dependency rule, and normal navigation are unchanged. Three contained, additive touchpoints:
+
+1. **Module shape (one inverted edge, quarantined).** `:demo:twitter:feature:imagecrop:api` (the `CropContract`/`CropContract.Provider` interface + `CropKey`) lives in the demo base like any `:api` module. `:demo:twitter:feature:imagecrop:impl` is a `com.android.dynamic-feature` module that `implementation(project(":demo:twitter:app"))` and implements the contract. `:demo:twitter:app` lists it under `android { dynamicFeatures += setOf(":demo:twitter:feature:imagecrop:impl") }` — **not** as a normal dependency. Nothing compile-depends on the impl; it resolves at runtime via **one reflection call** (`Class.forName(...).kotlin.objectInstance as CropContract.Provider`) after `installedModules()` confirms it. ServiceLoader is **not** used (dropped by R8).
+
+2. **DI (Koin, our advantage).** The dynamic `:impl` defines a Koin module; on `INSTALLED`, `:core:dynamicdelivery` calls `loadKoinModules(...)` (module object reached via the one-reflection Provider) and `unloadKoinModules` on teardown. Guard double-load on config change (else `DefinitionOverrideException`). Koin's runtime DSL sidesteps the Dagger-subcomponent incompatibility that forces other teams to restructure DI for DFM.
+
+3. **Navigation (Nav3, bespoke gate in `:core:dynamicdelivery`).** Nav3 has no built-in DFM support, so the base plumbing owns a small generic gate: `navigator.openDynamic(CropKey, module="imagecrop")` → if installed, push `CropKey` normally; else push a base-resident **`InstallingKey`** (progress screen) that drives `FeatureInstaller`, then on `INSTALLED` loads the DFM Koin module (registering the real `navigation<CropKey>{…}`) and swaps `InstallingKey` → `CropKey`. The owned `Navigator`/`NavDisplay`/entryProvider design and every normal `navigator.push(key)` are untouched; this helper is reused by any future DFM.
+
+**`:demo:twitter:app`-only bits** (unavoidable, build-level): the `dynamicFeatures` config line + `SplitCompat.install()` in its `Application` (and `SplitCompat.installActivity()` if the crop hosts its own Activity) so DFM classes/resources load post-install.
+
+**Testing:** `FeatureInstaller` is injected behind an interface → **`FakeSplitInstallManager`** (`setShouldNetworkError(true)` for failure paths) in instrumented tests; Robolectric mocks the interface. Real on-demand install is verified via **`bundletool --local-testing`** / Play internal app sharing — **never the IDE** (which always reports the module as installed). CI exercises the Fake/local-testing paths; the live Play delivery path is not CI-gated (accepted gap).
+
+**Why it's optional:** in 2026, on-demand DFM is justified mainly by large base size or size-sensitive markets; for twitter-lite the size win is modest. Most heavily-modular apps (NiA, Uber, Spotify, Dropbox) ship App Bundle **config splits** and skip on-demand feature splits. Documented as a pattern showcase, not a default.
+
+### 6.11 Removal contracts
+
+Two distinct removal claims (SC6):
+
+- **Remove the whole demo (SC-ISOLATION-1):** drop the `:demo:twitter:*` includes from `settings.gradle.kts`, delete demo config + `supabase/` + demo setup docs. Keep `:app`, `:core:*`, base `:feature:*`. `:app:assembleDevDebug` + base `check` still pass — proves the template is reusable. (Holds because no base module imports any demo module.)
+- **Remove one demo feature:** delete that `:demo:twitter:feature:*:impl`, its Koin module, and its nav registration in `:demo:twitter:app`. Keep its `:api` only if other demo features still reference its route keys. The demo app still compiles — proves demo modularity (a different, narrower claim than removing the whole demo).
+
+---
+
+## 7. Build Configuration
+
+| Setting | Value |
+|---|---|
+| `minSdk` | 28 |
+| `targetSdk` / `compileSdk` | 36 (stable default; API 37/Android 17 is opt-in only — see SDK policy below) |
+| AGP / Gradle | AGP 9.2.0 / **Gradle 9.4.1** (AGP 9.2 requires Gradle 9.4.1, SDK Build Tools 36.0.0, JDK 17+) |
+| JDK | 21 |
+| Edge-to-edge | Enabled by default; insets handled via Compose `windowInsetsPadding` — opt-out is disabled at API 36 |
+| Activity base | `ComponentActivity` (per-app language is API 33+ only; below 33 follows system locale) |
+| Build types | `debug`, `release` (R8 minify + shrink on release) |
+| Product flavors (dimension `environment`) | `dev`, `staging`, `prod` |
+| Devtools visibility | `BuildConfig.DEVTOOLS_ENABLED` = true for `dev`/`staging`, false for `prod` |
+| App targets | Two: **`:app`** (base starter) and **`:demo:twitter:app`** (demo). Both apply the same convention plugins. |
+| Signing | debug = shared debug key; release = keystore from CI secrets (guarded; skipped on forks) |
+| Dynamic delivery **[demo]** | `:demo:twitter:app` declares `dynamicFeatures += [":demo:twitter:feature:imagecrop:impl"]`; ships as AAB; `SplitCompat.install()` in its `Application` (§6.10). The base `:app` has no dynamic features. |
+
+- Convention plugins (`:build-logic`): `template.android.application`, `template.android.library`, `template.android.compose`, `template.android.feature`, `template.android.koin`, `template.android.room`, `template.test`, `template.detekt`, `template.kover`. Each uses AGP 9 `ApplicationExtension`/`androidComponents` APIs (not `BaseExtension`/`applicationVariants`). Both app targets reuse them.
+- **Target-split config (no demo secret blocks a base build):**
+  - **Base `:app`** flavors set `DUMMYJSON_BASE_URL` (default `https://dummyjson.com`), `STARTER_USE_FAKE_SERVICES` (default true → Firebase/Measure/Ads no-op), and `DEVTOOLS_ENABLED` via `BuildConfig` — **no cloud secrets required to build/run**.
+  - **Demo `:demo:twitter:app`** flavors set `DEMO_TWITTER_SUPABASE_URL` / `…_ANON_KEY`, `DEMO_TWITTER_GOOGLE_WEB_CLIENT_ID`, `DEMO_TWITTER_MEASURE_API_KEY`, `DEVTOOLS_ENABLED` — from `local.properties` / CI secrets (never committed). Required only for the demo target.
+- Product flavors (`environment` = `dev`/`staging`/`prod`) and `DEVTOOLS_ENABLED` apply within **each** app target.
+- **SDK policy:** stable-by-default. `compileSdk`/`targetSdk` stay at **36**; Android 17/API 37 shipped stable (Jun 2026) but is adopted only as an explicit opt-in branch once the ecosystem and Play target requirements settle — not the template baseline.
+
+---
+
+## 8. Feature Requirements
+
+IDs are traceable to tests and CI. Each feature lives behind an interface where it touches a vendor SDK. For the per-module overview see the **module catalog §6.8**. **This section specs the BASE (product-neutral) features** — splash, auth (username/password), account deletion, sample, settings, push transport, update/review, flags, ads, deep links, devtools, design system, adaptive, a11y. **The Twitter-lite demo features (auth via Google SSO/passkey, onboarding, feed/post/profile/search/notifications) and the demo backend are specced in §9.**
+
+### 8.1 Splash — `:feature:splash` (base)
+- **FR-SPLASH-1** Use `androidx.core:core-splashscreen` (`installSplashScreen()`); no custom splash Activity.
+- **FR-SPLASH-2** `setKeepOnScreenCondition { !viewModel.isReady }` holds the splash until initial readiness (session + flags) resolves (cheap state check only; no I/O in the lambda).
+- **FR-SPLASH-3** On ready, route via an **injected `SplashRouter`** so the screen is target-agnostic: **base** → auth (no session) / sample home (session); **demo** → auth / onboarding / feed (§9). *Acceptance:* cold start shows no blank/flash frame; routing matches the injected decision.
+
+### 8.2 Auth — `:feature:auth` (base: Credential Manager username/password → DummyJSON)
+The base demonstrates the most common real-world auth: a token-based REST login, runnable with **no cloud**. (Demo replaces the binding with Google SSO + passkey + Supabase, §9.)
+- **FR-AUTH-1** Sign-in via **Credential Manager password flow**: `GetCredentialRequest` with `GetPasswordOption` retrieves a saved username/password (Google Password Manager autofill); first-time users enter credentials and the app offers `CreatePasswordRequest` to save them. No legacy APIs.
+- **FR-AUTH-2** Credentials POST to **DummyJSON** `/auth/login` → `{accessToken, refreshToken}` (JWT). Demo seed credentials documented (e.g. `emilys` / `emilyspass`).
+- **FR-AUTH-3** **Token lifecycle:** tokens persisted in **encrypted DataStore**; a Ktor/OkHttp **Bearer interceptor** attaches the access token; on 401 a **silent refresh** via `/auth/refresh` retries once, else routes to sign-in; `/auth/me` bootstraps the session on cold start. All behind the base `AuthRepository`/`SessionProvider` interface.
+- **FR-AUTH-4** Sign-out clears the encrypted token store + `clearCredentialState()`.
+- **FR-AUTH-5** **Bindings swap, UI doesn't:** `:feature:auth` exposes `AuthKey` + the `AuthRepository` contract; the base binding is DummyJSON, the demo binds Supabase (the demo also swaps the *screen* for its Google/passkey UI in `:demo:twitter:feature:auth`). *Acceptance:* fresh install (no cloud) → Credential Manager password sign-in → token stored → sample home; relaunch resumes the session; 401 triggers refresh; logout clears state.
+- **Config:** `DUMMYJSON_BASE_URL` (default `https://dummyjson.com`); no secrets. CI/tests use Ktor `MockEngine`.
+
+### 8.3 Push transport — `:core:push` (base, generic)
+Generic FCM client transport. The **token-sync destination is injected** (base: a no-op/DummyJSON sink; demo: Supabase `push_tokens`), and the **server-side send** is demo-only (§9). A tapped push routes via `DeepLinkResolver`; in the demo it opens the Notifications screen or the referenced post/profile.
+- **FR-PUSH-1** `FirebaseMessagingService` overrides `onMessageReceived` (foreground + data) and `onNewToken`. Token registration / topic subscribe are exposed via a **`PushMessagingRegistrar`** facade (the Service is OS-instantiated, stays concrete in `:core:push`). `onNewToken` enqueues a **`TokenSyncWorker`** (`CoroutineWorker`, network constraint + exponential backoff) that registers the token via an **injected `TokenSink`** — resilient to offline / process death. (Base default = no-op/local; demo binds Supabase upsert.)
+- **FR-PUSH-2** Notification channels created in `Application.onCreate()` (before any message can arrive); `default_notification_channel_id` meta-data set.
+- **FR-PUSH-3** `POST_NOTIFICATIONS` requested contextually, not at cold start; handle permanent denial → Settings deep-link. *Acceptance:* test push renders in foreground and background; token visible in devtools.
+- **FR-PUSH-4 [demo]** **Token lifecycle + security (Supabase binding):** `TokenSink` upserts the FCM token into `push_tokens` (owner-only RLS, `user_id = auth.uid()`); sign-out deletes the local token row; stale tokens pruned by a **`pg_cron`** job. Clients upsert/delete **only their own** token, cannot list others', cannot self-subscribe to privileged topics. FCM **server credentials never ship in app code**. (Specced in §9; base ships only the generic transport.)
+- **FR-PUSH-5 [demo]** **Server-side push send via a Supabase Edge Function** (`supabase/functions/send-push`, Deno/TS): a **Database Webhook** on `notifications` insert invokes it; FCM push **only for `type in ('comment','follow')`** — likes stay in-app. FCM HTTP v1 authenticated by a **Firebase service-account secret held Supabase-side** (`supabase secrets set` — never in app, never the Supabase `service_role` in app). Detailed in §9. Devtools can fire a manual test push (both targets).
+
+### 8.4 Settings — `:feature:settings`
+- **FR-SET-1** Theme: system / light / dark, persisted in DataStore (`Flow<ThemeMode>`), applied at root.
+- **FR-SET-2** **Dynamic color (Material You) toggle** in Settings, API 31+ (hidden/no-op below 31), persisted in DataStore. **Default OFF (brand-first).** `AppTheme` selects the `ColorScheme` at the root: `dynamicLight/DarkColorScheme(context)` when on + API≥31, else `EmberLight/DarkColorScheme` (FR-DS-1) — a one-line `when`, no call-site changes. Enabling it **deliberately overrides the Ember palette** with wallpaper-derived M3 roles (documented tradeoff: personalization vs brand); Ember typography/shape/spacing + extended semantic colors stay fixed. Toggling reswaps instantly via recomposition (no restart).
+- **FR-SET-3** Language picker via `setApplicationLocales` (BCP-47, API 33+; hidden/no-op below 33).
+- **FR-SET-4** Logout (→ FR-AUTH-4). Entry points for force/in-app update status, "rate app", and **delete account** (→ `:feature:account`, §8.15).
+
+### 8.5 Force update + In-app update — `:core:playservices` (`AppUpdateCoordinator`)
+Play Core's `AppUpdateManager` (final classes, listener-based, lifecycle-bound) is wrapped behind an **`AppUpdateCoordinator`** facade that owns the policy and is unit-testable with a fake.
+- **FR-UPD-1** Two-signal: Remote Config `min_required_version` (non-dismissible gate + immediate update / Play deep-link if `versionCode < min`) **and** Play in-app-update (`updatePriority ≥ 4` → immediate; else flexible).
+- **FR-UPD-2** Flexible update shows a completion snackbar on `DOWNLOADED` → `completeUpdate()`.
+- **FR-UPD-3** Re-attach stalled immediate updates in `onResume`. *Acceptance:* simulated low `min_required_version` blocks the app; flexible flow completes and restarts.
+
+### 8.6 In-app review — `:core:playservices` (`ReviewPrompter`)
+- **FR-REV-1** A **`ReviewPrompter`** facade wraps `ReviewManager.requestReviewFlow()` + `launchReviewFlow()`, triggered after a meaningful action (e.g., posting). Feature modules ask for a review *opportunity* without depending on Play Core or its silent-quota behavior. **Not** wired to a button. Fake impl in tests.
+
+### 8.7 Feature flags — `:core:datastore` + `:core:data`
+- **FR-FLAG-1** Firebase Remote Config is the source; values cached to Proto DataStore; consumed via a `FeatureFlagProvider` interface exposing typed `Flow`s.
+- **FR-FLAG-2** Fetch+activate on launch (12h throttle in prod, 0 in dev); real-time listener for kill-switches writes through to DataStore. *Acceptance:* toggling a flag in Firebase console flips UI within the configured path; offline launch uses cached values.
+
+### 8.8 Ads — `:ads` (optional)
+- **FR-ADS-1** `AdManager` interface in `:core`; AdMob impl in `:ads`; `NoOpAdManager` default when `:ads` absent.
+- **FR-ADS-2** UMP consent is wrapped behind a **`ConsentManager`** facade and must resolve before `MobileAds.initialize()`; test ad unit IDs via `BuildConfig`; "Privacy options" entry in settings. (`ConsentManager` lives in `:ads` — consent is ads-only here.) *Acceptance:* with `:ads` removed, app compiles and runs (NoOp); with it, a test banner loads after consent.
+
+### 8.9 Deep linking — `:core` + `:deeplink-branch` (optional)
+- **FR-DEEP-1** Native App Links (`autoVerify`, `assetlinks.json`) routed through a `DeepLinkResolver` interface into Nav3.
+- **FR-DEEP-2** Branch.io impl lives in optional `:deeplink-branch` for deferred deep linking; not a core dependency. (No Firebase Dynamic Links — discontinued.) *Acceptance:* a verified `https://<domain>/<route>` link opens the matching screen in-app (base: a sample detail; demo: a post/profile).
+
+### 8.10 Devtools — `:feature:devtools` (dev/staging only)
+- **FR-DEV-1** Copy FCM token, show env/flavor/build info, override feature flags locally, trigger test crash/notification. Gated by `DEVTOOLS_ENABLED`; absent from `prod`.
+
+### 8.11 Design system & component catalog — `:core:designsystem` (+ optional `:app-catalog`)
+- **FR-DS-1** Custom font family, semantic color tokens (light/dark), typography + shape scales, spacing tokens. **Color is authored as full Material 3 `ColorScheme` role sets** (`EmberLight/DarkColorScheme` — every role, generated from a brand seed) so brand and dynamic color share one contract; brand-specific colors with no M3 role (like-heart, verified, brand gradient) live in a **`LocalEmberExtendedColors` `CompositionLocal`**. **Components read `MaterialTheme.colorScheme` roles + extended-color locals only — never raw hex.** Typography/shape/spacing are always Ember (Material You themes color only). NiA `Theme.kt` is the reference.
+- **FR-DS-2** **Wrapped atoms** — thin `App*` composables over M3 (`AppButton` w/ filled/tonal/outlined/text/destructive variants, `AppTextField`, `AppCard`, `AppAvatar`, `AppChip`, `AppTopBar`, `AppNavigationBar`, `AppDialog`, `AppBottomSheet`, `AppScaffold`, loading/empty/error state composables). Rationale: a single seam to inject Ember tokens + cross-cutting behavior (a11y defaults like 48dp touch targets/semantics, analytics `onClick` hooks, perf marks) without touching call sites. Wrappers stay thin — M3 component + tokens + hooks, not a re-export of the full M3 API. Apps never use raw M3 components directly.
+- **FR-DS-3** Each atom has `@Preview`s across light/dark + font scales (multipreview annotations `@PreviewLightDark`, `@PreviewFontScales`), and complex states are driven by `@PreviewParameter` providers (the idiomatic Compose answer to mocking loading/error/empty/populated).
+- **FR-DS-4** Every atom + key screen covered by **Roborazzi** screenshot tests **auto-generated from `@Preview`s via ComposablePreviewScanner** (one assertion per preview); Compose Preview Screenshot Testing kept as secondary (still alpha).
+- **FR-DS-5** **In-app component catalog (default):** Showkase wired in the **debug** build only (KSP, not KAPT), auto-discovering all `@Preview` composables into a browsable in-app gallery; entry point exposed via `:feature:devtools`. Designers/PMs can browse by running the debug APK.
+- **FR-DS-6** **Standalone catalog (optional, off):** an `:app-catalog` application module skeleton (NiA-style separate APK depending on `:core:designsystem` + `:core:ui`), shipped with a README explaining when to activate it (design-system / multi-team scale). Not wired into the default build.
+- **Known limitation:** no production-ready Storybook-style **interactive knobs** panel exists for Compose in 2026 (Android Studio Interactive Preview allows interaction but not prop toggling; Storytale is pre-release). Documented as a gap; the `@PreviewParameter` + multipreview matrix is the accepted substitute.
+
+### 8.12 Adaptive UI — `:core:ui` + each app target (P0)
+- **FR-ADPT-1** App scaffold uses **`NavigationSuiteScaffold`** driven by `currentWindowAdaptiveInfo()`: bottom nav bar on **compact**, navigation rail/drawer on **medium/expanded**. Top-level destinations render correctly at every width (base: sample/settings; demo: the 4 social tabs).
+- **FR-ADPT-2** Layouts respond to **window size classes** (compact/medium/expanded) — content max-width / multi-column where it helps; no stretched single-column on tablets. One **list-detail showcase** via `ListDetailPaneScaffold` on expanded width is the canonical adaptive example — **base: sample list → detail; demo: feed → post detail.**
+- **FR-ADPT-3** **Edge-to-edge** by default; all screens consume insets (`windowInsetsPadding`/`safeDrawing`) — no content under status/nav bars. **Predictive back:** opt into the new back-dispatch API via `android:enableOnBackInvokedCallback` (required regardless — legacy `onBackPressed` is deprecated) and wire Nav3 predictive transitions. **Coverage:** the predictive *animation* renders on **API 34+**, is dev-option-gated on API 33, and degrades to standard back on API 28–32 (no preview) — graceful everywhere.
+- **FR-ADPT-4** State survives configuration change / resize / fold posture (rememberSaveable + ViewModel). *Acceptance:* the list-detail showcase works as bottom-bar (phone) and rail + two-pane (tablet/expanded); rotating and folding preserves scroll/selection.
+
+### 8.13 Accessibility — cross-cutting (P0)
+- **FR-A11Y-1** **Semantics baseline** (enforced in `:core:designsystem`/`:core:ui` wrappers): every `Icon`/`Image` has a `contentDescription` (or explicit `null` if decorative); compound rows use `mergeDescendants`; section titles use `heading()`; toggles expose `stateDescription`; dynamic regions use `liveRegion`; non-obvious gestures expose `customActions`.
+- **FR-A11Y-2** **Touch targets ≥ 48dp** — Material 3 atoms inherit this; custom clickables set `Modifier.minimumInteractiveComponentSize()`/`sizeIn(48.dp)`.
+- **FR-A11Y-3** **Automated checks in CI:** (a) Compose screen tests call `enableAccessibilityChecks()` (`androidx.compose.ui:ui-test-junit4-accessibility`, ATF-backed); (b) Roborazzi screenshot tests add **`roborazzi-accessibility-check`** (JVM/ATF — missing-label + contrast + touch-target) at failure level Error; (c) Android **Lint a11y rules** (`ContentDescription`, `LabelFor`, `ClickableViewAccessibility`) promoted to `error` in `lint.xml` (covers any residual View surfaces; Compose covered by a/b).
+- **FR-A11Y-4** Large **font-scale** resilience (tested at 1.0× and ~2.0× via `@PreviewFontScales` + screenshot tests); no clipped/overlapping text. Color roles meet WCAG AA (already true for Ember tokens).
+- **Manual (documented in `docs/accessibility.md`, not CI-gated):** TalkBack pass on critical flows, Accessibility Scanner audit, Google Play pre-launch report. Reference patterns: CVS Health *android-compose-accessibility-techniques*. *Acceptance:* a11y test suite + lint gate pass in CI; documented manual checklist exists.
+
+### 8.15 Account deletion — `:feature:account` (base)
+Generic, Play-required account-removal flow behind the `AuthRepository`/`SessionProvider` abstraction.
+- **FR-ACCT-1** Settings → "Delete account" → a confirmation screen (`AccountKey`) requiring explicit confirm; explains consequences.
+- **FR-ACCT-2** On confirm, calls `AuthRepository.deleteAccount()` then clears the encrypted token store + `clearCredentialState()` and routes to auth. Base binding hits DummyJSON's simulated `DELETE /users/{id}` (not persisted, documented); the demo binds real deletion (Supabase `security definer` RPC / Edge Function, §9).
+- **FR-ACCT-3** Errors are non-destructive: failure keeps the session and surfaces a retry. *Acceptance:* confirm → session + credential state cleared → auth screen; cancel is a no-op.
+
+### 8.16 Sample feature — `:feature:sample` (base)
+The neutral vertical slice proving the full stack with **no cloud**. A generic content browser over **DummyJSON** `/posts` + `/users`; the intended replace-or-delete starting point for a team's first real feature.
+- **FR-SAMPLE-1** **List** (`SampleListKey`): paged content list via **Paging 3 + RemoteMediator**, **Room as SSOT** (offline-survivable), pull-to-refresh. DummyJSON is **offset-paged** (`limit`/`skip`) — demonstrates a `RemoteMediator` over an offset API (contrast with the demo's keyset path, §9).
+- **FR-SAMPLE-2** **Detail** (`SampleDetailKey`): item header + body; an associated user row → a generic profile-ish detail. Hero `SharedTransitionLayout` from the list (mirrors the demo pattern, neutrally).
+- **FR-SAMPLE-3** **Search:** debounced query over `/posts/search` (+ `/users/search`); empty/no-result states.
+- **FR-SAMPLE-4** Writes are **simulated** server-side (DummyJSON) → any create/edit is local-only and labelled; the sample is read-focused. All HTTP behind a generic `SampleRepository`; CI/tests use Ktor `MockEngine`. **Design:** `docs/design/sample.md` _(TBD)_.
+
+*(Onboarding / profile completion is a **demo** feature — Google SSO yields no unique handle — and is specced in §9.)*
+
+---
+
+## 9. Twitter-lite Demo App & Backend (Supabase)
+
+The **`:demo:twitter:app`** target — a small but complete social app exercising every layer: auth → paged network+DB feed → realtime → post detail + comments → likes → follows → search → profile view/edit → multi-image upload. It **reuses base modules** (`:core:*`, `:feature:splash`/`:settings`/`:devtools`/`:account`, observability/push/playservices/ads/deeplink) and **adds** Supabase + the social domain in `:demo:twitter:*`. All modules named below without a `:core:`/base prefix are `:demo:twitter:*`. Comments are **in scope** (one flat thread per post). Out of scope as extension exercises: notification types beyond like/follow/comment, DMs, retweets/quotes, bookmarks, hashtags/mentions, video.
+
+### Demo authentication (`:demo:twitter:feature:auth`)
+The demo swaps the base auth screen + binding for the **federated** pattern (Supabase is the backend/RP).
+- **FR-DAUTH-1** Google SSO via **Credential Manager** (`GetGoogleIdOption` silent re-auth → `GetSignInWithGoogleOption` button fallback). No legacy `play-services-auth`.
+- **FR-DAUTH-2** Exchange the Google ID token with Supabase via `compose-auth` → `signInWithIdToken`; session persisted (encrypted DataStore, handled by supabase-kt). Binds the base `AuthRepository`/`SessionProvider` contract to Supabase.
+- **FR-DAUTH-3** **Replay protection via an asymmetric nonce flow** (the Supabase+Google gotcha): generate one raw random nonce; pass its **SHA-256 hash** to Google (`setNonce(hashedNonce)`); pass the **raw** nonce to Supabase (`signInWithIdToken(nonce = rawNonce)`). Passing the same value to both makes the hashes mismatch and Supabase rejects the token — documented inline.
+- **FR-DAUTH-4** Sign-out clears the Supabase session + `clearCredentialState()`. Account deletion (base `:feature:account`) binds to a Supabase `security definer` RPC / Edge Function here.
+- **FR-DAUTH-5 (P1, §22)** Passkeys — Supabase Auth is the WebAuthn RP (beta); `supabase-kt` passkey API pending [PR #1327](https://github.com/supabase-community/supabase-kt/pull/1327). Flag-gated default OFF; optional post-onboarding "Add a passkey?" prompt + Settings manage; routes through the same gate; cancel/unsupported → Google SSO fallback.
+- **Config:** Web + Android OAuth client IDs; Supabase Google provider configured with the Web client ID.
+
+### Demo onboarding / profile completion (`:demo:twitter:feature:onboarding`)
+Google SSO issues a Supabase session but **not** a unique app handle, so a blocking profile-completion gate runs after first sign-in. The public `profiles` row is created **only on completion** (there is **no** `handle_new_user()` auto-seed) — "a `profiles` row exists for `auth.uid()`" is the completion signal.
+- **FR-ONB-1** After SSO with no completed profile, route to **`ProfileSetupKey`** (outside the tab scaffold). Collects a **unique username** (required) + **display name** (required, prefilled from the Google account name). Avatar is deferred to Edit Profile (§9.1).
+- **FR-ONB-2** **Username validation** — local first (`^[a-z0-9_]{3,30}$`, lowercased), a debounced availability check (`username_available` read), then atomic server enforcement via **`complete_profile(p_username, p_display_name)`** RPC (`security definer`, `set search_path = public`; derives `id = auth.uid()`, normalizes lowercase, rejects a reserved-name list, handles the unique collision atomically, callable once). Duplicate → field-level error; network error → retry.
+- **FR-ONB-3** **Social actions are blocked until completion** — feed/post/comment/like/follow/search/upload routes are unreachable while no completed `profiles` row exists.
+- **FR-ONB-4** **Back-stack rules:** back from onboarding does **not** reveal the app — it offers sign-out (clears Supabase session + `clearCredentialState()`). Successful completion clears auth + onboarding from the back stack and routes to feed.
+- **FR-ONB-5 (P1, §22)** Optional post-completion **"Add a passkey?"** prompt (passkey flag ON only; default OFF). Username is immutable after onboarding in v1 (Edit Profile changes display name/bio/avatar only, §17); reserved-username list is **SQL-authoritative**, mirrored in app. **Design:** `docs/design/onboarding.md` _(TBD)_.
+
+### 9.1 Screen inventory
+
+Each screen names its Nav3 route key, owning module, the core UI, and its data source. Visual design (layout, components) is delegated to Claude design against the Ember design system (`compose-theme/` → `:core:designsystem`); this table defines *what each screen does*, not how it looks.
+
+| # | Screen | Nav3 key | Module | Purpose / interactions | Data source |
+|---|---|---|---|---|---|
+| 1 | Splash | `SplashKey` | `:feature:splash` (base) | Brand hold until session + remote-config resolve, then route to feed / onboarding / sign-in (injected demo router). | session / Remote Config |
+| 2 | Sign-in | `AuthKey` | `:demo:twitter:feature:auth` | "Continue with Google" (+ passkey when flag on, P1); loading + error states. | Credential Manager → Supabase |
+| 3 | Profile setup | `ProfileSetupKey` | `:demo:twitter:feature:onboarding` | First-run gate: choose a unique **username** (format + debounced availability check) + **display name** (prefilled from Google); blocks the app until complete; back = sign-out. | `complete_profile` RPC |
+| 4 | Home feed | `FeedKey` (Home tab root) | `:demo:twitter:feature:feed` | Paged list of `PostCard` (avatar, name, @handle, relative time, body, image grid ≤4, ♥ like+count, 💬 comment count); pull-to-refresh; realtime "N new posts" prepend banner; compose **FAB**; tap card → detail; tap author → profile. | `get_home_feed` RPC → Paging 3 + Room; realtime |
+| 5 | Post detail | `PostDetailKey(postId)` | `:demo:twitter:feature:post` | Focused post at top (full body + image grid), like + counts — instant partial from the feed's Room cache (offline-survivable when entered from feed, `SharedTransitionLayout` hero), full post re-fetched from network; below it the comment thread (`CommentRow`, oldest→newest, **network-only**); sticky bottom **reply composer** (text ≤280, send). Tap author → profile. | `PostRepository` (Room post-by-id + network) + `CommentRepository` (network) |
+| 6 | Compose post | `ComposePostKey` (modal over scaffold) | `:demo:twitter:feature:post` | Author avatar, multiline text (≤280 + char-counter ring), **Android Photo Picker** (`PickMultipleVisualMedia(maxItems=4)`, **no media permission**, thumbnails with remove), **Post** enabled when valid; optimistic insert (status = pending), images upload via `PostImageUploadWorker` with foreground progress, flips to sent / retry on result. | `PostImageUploadWorker` → Storage → `posts` patch |
+| 7 | Search | `SearchKey` (Search tab root) | `:demo:twitter:feature:search` | Debounced search field; two segments **People** / **Posts**. People → `UserRow` (avatar, name, @handle, follow button); Posts → `PostCard`. Empty + no-result states. | `SearchRepository` (ilike) |
+| 8 | Profile | `ProfileKey(userId)` | `:demo:twitter:feature:profile` | Header: avatar, display name, @handle, bio, following/follower counts (tappable → User list), **Follow/Unfollow** (others) or **Edit** (self); then a **tab row — Posts \| Likes** (the user's own posts, and posts they've liked), both paged. | `ProfileRepository` + `PostRepository` (by author / liked) |
+| 9 | Edit profile | `EditProfileKey` (self only) | `:demo:twitter:feature:profile` | Editable display name, bio (≤160), avatar via **Android Photo Picker** (`PickVisualMedia`, no media permission); **Save**. (Username not editable in v1, §17.) | `ProfileRepository.update` + Storage |
+| 10 | User list | `UserListKey(userId, mode)` | `:demo:twitter:feature:profile` | Paged `UserRow` list for `mode = followers \| following`, each with a follow button. | `FollowRepository` |
+| 11 | Notifications | `NotificationsKey` (Notifications tab root) | `:demo:twitter:feature:notifications` | In-app activity feed — rows for likes / follows / comments on your content; **unread badge** on the nav tab; tap row → post detail or profile; mark-read on view. | `NotificationRepository` (`notifications` table) + realtime |
+| 12 | Settings | `SettingsKey` | `:feature:settings` (base) | Theme, dynamic color, language, logout, delete account, update/review entries (§8.4). | DataStore + services |
+| 13 | Devtools | `DevtoolsKey` | `:feature:devtools` (base) | Dev/staging only — FCM token, flag overrides, env info (§8.10). | — |
+
+### 9.2 Navigation map (Nav3)
+
+Bottom navigation = 4 tabs, each with its own back stack (Nav3 multiple-back-stack recipe; switching tabs preserves each stack):
+
+- **Home** → `FeedKey` → `PostDetailKey` → `ProfileKey` → (`UserListKey`, `PostDetailKey`, …)
+- **Search** → `SearchKey` → `ProfileKey` / `PostDetailKey`
+- **Notifications** → `NotificationsKey` → `PostDetailKey` / `ProfileKey`
+- **Profile (me)** → `ProfileKey(me)` → `EditProfileKey` / `UserListKey`
+
+Top-level entries above the tab scaffold: `SplashKey`, `AuthKey`, **`ProfileSetupKey`** (first-run profile-completion gate — blocks the tab scaffold until a `profiles` row exists; back = sign-out, §8.14), `SettingsKey`, and `ComposePostKey` (modal, launched from the Home FAB). The reply composer is inline on Post detail, not a separate route. `:api` modules expose only their keys + entry contracts; cross-feature navigation (feed → post → profile → search) goes through `:api`, never `:impl`.
+
+### 9.3 Schema (Postgres / Supabase)
+
+```sql
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  username text not null unique check (username ~ '^[a-z0-9_]{3,30}$'),
+  display_name text not null check (char_length(display_name) between 1 and 80),
+  avatar_url text,
+  bio text not null default '' check (char_length(bio) <= 160),
+  created_at timestamptz not null default now()
+);
+-- Row is created only at onboarding completion via complete_profile() — there is NO
+-- handle_new_user() auto-seed. "A profiles row exists for auth.uid()" IS the
+-- profile-completion signal (§9, Demo onboarding). Username is immutable in v1.
+create table public.posts (
+  id bigint generated always as identity primary key,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null check (char_length(body) between 1 and 280),
+  image_urls text[] not null default '{}'
+    check (coalesce(array_length(image_urls, 1), 0) <= 4),
+  created_at timestamptz not null default now()
+);
+create index posts_author_created_idx on public.posts(author_id, created_at desc);
+create index posts_created_idx on public.posts(created_at desc);
+create table public.comments (
+  id bigint generated always as identity primary key,
+  post_id bigint not null references public.posts(id) on delete cascade,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null check (char_length(body) between 1 and 280),
+  created_at timestamptz not null default now()
+);
+create index comments_post_created_idx on public.comments(post_id, created_at);
+create table public.follows (
+  follower_id uuid not null references public.profiles(id) on delete cascade,
+  followee_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (follower_id, followee_id),
+  constraint no_self_follow check (follower_id <> followee_id)
+);
+create table public.likes (
+  post_id bigint not null references public.posts(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (post_id, user_id)
+);
+create table public.notifications (
+  id bigint generated always as identity primary key,
+  recipient_id uuid not null references public.profiles(id) on delete cascade,
+  actor_id uuid not null references public.profiles(id) on delete cascade,
+  type text not null check (type in ('like', 'follow', 'comment')),
+  post_id bigint references public.posts(id) on delete cascade,
+  comment_id bigint references public.comments(id) on delete cascade,
+  read_at timestamptz,
+  created_at timestamptz not null default now(),
+  constraint no_self_notify check (recipient_id <> actor_id)
+);
+create index notifications_recipient_idx on public.notifications(recipient_id, created_at desc);
+create table public.push_tokens (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  token text not null unique,
+  platform text not null default 'android' check (platform = 'android'),
+  app_version text,
+  device_label text,
+  created_at timestamptz not null default now(),
+  last_seen_at timestamptz not null default now()
+);
+create index push_tokens_user_idx on public.push_tokens(user_id);
+```
+
+### 9.4 RLS + triggers + feed
+- **Read posture = authenticated-only** (not public/anon). RLS on every exposed table; grants go to `authenticated`, **not `anon`** — the app gates all social reads behind auth, so anon API reads would be an inconsistency, not a feature. Per table: **`profiles`** authenticated `select`, owner `update`, no client `delete`; **`posts`/`comments`** authenticated `select`, author `insert`/`update`/`delete` (`author_id = auth.uid()`, both `using` + `with check`); **`likes`** authenticated `select`, user `insert`/`delete` own; **`follows`** authenticated `select`, follower `insert`/`delete` own; **`notifications`** recipient `select` only — **no client content writes** (mark-read RPC below); **`push_tokens`** owner-only all ops (`user_id = auth.uid()`), no cross-user reads. Profiles/posts are visible to **any authenticated user** (public-square model — search/view-any/follow), not followers-only.
+- Notifications populated by triggers on `likes`/`follows`/`comments` insert → one `notifications` row to the affected content owner (`security definer`, `no_self_notify` skips self-actions); delete cascades clean them up. **Clients never mutate notification content** — mark-read goes through `mark_notification_read(p_id)` / `mark_all_notifications_read()` RPCs (`security definer`, verify `recipient_id = auth.uid()`, update only `read_at`). Realtime channel on `notifications` filtered by `recipient_id` drives the unread badge. A **Database Webhook** on `notifications` insert fires the `send-push` Edge Function (FR-PUSH-5), which delivers FCM pushes for `type in ('comment','follow')` only (likes stay in-app).
+- **Profile completion (no auto-seed):** there is **no** `handle_new_user()` trigger — Google SSO creates only the `auth.users` row + session. The public `profiles` row is created at onboarding (§9, Demo onboarding) via **`complete_profile(p_username, p_display_name)`** (`security definer`, `set search_path = public`): derives `id = auth.uid()`, lowercases + format-checks the username (`^[a-z0-9_]{3,30}$`), rejects a **reserved-name** list (SQL-authoritative), inserts atomically (unique violation → typed "username taken" error), and is callable once (errors if a row already exists). `profiles` has **no client `insert` policy** — creation is RPC-only. A `username_available(p_username)` read backs the debounced availability check.
+- **`security definer` hardening (every definer fn/trigger):** fixed `set search_path = public`, least-privileged owner, explicit grants to required roles only, no dynamic SQL unless justified, never trusts caller-provided owner IDs (always derives from `auth.uid()`), validates inputs before writes, and carries a comment explaining why definer is needed. Covered by role-based policy tests.
+- Home feed = **`get_home_feed(p_limit, p_cursor_created timestamptz, p_cursor_id bigint)` RPC** (`security definer`, `set search_path = public`): posts from followed authors + self, ordered `created_at desc, id desc`, with `like_count`, `comment_count`, and `liked_by_me`. **Keyset (cursor) pagination, not offset** — `where (p_cursor_created is null or (created_at, id) < (p_cursor_created, p_cursor_id))`; the `id` tiebreaker keeps the boundary stable so head inserts + realtime prepend never duplicate/skip rows. Called via `postgrest.rpc(...)`; the last row's `(created_at, id)` is the Paging 3 `RemoteMediator` remote key into Room.
+- **Realtime feed fan-out = Broadcast from Database** (not Postgres Changes): a `security definer` trigger on `posts` insert calls `realtime.broadcast_changes` to topic `feed:{follower_id}` for every follower of the author (join `follows`) — the **author is excluded** (they already have the post optimistically + via RPC, so no self-echo/duplicate). Clients subscribe to their **own** private `feed:{me}` topic and prepend. This avoids Postgres Changes' global firehose + its inability to filter `author_id ∈ {dynamic followed set}`. Private topics are gated by **Realtime Authorization** RLS on `realtime.messages`. **Notifications stay on Postgres Changes** filtered by `recipient_id = auth.uid()` (single-column filter — the right tool there). Both realtime modes are demonstrated.
+- Search: `profiles` by `username`/`display_name` and `posts` by `body` via PostgREST `ilike` (`%q%`); results keyset-paged (`order + lt + limit`); upgrade path to Postgres full-text (`to_tsvector`) noted in migration comments.
+- Profile tabs: own posts via `posts` by `author_id` (`created_at desc`); liked posts via `likes` filtered by `user_id` joined to `posts` (PostgREST embedded resource), newest-liked first (`likes.created_at desc`). Both keyset-paged (`lt(created_at) + order + limit`, `id` tiebreaker) — not `.range()` offset.
+- **Pagination policy:** every infinite list (feed, profile tabs, search, user lists, notifications) uses **keyset/seek pagination** keyed on `(created_at, id)` (or the relation's PK) — never `OFFSET` / `.range()` — for stable boundaries under inserts and O(log n) deep-page cost. "Jump to page N" is intentionally unsupported (infinite scroll only).
+- **Storage — bucket `media`:** public read (uploaded demo media is public content; signed URLs are the documented hardening upgrade), **authenticated upload only**, with **path ownership** — objects live under `users/{auth.uid()}/avatars/...` and `users/{auth.uid()}/posts/{post_id}/...`; Storage RLS requires the `uid` path segment to equal `auth.uid()` (`(storage.foldername(name))[1] = auth.uid()::text`) on `insert`/`update`/`delete`, so no user can write under another's prefix. Allowed MIME `image/jpeg|png|webp`, ≤4 images/post (policy + repo validation); author deletes own post media, owner replaces/deletes own avatar; deleting a post removes/orphan-tracks its media. A post stores up to 4 object URLs in `posts.image_urls`.
+
+### 9.5 Data requirements
+- **FR-DEMO-1** Feed paginates via **keyset cursor `(created_at, id)`** (Paging 3 + RemoteMediator + Room cache) — never offset, so head inserts + realtime prepend don't duplicate/skip; pull-to-refresh; new posts from followed users arrive via **Broadcast-from-Database** (client subscribes only to its own private `feed:{me}` topic) and prepend as a "N new posts" banner (no auto-jump).
+- **FR-DEMO-2** Post detail: header renders an **instant partial from the feed's Room cache** (`PostDetailKey` is ID-only → VM reads Room post-by-id), survives offline when entered from the feed, with a `SharedTransitionLayout` hero from the card; full post + comments (oldest→newest) are **network-only** (offline → comments show an offline state). Entered from search/profile (not feed-cached) → network load / offline error. Inline reply adds a comment optimistically; `comment_count` reflects on the feed card and detail.
+- **FR-DEMO-3** Like/unlike is optimistic + idempotent (`likes` composite PK).
+- **FR-DEMO-4** Follow/unfollow updates feed source + counts; followers/following lists paginate.
+- **FR-DEMO-5** Compose post: body ≤280 + up to 4 images via the **Android Photo Picker** (`PickMultipleVisualMedia(maxItems=4)` — **no `READ_MEDIA_*` permission**, scoped URIs, backported via Play Services). Validation + char limit before enqueue. **Optimistic Room-only row** — temp sentinel id, `created_at = client now()` (sorts on top of the keyset feed), local-only **`syncState = pending`** column (not in Postgres). A **`PostImageUploadWorker`** (`CoroutineWorker`: network constraint + exponential backoff + `setForeground` progress) uploads images to the user's owner-path in Storage (MIME/size per §9.4), inserts the `posts` row with **`return=representation`**, and **reconciles** the Room row by its temp key — swapping in the authoritative `(id, created_at)` and `syncState = sent`. Permanent failure → `syncState = failed` + **retry**. Survives process death. No duplicate vs realtime because the feed broadcast **excludes the author** (§9.4).
+- **FR-DEMO-6** Search: debounced query over People (`profiles`) and Posts (`posts`); results navigate to profile / post detail.
+- **FR-DEMO-7** Profile: view any user — header + a **Posts / Likes** tab row (own posts by `author_id`; liked posts via `likes` joined to `posts`), both paged; self can edit display name, bio, avatar (username immutable in v1).
+- **FR-DEMO-8** Onboarding gate: first-run users (session but no `profiles` row) complete a unique username + display name via `complete_profile` before any social route is reachable; returning completed users skip it (§9, Demo onboarding).
+- **FR-DEMO-9** Notifications: in-app activity feed (likes/follows/comments on the user's content), paged + realtime; unread badge on the Notifications tab; mark-read on view (`read_at`); rows deep-link to the post/profile. Types limited to like/follow/comment in v1 (mentions/reposts deferred with those features). Push (`:core:push`) tapping opens this screen.
+---
+
+## 10. Testing Strategy
+
+| Type | Tooling | Location | Requirement |
+|---|---|---|---|
+| Unit | JUnit4 + MockK + Turbine + coroutines-test | `test/` | ViewModels, repositories, use-cases, mappers. Flows via Turbine. |
+| Screen/UI | Compose UI test + Robolectric (JVM) | `test/` | Page-level tests with fakes; Supabase/Ktor calls mocked via Ktor **`MockEngine`** for network paths. |
+| DB | Room in-memory | `androidTest/` | DAO + migration tests. |
+| Screenshot | Roborazzi (primary) + ComposablePreviewScanner (auto-gen from `@Preview`); Compose Preview Screenshot Testing (secondary, alpha) | `test/` | Design-system atoms + key screens across light/dark + font scales. One assertion per preview; `recordRoborazziDebug` / `verifyRoborazziDebug`. |
+| Component catalog | Showkase (debug build, in-app) | debug variant | Auto-discovered `@Preview` gallery; designer/PM browsing via debug APK. Optional `:app-catalog` standalone APK skeleton off by default. |
+| Accessibility | `enableAccessibilityChecks()` (Compose, ATF) + `roborazzi-accessibility-check` (JVM, ATF) | `test/` + `androidTest/` | Screen tests assert a11y (labels, contrast, touch targets) at Error level; see FR-A11Y-3. |
+| Adaptive | Roborazzi across window size classes + font scales | `test/` | Key screens captured at compact/medium/expanded and 1.0×/2.0× font; list-detail showcase verified. |
+| Dynamic delivery | `FakeSplitInstallManager` + `bundletool --local-testing` | `androidT/` + manual | Install/failure flow via Fake (`setShouldNetworkError`); real on-demand via bundletool/internal sharing — never IDE (always reports installed). §6.10. |
+| E2E | Maestro | `.maestro/` | Critical flows: post, like, follow, search — each started from an **authenticated state**. Auth uses a **flavor-gated test path** (`dev`/`staging` only: `signInWithPassword` with a seeded test user), **not** Google SSO/Credential Manager (can't run headless; Google blocks login automation). Real Google SSO is **manual-only**, not CI-gated (documented gap, like live-Play delivery §6.10); passkey is deferred to P1 (§22). Emulator in CI; UIAutomator for system-UI asserts. |
+| Onboarding **[demo]** | Compose UI test + Robolectric; RLS/RPC policy test | `test/` + Supabase CI | Fresh SSO → no profile → `ProfileSetupKey`; duplicate username → field error; valid → `complete_profile` atomic create; reserved/invalid rejected; completed user skips gate; social routes blocked while incomplete; back → sign-out; back-stack cleared on success. |
+| Base auth + sample (no-cloud) | Compose UI test + Robolectric + Ktor `MockEngine` | `test/` | DummyJSON password login (token store, 401→refresh, logout), sample list/detail/search/paging over MockEngine; **no live network**. |
+| Architecture / isolation | Konsist (or a Gradle dependency-graph assertion) | `test/` | **SC-ISOLATION-2:** no `:core:*`/base `:feature:*` depends on `:demo:twitter:*`; no base public API names social nouns; layering rules (§6.2) hold. |
+| Whole-demo removal | CI job: exclude `:demo:twitter:*` includes → build | CI (base profile) | **SC-ISOLATION-1:** with demo includes removed, `:app:assembleDevDebug` + base `check` pass. |
+| DI graph | Koin `checkModules()` | `test/` | Verifies the dependency graph resolves (per app target). |
+
+- **TR-1** Coverage via **Kover** (JVM unit); aggregated multi-module XML → Codecov. **Gate = per-module floor (not aggregate), start 60%, raise over time**, applied to the JVM-testable logic: `:core:data`, `:core:domain`, and feature `:impl` **ViewModels + mappers**. **ViewModels are mandatory unit-tested** (UDF reducers, error mapping, optimistic/reconcile logic). **Excluded from the metric:** generated code + DI/Koin modules only. Compose UI, nav wiring, and DTOs are **not excluded** — their testing strategy + coverage treatment is a deliberate **post-implementation actionable (§22)**, not a permanent exemption.
+- **TR-2** Network-dependent screen tests must add a `network_security_config` permitting localhost cleartext.
+- **TR-3** Cleartext is dev/test only; release blocks cleartext.
+
+---
+
+## 11. Performance — `:macrobenchmark`
+- **PR-1** Dedicated `:macrobenchmark` (`com.android.test`) module; `androidx.baselineprofile` plugin in `:app`.
+- **PR-2** `BaselineProfileGenerator` covers cold start + scroll-feed journey; profile committed under `app/src/main/generated/baselineProfiles/` and bundled at release.
+- **PR-3** `StartupBenchmark` (Macrobenchmark) measures `COLD` startup. On a CI **emulator/GMD it runs as a non-gating smoke check** (verifies the benchmark executes + the baseline profile applies — emulator millisecond numbers are not representative and are **not** a pass/fail gate, per Google's Macrobenchmark guidance). **Trustworthy timing = the documented upgrade:** run on a **physical device via Firebase Test Lab** (periodic/release), not every PR.
+- **PR-4** `profileinstaller` included so profiles apply on CI/debug builds.
+
+---
+
+## 12. Code Quality & Tooling
+- **QR-1** **Format:** Spotless wrapping ktfmt (`kotlinlangStyle`), covering `**/*.kt` and `*.gradle.kts` (excluding generated). `spotlessCheck` in CI, `spotlessApply` locally + pre-commit.
+- **QR-2** **Static analysis:** detekt (single root `detekt.yml`, per-module task via convention plugin) + Android Lint, with accessibility rules (`ContentDescription`, `LabelFor`, `ClickableViewAccessibility`) promoted to `error` in `lint.xml`. (detekt has no meaningful a11y rules — Compose a11y is covered by ATF tests, FR-A11Y-3.)
+- **QR-3** Aggregate task `staticCheck` = `spotlessCheck detekt lint`; wired into `check` and a pre-commit hook.
+- **QR-4** **Coverage:** Kover (see TR-1).
+- **QR-5** No `-ktx` Firebase deps (removed in BOM 34). KSP2 only (no kapt).
+
+---
+
+## 13. CI/CD (GitHub Actions)
+
+Workflows + repo automation; secrets via GitHub Environments; secret-dependent steps guarded so fork PRs don't fail. Caching via `gradle/actions/setup-gradle@v4` (not setup-java cache). All third-party actions **pinned** (tag or SHA). Every workflow sets `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` to kill superseded runs and save runner minutes.
+
+**CI profiles** (the split mirrors the two targets):
+- **`base`** — *always required, no cloud.* Builds + tests `:app` (DummyJSON via Ktor `MockEngine`), static analysis, Roborazzi/a11y/adaptive, Kover, **architecture/isolation tests** (SC-ISOLATION-2), and the **whole-demo-removal build** (SC-ISOLATION-1). Passes on forks with zero secrets.
+- **`demo-compile`** — *always required.* Compiles + unit-tests `:demo:twitter:*` (Supabase calls via `MockEngine`) so demo source stays healthy without live services.
+- **`demo-integration`** — *required only when demo secrets are configured.* Supabase migrations + RLS/RPC policy tests + seeded Maestro E2E against a disposable instance.
+- **`release`** — *opt-in until signing/distribution secrets exist.*
+
+**`pr-check.yml`** (PRs) — `base` + `demo-compile` always; `demo-integration` gated on secrets:
+- *(base + demo-compile)* `gradle/actions/wrapper-validation@v4` (verify `gradle-wrapper.jar` checksum) → `staticCheck` (incl. Lint a11y gates) + **architecture/isolation tests** → `testDebugUnitTest` (base + demo, `MockEngine`) + Roborazzi a11y + adaptive (compact/medium/expanded) + `koverXmlReport` → Codecov → `verifyRoborazziDevDebug` (upload diffs on failure) → **demo-removal build** (`:app` builds with `:demo:twitter:*` excluded).
+- *(demo-integration, secrets only)* **Supabase migration + RLS policy checks** (`supabase db` / pgTAP-style policy tests against a disposable instance — covers table RLS, **Storage path ownership**, **`push_tokens` cross-user isolation**, the **notification mark-read RPC**, and the **`complete_profile` onboarding RPC** (format / reserved-name / uniqueness / callable-once), across anon / owner / non-owner / service-role).
+- **PR hygiene:** `amannn/action-semantic-pull-request@v5` (Conventional-Commits PR title), `actions/labeler@v5` (path-based labels) + `CodelyTV/pr-size-labeler@v1` (XS–XL by size), `actions/dependency-review-action@v4` (block PRs adding CVE deps; public-repo free).
+- **Inline feedback:** `reviewdog/action-detekt` + Android Lint via reviewdog (detekt/lint violations as inline diff comments — note: template uses **ktfmt not ktlint**, so reviewdog wraps detekt + Lint), `dorny/test-reporter@v1` (failing unit tests surfaced on the diff).
+- **SAST:** `semgrep/semgrep-action@v1` (OWASP MASTG + Kotlin rules).
+
+**`main-ci.yml`** (push to `main`):
+- instrumented tests on emulator (`reactivecircus/android-emulator-runner`, macOS) — incl. Compose `enableAccessibilityChecks()` → baseline profile generation (artifact) → `gradle/actions/dependency-submission@v4` (submit Gradle dep graph so Dependabot/Renovate + dependency-review see every transitive dep in `libs.versions.toml`) → `wzieba/Firebase-Distribution-Github-Action@v1` (distribute the staging build to testers; **service-account auth**, token auth deprecated) → `jacobras/size-diff-action@v1` (record APK/AAB size baseline; on PRs it comments the delta).
+- **Maestro E2E** on the same emulator against a **disposable, seeded Supabase**: a setup step provisions deterministic test users via `auth.admin.createUser` (email-confirmed, email+password) using the `service_role` key (CI-only secret, never in app — SR-6) + seed posts/follows fixtures; Maestro then runs the staging build's flavor-gated test-auth path. Real Google SSO/passkey is not exercised here.
+
+**`release.yml`** (tag `v*.*.*`): `bundleProdRelease` → `sign-android-release` → `upload-google-play` (internal track) → upload R8 mapping to **both** Measure.sh (Gradle plugin) and Crashlytics.
+
+**`release-please.yml`** (push to `main`): `googleapis/release-please-action@v4` maintains a release PR from Conventional-Commits history; merging it bumps `versionCode`/`versionName` (via `x-release-please-*` markers in `build.gradle.kts`), updates `CHANGELOG.md`, and creates the `v*.*.*` tag that triggers `release.yml`.
+
+**Code security (SAST):** `semgrep/semgrep-action@v1` in `pr-check` with OWASP MASTG + Kotlin rulesets (free on public repos; use engine + community/OWASP/own rules, not the commercially-restricted registry rules). Fills the SAST slot; complements (does not overlap) dependency CVE scanning.
+
+**Dependency updates:** **Renovate, self-hosted as a scheduled GitHub Action** (`renovatebot/github-action`, `renovate.json`) — free, full features (no Mend subscription): groups related bumps (Compose BOM, AndroidX), **co-bumps Kotlin + KSP + compose-compiler** (one group) and **`navigation3` + `koin-compose-navigation3` (+ Koin BOM)** (another group) so neither the Kotlin toolchain nor the Nav3↔Koin-nav glue ever half-updates, and opens a dependency-dashboard issue. Also updates the pinned GitHub Actions. **Dependabot security alerts** kept passive (free, fed by `dependency-submission`) for CVE notifications; no `dependabot.yml` version-update PRs (would duplicate Renovate).
+
+**Docs:** `dokkaGenerate` (Dokka 2.2 multi-module HTML aggregation) published to GitHub Pages on `main`.
+
+**Repo hygiene files** (no workflow): `.github/CODEOWNERS` (path-based review routing), `.github/pull_request_template.md` (checklist: linked issue, tested-on-device, screenshot for UI), `.github/ISSUE_TEMPLATE/` (bug + feature).
+
+Secrets (documented in `docs/secrets.md`, none committed): `GOOGLE_SERVICES_JSON` (base64), `SIGNING_KEY_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`, `PLAY_SERVICE_ACCOUNT_JSON`, `FIREBASE_APP_DISTRIBUTION_SA_JSON`, `MEASURE_API_KEY`, `CODECOV_TOKEN`, `GRADLE_ENCRYPTION_KEY`, Supabase URL/anon key, `SUPABASE_SERVICE_ROLE_KEY` (**CI-only** — seeds E2E/RLS test users on the disposable instance; never bundled in the app, per SR-6).
+
+---
+
+## 14. Third-Party Services & Configuration
+
+| Service | Used for | Template handling |
+|---|---|---|
+| **DummyJSON** (base) | Base starter sample backend: `/auth/*` (username/password JWT) + `/posts`/`/users` | **Public, no account/key, no secret.** `DUMMYJSON_BASE_URL` via flavor `BuildConfig` (default `https://dummyjson.com`). Runtime hits it live; CI/tests use Ktor `MockEngine`. Documented as a swappable illustrative backend — teams point it at their own. Writes are simulated (not persisted). |
+| Supabase **[demo]** | Demo data: auth bridge, postgrest (data), realtime, storage | URL + anon key via flavor `BuildConfig` (**never the `service_role` key in app code**). Backend contract: **Supabase CLI migrations** (`supabase/migrations/`), **seed data** for local/dev, **indexes** for feed/search/follow lookups, and **RLS / Storage / push_tokens / mark-read-RPC policy tests** (anon / owner / non-owner / service-role) run in CI. **Edge Function** `supabase/functions/send-push` (Deno; Database Webhook on `notifications` insert → FCM HTTP v1 for comment/follow) holds a **Firebase service-account secret** set via `supabase secrets set` (Supabase-side, never in app/CI). New Supabase projects `GRANT SELECT ... TO authenticated` (**not `anon`** — authenticated-only read posture, §9.4) to expose tables to the Data API. |
+| Firebase | Remote Config, FCM, Analytics, Crashlytics, Performance | `google-services.json` gitignored; `google-services.json.template` committed; CI decodes base64 secret. Firebase Perf does **not** auto-trace Ktor (even on the OkHttp engine) — manual `HttpMetric` only for the Firebase-Perf comparison path (Measure auto-captures HTTP via its OkHttp instrumentation). |
+| Measure.sh | Observability: crash/ANR/perf/session (composite with Firebase, §16) | Free cloud tier **or** self-host (ClickHouse + VM). `MEASURE_API_KEY` via flavor `BuildConfig`/secret; Measure Gradle plugin uploads R8 mapping. Behind `CrashReporter`/`PerformanceTracer` — swap/compose via one Koin binding. |
+| Google Play | In-app update/review (`AppUpdateCoordinator`/`ReviewPrompter`), signing, publish | Service account JSON in CI secret. |
+| Firebase App Distribution | Pre-release test builds to QA/PMs | `wzieba/Firebase-Distribution-Github-Action` in `main-ci`; service-account JSON secret (`FIREBASE_APP_DISTRIBUTION_SA_JSON`), token auth deprecated. |
+| AdMob + UMP | Optional ads | Test IDs in template; production IDs per-app. |
+| Codecov | Coverage on PR/main | `codecov-action@v5` + token. |
+| Branch.io | Optional deferred deep links | `DeepLinkResolver` impl only in `:deeplink-branch`. |
+| Semgrep | SAST (code security) | `semgrep/semgrep-action@v1`, OWASP MASTG + Kotlin rules; free on public repos. |
+| Renovate | Dependency updates | Self-hosted GitHub Action (free) + `renovate.json`; no Mend subscription. |
+
+---
+
+## 15. Security & Secrets
+
+**Scope:** SR-1/2/4/5/7/8/10 are **base** (apply to both targets). SR-3/6/9 (the Supabase backend authorization contract) are **demo-scoped** — they constrain `:demo:twitter:*`; a product app adopting Supabase inherits them, but the base starter has no first-party backend (it reads the public DummyJSON API, which holds no user secrets).
+- **SR-1** No secrets, keystores, `google-services.json`, or real API keys committed. `.gitignore` + `*.template` placeholders + `local.properties`. **The base starter requires no secrets at all.**
+- **SR-2** Release build: R8 minify + resource shrink; cleartext disabled; R8 mapping uploaded to Measure.sh + Crashlytics.
+- **SR-3 [demo]** RLS enabled on every `public` Supabase table (deny by default; explicit policies in migrations; policy tests in CI covering anon / owner / non-owner / service-role). Extends to **Storage** (path-ownership policies on `media`) and **push_tokens** (owner-only, no cross-user read).
+- **SR-4** Tokens in **encrypted DataStore** (base: DummyJSON JWTs; demo: Supabase session). **Demo:** asymmetric auth nonce on every Google credential request (§9, FR-DAUTH-3).
+- **SR-5** CI secrets in GitHub Environments with required-reviewer gate on `release`.
+- **SR-6 [demo]** **No Supabase `service_role` key in app code** (anon key only); privileged operations stay server-side (RPCs / `security definer` functions). The `service_role` key exists only as a **CI secret** for seeding E2E/RLS test users on the disposable instance — never in any shipped artifact.
+- **SR-7** **CI supply-chain:** `gradle-wrapper.jar` checksum validated (`wrapper-validation`); third-party actions pinned; `dependency-submission` + `dependency-review` surface/block CVE deps; Renovate keeps deps current; Dependabot security alerts passive.
+- **SR-8** **SAST:** Semgrep OSS (`semgrep/semgrep-action`) runs on every PR with OWASP MASTG + Kotlin rules — the code-security scanner for the template.
+- **SR-9 [demo]** **Backend authorization contract** (§9.4): authenticated-only reads (grants to `authenticated`, not `anon`); owner writes use `using` + `with check`; notification content is trigger-written and **client-immutable** (mark-read via RPC only); Storage objects are path-owned under `users/{auth.uid()}/...`; `push_tokens` are owner-only; every `security definer` function follows the hardening checklist (fixed `search_path`, least-priv owner, no caller-trusted IDs, role-based tests). All proven by CI policy tests.
+- **SR-10** **Telemetry redaction (config, not custom code):** an **allowlist** posture — never log/report auth tokens, Supabase keys, Google ID tokens, emails, raw usernames/post/comment bodies, FCM tokens, full request/response bodies, or secret-bearing URLs. Mechanism: **Measure** — add `apikey` to `httpBlockedHeaders` (`Authorization`/`X-Api-Key`/`Cookie` already blocked by default), keep request/response **bodies off** (Measure default), `httpDisableEventForUrls` on `/auth/*`; **Crashlytics** — no PII into `setCustomKey`/`log`/`recordException`, opaque/hashed `setUserId`; **OkHttp** — `redactHeader("Authorization"/"apikey")` + release `Level.NONE`; optional Timber redacting tree as a logcat safety net. No third-party PII lib, no custom interceptor.
+
+---
+
+## 16. Observability
+All observability is consumed through interfaces in `:core:observability` (`CrashReporter`, `PerformanceTracer`, `AnalyticsLogger`); feature code never touches a vendor SDK directly. These interfaces are **base**; bindings differ by target: the **base starter** binds `NoOp` by default (runs with no cloud) and the real Measure/Firebase composite only when configured; the **demo** ships the composite wired. The interfaces also cover the base's generic HTTP (DummyJSON) — Measure auto-captures it via the shared OkHttp engine.
+- **OR-1** **Crash/ANR via `CrashReporter`** — a **composite** fans out to **Measure.sh** and **Firebase Crashlytics** simultaneously (comparison mode), so both dashboards receive each crash; both install chained uncaught-exception handlers and upload their own R8 mapping. Custom keys for user/session context (non-PII). Production can flip the Koin binding to a single backend.
+- **OR-2** **Performance via `PerformanceTracer`** — Measure.sh (auto-captures HTTP via its OkHttp instrumentation — OkHttp is Ktor's engine here, so supabase-kt calls are covered — plus ANR + app-start) **and** Firebase Performance, composite. Because Measure auto-instruments HTTP, the manual `HttpMetric`-around-Supabase chore is gone for the Measure path (Firebase Perf still needs it — kept for the comparison).
+- **OR-3** **Analytics via `AnalyticsLogger`** — Firebase Analytics impl; `NoOp` for tests/`prod`-opt-out. Product events logged from feature modules via the interface only.
+- **OR-4** **Comparison is temporary.** Running two crash/perf SDKs adds overhead + double-reporting (counts differ across dashboards) — documented as a deliberate compare-and-choose setup; steady-state apps pick one by changing one composite binding.
+- **OR-5** Measure needs a backend (cloud free tier **or** self-host); its API key is a flavor `BuildConfig`/secret (never committed), like Supabase keys.
+- **OR-6** **PII/secret redaction (see SR-10).** Because Measure auto-captures HTTP via the OkHttp engine, the contract is enforced by configuration: `apikey` added to Measure's header blocklist (auth/cookie headers already blocked), bodies left off, `/auth/*` events disabled; Crashlytics fed no PII (opaque user id); OkHttp `redactHeader` + release `Level.NONE`. Analytics events use an **allowlist** of names/properties — screen/feature/coarse-timing/error-category/app-version/flavor/device-class/non-PII session id only.
+
+---
+
+## 17. Out of Scope
+**Product-specific domain in the base** (social nouns + Supabase belong only to `:demo:twitter:*`, §6.1/NG6); a real backend or persisted writes for the base sample (DummyJSON writes are simulated; the sample is illustrative); the `:feature:imagecrop` cropper as a base feature (it's demo). Also: KMP/CMP; iOS/Wear/TV; bespoke large-screen/foldable UX beyond the P0 adaptive baseline (§8.12) — e.g. multi-pane everywhere, stylus, drag-and-drop, desktop windowing; in the demo — DMs, retweets/quotes, bookmarks, hashtags/mentions, nested comment replies, profile Replies/Media tabs, and video uploads (images only); editable username after onboarding (handle is immutable in v1 — display name/bio/avatar are editable); avatar capture during onboarding (deferred to Edit Profile); in-app notifications cover like/follow/comment only (mentions/reposts deferred); broader media editing (the dynamic `:demo:twitter:feature:imagecrop` does crop only — no filters/annotate/camera); full localization; custom backend beyond Supabase for the demo (Supabase-only demo boundary + escalation gates per NG3 — the one `send-push` Edge Function for FCM is in scope); notification fanout beyond DB triggers + the `send-push` Edge Function; FCM push for likes (comment/follow only); pg_graphql / Apollo GraphQL data path (Supabase GraphQL has no subscriptions and maps per-user computed fields poorly; a GraphQL data source would mirror the REST one structurally — left as a fork exercise); M3 Expressive (until 1.5.0 stable); Sentry; Firebase Dynamic Links; Storybook-style interactive knobs (no production Compose tool in 2026; Storytale is pre-release — tracked, not adopted).
+
+---
+
+## 18. Build Roadmap (milestones)
+
+Two tracks: **A — Base foundation** (the product-neutral starter, no cloud) ships first and stands alone; **B — Demo showcase** (`:demo:twitter:*`) builds on it. The base is releasable/forkable after Track A even if the demo never ships.
+
+### Track A — Base foundation (`:app`, no cloud)
+1. **M1 — Foundation:** Gradle (AGP 9.2.0 / Gradle 9.4.1, catalog, `build-logic`), `:app` shell, Compose + M3, edge-to-edge + insets, `NavigationSuiteScaffold` adaptive root, Koin startup, Nav3 root. *Exit:* empty app runs edge-to-edge, nav adapts compact↔expanded.
+2. **M2 — Core layers (generic):** `:core:model/common/network(generic Ktor/OkHttp)/database/datastore/data`, Result/UiState, `SessionProvider`/`AuthRepository` interface + encrypted token store; Room + DataStore. *Exit:* a generic repo round-trips data over Ktor `MockEngine`.
+3. **M3 — Design system:** tokens, font, wrapped `App*` atoms (semantics baseline + 48dp targets), `@PreviewParameter`/multipreview, Showkase in-app catalog (debug), Roborazzi + ComposablePreviewScanner + `roborazzi-accessibility-check`; `:app-catalog` skeleton (off). *Exit:* screenshot + a11y checks green.
+4. **M4 — Base auth + sample:** `:feature:auth` (Credential Manager username/password → DummyJSON token auth, refresh, logout), `:feature:sample` (posts/users browser, Paging 3 + Room cache + search), `:feature:splash` (injected router), `:feature:account` (deletion flow). *Exit:* SC-STARTER-1 (base runs end-to-end, no cloud).
+5. **M5 — Base platform features:** settings (theme/dynamic-color/lang), feature flags (`FeatureFlagProvider`, no-op default), push transport (`:core:push` + `TokenSyncWorker`, injected sink), observability (`:core:observability` composite, no-op default), Play Core facades (`:core:playservices`), devtools, `:ads` + deep links (optional). *Exit:* base feature set complete, all no-cloud-safe.
+
+### Track B — Twitter-lite demo (`:demo:twitter:*`)
+6. **M6 — Demo backend + data:** Supabase schema + RLS + RPCs + notification triggers + `send-push` Edge Function + seeds; `:demo:twitter:supabase/model/network/database/data` (social repos + Supabase `AuthRepository` binding). *Exit:* policy tests green; a social repo round-trips against a disposable Supabase.
+7. **M7 — Demo auth + onboarding + social features:** `:demo:twitter:feature:auth` (Google SSO + nonce → Supabase), `:demo:twitter:feature:onboarding` (`complete_profile` gate), feed/post/profile/search/notifications (Paging 3 + realtime + multi-image upload). *Exit:* SC-DEMO-1.
+8. **M8 — Demo dynamic feature:** `:core:dynamicdelivery` plumbing + `:demo:twitter:feature:imagecrop` on-demand crop (api-in-base + Koin `loadKoinModules` + Nav3 `openDynamic`; Fake/bundletool tests). *Exit:* crop installs on demand from compose-post; removing the DFM leaves the demo compiling.
+
+### Cross-cutting
+9. **M9 — Testing + perf + a11y + isolation:** unit/UI/E2E coverage (base via `MockEngine`, demo via seeded Supabase), Kover gates, a11y checks, adaptive screenshots, **architecture/isolation tests (SC-ISOLATION-1/2)**, baseline profile + macrobenchmark (per target).
+10. **M10 — CI/CD + repo automation:** workflows with the four profiles (base / demo-compile / demo-integration / release) + release-please; Codecov; signed release (Measure + Crashlytics mapping); wrapper-validation + dependency-submission/review; **Semgrep SAST**; **Renovate self-hosted** + Dependabot alerts; PR hygiene; Firebase App Distribution + size-diff; CODEOWNERS + templates. *Exit:* SC4–SC5.
+11. **M11 — Docs:** README (starter path first), split setup checklist (§19), `docs/secrets.md`, `docs/ci.md`, per-module READMEs, **Dokka multi-module API site → GitHub Pages**. *Exit:* SC1, SC-STARTER-1, G5.
+
+---
+
+## 19. Setup Checklist
+
+### A. Starter setup (base — **no cloud required**)
+1. Clone; set `applicationId` / package via the rename script.
+2. `./gradlew :app:assembleDevDebug` → **runs immediately** against DummyJSON (no account/keys). `./gradlew :app:check` → green. *(SC-STARTER-1.)*
+3. Build your product: replace `:feature:sample` with your first real feature; keep `:core:*` + base features; point `:core:network` at your backend (replace DummyJSON) and bind the real `AuthRepository`.
+4. **Delete the demo** when you don't need it: drop `:demo:twitter:*` includes from `settings.gradle.kts` + delete `supabase/` and demo config. Base still builds (SC-ISOLATION-1).
+5. *(Optional, base)* Firebase: `google-services.json` (copy from `.template`) to enable Remote Config/FCM/Analytics/Crashlytics/Perf; otherwise they stay no-op. Measure.sh project → `MEASURE_API_KEY`. AdMob IDs; Branch key.
+6. *(Optional)* Delete unneeded base feature implementations / optional modules; remove their Koin modules + nav entries. Remove a feature `:api` only after no callers import its route keys.
+
+### B. Twitter-lite demo setup (only to run `:demo:twitter:app`)
+7. Create Supabase project → run `supabase/migrations/` + seeds → put `DEMO_TWITTER_SUPABASE_URL` + anon key in `local.properties`.
+8. Create Web + Android OAuth client IDs → configure the Supabase Google provider → `DEMO_TWITTER_GOOGLE_WEB_CLIENT_ID`. Set up the `send-push` Edge Function secret (`supabase secrets set`).
+9. `./gradlew :demo:twitter:app:assembleDevDebug` → run. *(SC-DEMO-1.)*
+
+### C. Repo automation (both)
+10. **Renovate** self-hosted Action + `renovate.json` ship in the template (free, no Mend account); **Semgrep** SAST + **Dokka** docs run in CI out of the box. Set CI secrets in GitHub **Environments** (demo-integration + release only — base/demo-compile need none); edit `.github/CODEOWNERS` for your team paths.
+
+---
+
+## Appendix A: `gradle/libs.versions.toml` (representative)
+
+> Versions verified June 2026. **†** = pin to latest stable at implementation.
+
+```toml
+[versions]
+agp = "9.2.0"
+kotlin = "2.3.0"
+ksp = "2.3.0-2.0.0"
+coroutines = "1.10.2"          # †
+coreKtx = "1.16.0"             # †
+lifecycle = "2.9.0"            # †
+activityCompose = "1.10.0"     # †
+composeBom = "2026.06.00"      # † pin to current Compose BOM
+material3 = "1.4.0"
+material3Adaptive = "1.1.0"    # † androidx.compose.material3.adaptive (adaptive, adaptive-layout, adaptive-navigation) + material3-adaptive-navigation-suite
+navigation3 = "1.1.2"
+koinBom = "4.1.1"              # † bump to 4.2.x when stable
+serialization = "1.8.1"        # †
+room = "2.8.4"
+paging = "3.5.0"
+datastore = "1.2.1"
+work = "2.11.2"
+coil = "3.5.0"
+credentials = "1.6.0"
+googleid = "1.1.1"             # †
+splashscreen = "1.2.0"
+firebaseBom = "34.14.1"
+playUpdate = "2.1.0"
+playReview = "2.0.2"
+playAds = "25.3.0"
+ump = "3.2.0"
+featureDelivery = "2.1.0"     # † [DEMO] com.google.android.play:feature-delivery — DFM SplitInstallManager (base :core:dynamicdelivery wraps it; cropper is demo)
+imageCropper = "4.6.0"        # † [DEMO] crop lib for :demo:twitter:feature:imagecrop (e.g. vanniktech/android-image-cropper)
+supabase = "3.6.0"            # [DEMO ONLY] supabase-kt — lives in :demo:twitter:*; NOT a base dependency
+ktor = "3.4.0"                # base: generic Ktor client (DummyJSON); demo: supabase-kt's engine. DummyJSON needs NO dependency (public REST + Ktor)
+okhttp = "5.0.0"             # OkHttp 5 — Ktor's engine (ktor-client-okhttp) + Coil (coil-network-okhttp); one shared OkHttpClient/pool, keeps Measure HTTP auto-capture
+mockk = "1.14.9"
+turbine = "1.2.1"
+robolectric = "4.16"
+junit = "4.13.2"
+roborazzi = "1.64.0"          # † mainline + roborazzi-accessibility-check (ATF, JVM)
+composablePreviewScanner = "0.9.0"   # † auto-gen Roborazzi tests from @Preview
+# a11y: androidx.compose.ui:ui-test-junit4-accessibility comes from the Compose BOM (enableAccessibilityChecks, ATF-backed)
+measure = "0.18.0"            # † Measure.sh SDK (observability; composite w/ Firebase)
+measureGradle = "0.13.0"      # † Measure Gradle plugin (R8 mapping upload)
+dokka = "2.2.0"               # † multi-module API docs (HTML)
+showkase = "1.0.5"            # † in-app component catalog (KSP); watch airbnb/Showkase for updates, fork thumbtack/Showkase as fallback
+benchmark = "1.4.0"
+profileinstaller = "1.4.1"
+spotless = "8.6.0"
+ktfmt = "0.59"
+detekt = "1.23.8"
+kover = "0.9.8"
+googleServices = "4.4.2"
+crashlyticsPlugin = "3.0.7"
+perfPlugin = "2.0.2"
+baselineprofile = "1.4.0"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "perfPlugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+measure = { id = "sh.measure.android.gradle", version.ref = "measureGradle" }   # † verify plugin id at impl
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+```
+
+(Library coordinates omitted here for brevity; derived directly from the version keys above and the validation doc's per-library coordinates.)
+
+---
+
+## 22. Post-Implementation Actionables
+
+Deferred items to revisit **once the PRD is implemented** — not v1 blockers, but tracked so they don't get lost:
+
+- **Testing strategy for Compose UI, navigation wiring, and DTOs** — decide how each is verified and how it factors into the Kover coverage gate (these are *not* excluded, just method-TBD; the author has a preferred approach). Until decided, the §10/TR-1 gate enforces logic coverage (data/domain/ViewModels/mappers); UI is covered by Roborazzi + Compose tests outside the Kover %.
+- **Passkey auth (P1, flag-gated, default OFF)** — implement enroll + sign-in once `supabase-kt` ships its passkey API ([PR #1327](https://github.com/supabase-community/supabase-kt/pull/1327) — `supabase.auth.passkeys` register/authenticate/manage; native support pending #1291). **No custom server:** Supabase Auth is the WebAuthn relying party (beta — "API may change without notice"); the app side is Credential Manager (`CreatePublicKeyCredentialRequest`/`GetPublicKeyCredentialOption`), private keys never leave the authenticator, only public keys live at the RP. Config: RP ID per env, `android:apk-key-hash` asset association, dashboard enablement, dev/staging/prod origin separation. Surfaces: optional post-onboarding "Add a passkey?" prompt (§9 FR-ONB-5 / FR-DAUTH-5) + Settings enroll/remove — all in `:demo:twitter:feature:auth` (the demo owns the Supabase RP). Routes through the same session/profile-completion gate as Google SSO; cancel / unsupported device / no credential → fall back to Google SSO. Manual-tested, not CI-gated.
+- (Add further post-implementation follow-ups here as they surface during build.)
+
+---
+
+## Appendix B: Decisions & rationale
+
+Stack validated against current (June 2026) modern-Android best practice via parallel web-research passes (architecture · data · testing/perf · platform · backend/CI). Key decisions and the "why" (the full validation record + RFCs have been folded into this PRD and deleted):
+
+- **Navigation 3 (1.1.2), not Nav2.** Stable since Nov 2025; back stack is a plain `SnapshotStateList<Any>`; `koin-compose-navigation3` integrates. (§6.5)
+- **State = UDF-MVVM, not MVI.** Immutable `UiState` + `StateFlow`; one-time events as nullable/list state consumed in `LaunchedEffect`, **never** `Channel`/`SharedFlow` (Google UI-events guidance). (§6.3)
+- **Modularization = NiA hybrid** (feature + core + build-logic), not by-layer `:data`/`:domain`/`:presentation` modules (an anti-pattern at module granularity). Use-cases live in feature `:impl` until shared. (§6.1–6.2)
+- **Networking — no Retrofit.** Base = generic Ktor on the OkHttp engine; demo = supabase-kt over Ktor. One shared `OkHttpClient` with Coil. API mocking via Ktor `MockEngine`. (§5/§6.7)
+- **Accompanist dropped** — graduated into Compose/Material3; first-party permission APIs preferred.
+- **Coverage = Kover, not JaCoCo** (JaCoCo miscounts Kotlin inline/`copy()`/lambdas/`when`); JVM unit only. (§10/TR-1)
+- **Format vs analysis split:** Spotless+ktfmt (format) ; detekt + Android Lint (analysis). (§12)
+- **Auth = Credential Manager** (legacy `GoogleSignInClient`/One-Tap deprecated). Base = password flow; demo = Google SSO (federated) + passkey (P1). (§8.2/§9)
+- **Deep linking = native App Links** by default (`autoVerify` + `assetlinks.json`) behind `DeepLinkResolver`; Branch optional. **Firebase Dynamic Links shut down 2025-08-25.** "App Links" (Android) ≠ "Universal Links" (iOS). (§8.9)
+- **Force update = two signals:** Play `updatePriority` (fixed at release) + Remote Config `min_required_version` (retroactive gate). (§8.5)
+- **AGP 9.2.0 ⇒ Gradle 9.4.1**, JDK 17+, Build Tools 36.0.0, max API 37; `android.newDsl=true` ⇒ convention plugins use `ApplicationExtension`/`androidComponents`. API 37/Android 17 shipped stable (Jun 2026) but stays opt-in (day-zero risk). (§5/§7)
+- **Adaptive + a11y are P0** — Material 3 Adaptive, edge-to-edge/insets, predictive back, large font, ATF-backed automated a11y (Compose `enableAccessibilityChecks()` + `roborazzi-accessibility-check` + Lint a11y→error). detekt has no a11y rules; no dedicated a11y GitHub Action — gate via tests+lint. (§8.12–8.13)
+- **Facades for service/platform edges only** — Supabase, Firebase surfaces, Branch, AdMob/UMP, Play Core; **not** generic Jetpack/Kotlin libs. (§6.9)
+- **Observability = Measure.sh + Firebase composite** behind `CrashReporter`/`PerformanceTracer`/`AnalyticsLogger`; comparison mode, collapsible to one Koin binding. Sentry dropped. (§16)
+- **DFM = one optional showcase.** Adopter research: Chromium/Snap/Traveloka/Halodoc use on-demand feature splits; Uber/Spotify/Dropbox/NiA/Cash App ship App Bundle *config* splits instead. Inverted edge quarantined (api-in-base + one-reflection Provider + Koin `loadKoinModules`); Nav3 gate owned. (§6.10)
+- **Tooling adds:** Semgrep (SAST, OWASP MASTG + Kotlin), Renovate self-hosted Action (free; Kotlin/KSP co-bump), Dokka 2.2 (multi-module API docs); Dependabot reduced to passive security alerts. (§13)
+- **DFM/demo dynamic-feature lib** + **DummyJSON** base backend (public, no key) + **Supabase demo-only** isolation: see §1, §5, §6.
+
+**Sources:** [app architecture](https://developer.android.com/topic/architecture) · [adaptive apps](https://developer.android.com/develop/ui/compose/layouts/adaptive/get-started-with-adaptive-apps) · [Compose a11y testing](https://developer.android.com/develop/ui/compose/accessibility/testing) · [modularization](https://developer.android.com/topic/modularization) · [NiA](https://github.com/android/nowinandroid) · [Nav3 stable](https://android-developers.googleblog.com/2025/11/jetpack-navigation-3-is-stable.html) · [UI events](https://developer.android.com/topic/architecture/ui-layer/events) · [Compose testing](https://developer.android.com/develop/ui/compose/testing) · [Roborazzi](https://github.com/takahirom/roborazzi) · [Kover](https://github.com/Kotlin/kotlinx-kover) · [Credential Manager](https://android-developers.googleblog.com/2024/09/streamlining-android-authentication-credential-manager-replaces-legacy-apis.html) · [Supabase passkeys](https://supabase.com/docs/guides/auth/passkeys) · [supabase-kt](https://github.com/supabase-community/supabase-kt) · [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security) · [DummyJSON](https://dummyjson.com/docs) · [AGP 9.2 notes](https://developer.android.com/build/releases/agp-9-2-0-release-notes) · [FDL shutdown](https://www.branch.io/resources/blog/firebase-dynamic-links-shutting-down/) · [Chromium DFM](https://chromium.googlesource.com/chromium/src/+/main/docs/android_dynamic_feature_modules.md) · [Halodoc DFM](https://blogs.halodoc.io/modularizing-at-scale-how-halodoc-adopted-android-dynamic-feature-modules-2/) · [measure.sh](https://measure.sh) · [Semgrep](https://semgrep.dev) · [Renovate](https://docs.renovatebot.com) · [Dokka](https://github.com/Kotlin/dokka)
+
+**v1.1 decisions (now folded in; RFCs removed):**
+- **Backend security contract** — integrated: authenticated-only reads, per-table RLS, narrow notification mutation, media path-ownership, push-token rules, `security definer` hardening, telemetry allowlist, Supabase escalation gates.
+- **Onboarding after SSO** — integrated: `complete_profile` gate replaces auto-seed; username+display-name; immutable handle v1.
+- **Passkeys** — deferred to **P1** (§22): Supabase is the WebAuthn RP but `supabase-kt` lacks the API until PR #1327; demo-owned.
+- **Demo isolation** — adopted: **two runnable targets** (product-neutral base `:app` + Twitter-lite `:demo:twitter:app`). Decision refinements: **Supabase + all social domain are demo-only** (base uses generic Ktor + the public **DummyJSON** API); the **base is feature-rich and runs with no cloud** (Credential Manager username/password auth + a generic posts/users sample over DummyJSON, all platform features, Firebase/Measure/Ads no-op until configured); **Google SSO + passkey moved to the demo** (they need an OAuth/WebAuthn RP the base lacks). Onboarding + image-crop DFM are demo-owned.
+</script>
+<div class="layout">
+  <div class="topbar"><b>Modern Android Template — PRD</b><span>rendered from PRD.md · diagrams + TOC</span></div>
+  <nav id="toc"></nav>
+  <main id="content"></main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  const src = document.getElementById('md').textContent;
+  const content = document.getElementById('content');
+  marked.setOptions({ gfm:true, breaks:false });
+  content.innerHTML = marked.parse(src);
+
+  // mermaid fenced blocks -> divs
+  content.querySelectorAll('code.language-mermaid').forEach(code=>{
+    const pre = code.closest('pre');
+    const div = document.createElement('div');
+    div.className='mermaid';
+    div.textContent = code.textContent;
+    pre.replaceWith(div);
+  });
+
+  // syntax highlight the rest
+  content.querySelectorAll('pre code').forEach(b=>{ try{ hljs.highlightElement(b); }catch(e){} });
+
+  // heading ids + TOC
+  const toc = document.getElementById('toc');
+  const seen = {};
+  const slug = s => { let k=s.toLowerCase().replace(/[^\w]+/g,'-').replace(/^-+|-+$/g,''); if(seen[k]!=null){seen[k]++;k+='-'+seen[k];}else seen[k]=0; return k; };
+  content.querySelectorAll('h1,h2,h3').forEach(h=>{
+    const id=slug(h.textContent); h.id=id;
+    const a=document.createElement('a'); a.href='#'+id; a.textContent=h.textContent;
+    a.className='toc-'+h.tagName.toLowerCase(); toc.appendChild(a);
+  });
+
+  mermaid.initialize({ startOnLoad:false, theme:'base',
+    themeVariables:{ primaryColor:'#FFDBCF', primaryBorderColor:'#BB3E1C', primaryTextColor:'#231915',
+      lineColor:'#85736C', secondaryColor:'#F6E1A6', fontFamily:'system-ui', fontSize:'13px' }});
+  try { await mermaid.run({ querySelector:'.mermaid' }); } catch(e){ console.error(e); }
+</script>
+</body>
+</html>
