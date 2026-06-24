@@ -12,3 +12,17 @@ local.properties
 
 .compound-engineering/*.local.yaml
 .worktree/
+
+# Local service config and secrets
+**/google-services.json
+config/**/*.properties
+*.keystore
+*.jks
+
+# Local release/provider-smoke secrets
+**/*play-service-account*.json
+**/*firebase-app-distribution*.json
+**/*supabase-service-role*.json
+**/*supabase-service-role*.txt
+**/*supabase-service-role*.env
+**/*supabase-service-role*.key

@@ -1,0 +1,9 @@
+DEMO_TWITTER_SUPABASE_URL=https://example.supabase.co
+DEMO_TWITTER_SUPABASE_ANON_KEY=test-demo-twitter-anon-key
+DEMO_TWITTER_GOOGLE_WEB_CLIENT_ID=test-demo-twitter-web-client-id.apps.googleusercontent.com
+DEMO_TWITTER_MEASURE_API_KEY=test_measure_demo_twitter_key
+DEMO_TWITTER_ADMOB_APP_ID=ca-app-pub-3940256099942544~3347511713
+DEMO_TWITTER_ADMOB_BANNER_AD_UNIT_ID=ca-app-pub-3940256099942544/6300978111
+DEMO_TWITTER_ADMOB_NATIVE_AD_UNIT_ID=ca-app-pub-3940256099942544/2247696110
+DEMO_TWITTER_BRANCH_KEY=key_test_android_template_twitter_demo
+DEMO_TWITTER_BRANCH_DOMAIN=android-template-twitter-demo.test-app.link
