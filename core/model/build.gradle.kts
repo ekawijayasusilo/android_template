@@ -5,4 +5,4 @@ plugins {
 
 android { namespace = "com.template.core.model" }
 
-dependencies { implementation(project(":core:common")) }
+dependencies { api(project(":core:common")) }

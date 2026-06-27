@@ -6,7 +6,7 @@ plugins {
 android { namespace = "com.template.core.common" }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.core)
 
     testImplementation(libs.kotlinx.coroutines.test)
 }
