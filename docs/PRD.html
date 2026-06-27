@@ -158,7 +158,7 @@ A production-grade, modular Android **reference template** that scaffolds new ap
 | Design-system catalog | Showkase (in-app, debug) + `@PreviewParameter`/multipreview; optional `:app-catalog` standalone APK |
 | Dynamic delivery **[demo]** | Play Feature Delivery — one on-demand module (`:demo:twitter:feature:imagecrop`) via `:core:dynamicdelivery` plumbing (api-in-base + Koin + Nav3 gate); removable showcase (§6.10). The `:core:dynamicdelivery` plumbing is **opt-in base infrastructure** (excluded from default `:app` build); the cropper itself is demo. |
 | Performance | Baseline Profiles + Macrobenchmark |
-| Quality | Spotless+ktfmt (format), detekt + Android Lint (analysis), Kover (coverage) |
+| Quality | Spotless+ktfmt (format), detekt + Android Lint + `slackhq/compose-lints` (Compose hygiene lint pack, via `lintChecks`) (analysis), Kover (coverage) |
 | CI | GitHub Actions; Codecov; supply-chain (wrapper-validation, dependency-submission/review, **Renovate self-hosted as a GitHub Action** — free, full features); **Semgrep** SAST; **Dokka** docs publish; PR hygiene (semantic PR title, labeler, reviewdog, test-reporter); APK size diff. Release/publishing automation is deferred to §22. |
 
 Full catalog: **Appendix A**.
@@ -606,6 +606,11 @@ Play Core's `AppUpdateManager` (final classes, listener-based, lifecycle-bound) 
 - **FR-A11Y-4** Large **font-scale** resilience: design-system previews tested at 1.0× and ~2.0× via `@PreviewFontScales` + screenshot tests; key app screens covered by targeted Compose/adaptive tests. No clipped/overlapping text. Color roles meet WCAG AA (already true for Ember tokens).
 - **Manual (documented in `docs/accessibility.md`, not CI-gated):** TalkBack pass on critical flows, Accessibility Scanner audit, Google Play pre-launch report. Reference patterns: CVS Health *android-compose-accessibility-techniques*. *Acceptance:* a11y test suite + lint gate pass in CI; documented manual checklist exists.
 
+### 8.14 Tool-backed adaptive & accessibility gates
+- The CI-enforced a11y mechanism (Lint a11y rules→error, `enableAccessibilityChecks`, `roborazzi-accessibility-check`) and the manual checklist are specced in §8.13 (FR-A11Y-3 / Manual). This section adds two tool-backed gates beyond §8.13:
+- **FR-A11Y-GATE-1** Compose static hygiene linting via a maintained pack (preferably `slackhq/compose-lints`) enforces Compose API/testability conventions. Supports, does not replace, accessibility tests.
+- **FR-A11Y-GATE-2** Project-specific architecture rules enforce use of design-system wrappers for production screens where practical, so shared semantics + 48dp touch-target defaults are not bypassed (enforcement of FR-DS-2).
+
 ### 8.15 Account deletion — `:feature:account` (base)
 Generic, Play-required account-removal flow behind the `AuthRepository`/`SessionProvider` abstraction.
 - **FR-ACCT-1** Settings → "Delete account" → a confirmation screen (`AccountKey`) requiring explicit confirm; explains consequences.
@@ -673,7 +678,7 @@ Bottom navigation = 4 tabs, each with its own back stack (Nav3 multiple-back-sta
 - **Notifications** → `NotificationsKey` → `PostDetailKey` / `ProfileKey`
 - **Profile (me)** → `ProfileKey(me)` → `EditProfileKey` / `UserListKey`
 
-Top-level entries above the tab scaffold: `SplashKey`, `AuthKey`, **`ProfileSetupKey`** (first-run profile-completion gate — blocks the tab scaffold until a `profiles` row exists; back = sign-out, §8.14), `SettingsKey`, and `ComposePostKey` (modal, launched from the Home FAB). The reply composer is inline on Post detail, not a separate route. `:api` modules expose only their keys + entry contracts; cross-feature navigation (feed → post → profile → search) goes through `:api`, never `:impl`.
+Top-level entries above the tab scaffold: `SplashKey`, `AuthKey`, **`ProfileSetupKey`** (first-run profile-completion gate — blocks the tab scaffold until a `profiles` row exists; back = sign-out, §9 Demo onboarding), `SettingsKey`, and `ComposePostKey` (modal, launched from the Home FAB). The reply composer is inline on Post detail, not a separate route. `:api` modules expose only their keys + entry contracts; cross-feature navigation (feed → post → profile → search) goes through `:api`, never `:impl`.
 
 ### 9.3 Schema (Postgres / Supabase)
 
@@ -815,7 +820,7 @@ create index push_tokens_user_idx on public.push_tokens(user_id);
 
 ## 12. Code Quality & Tooling
 - **QR-1** **Format:** Spotless wrapping ktfmt (`kotlinlangStyle`), covering `**/*.kt` and `*.gradle.kts` (excluding generated). `spotlessCheck` in CI, `spotlessApply` locally + pre-commit.
-- **QR-2** **Static analysis:** detekt (single root `detekt.yml`, per-module task via convention plugin) + Android Lint, with accessibility rules (`ContentDescription`, `LabelFor`, `ClickableViewAccessibility`) promoted to `error` in `lint.xml`. (detekt has no meaningful a11y rules — Compose a11y is covered by ATF tests, FR-A11Y-3.)
+- **QR-2** **Static analysis:** detekt (single root `detekt.yml`, per-module task via convention plugin) + Android Lint + `slackhq/compose-lints` (Compose API/testability hygiene; supports, not replaces, ATF a11y tests — FR-A11Y-GATE-1), with accessibility rules (`ContentDescription`, `LabelFor`, `ClickableViewAccessibility`) promoted to `error` in `lint.xml`. (detekt has no meaningful a11y rules — Compose a11y is covered by ATF tests, FR-A11Y-3.)
 - **QR-3** Aggregate task `staticCheck` = `spotlessCheck detekt lint`; wired into `check` and a pre-commit hook.
 - **QR-4** **Coverage:** Kover (see TR-1).
 - **QR-5** No `-ktx` Firebase deps (removed in BOM 34). KSP2 only (no kapt).
@@ -869,7 +874,7 @@ Workflows + repo automation; secrets via GitHub Environments; secret-dependent s
 ## 15. Security & Secrets
 
 **Scope:** SR-1/2/4/5/7/8/10 are **base** (apply to both targets). SR-3/6/9 (the Supabase backend authorization contract) are **demo-scoped** — they constrain `:demo:twitter:*`; a product app adopting Supabase inherits them, but the base starter has no first-party backend (it reads the public DummyJSON API, which holds no user secrets).
-- **SR-1** No secrets, keystores, `google-services.json`, or real API keys committed. `.gitignore` + per-environment `*.template` placeholders + local `config/<target>/<environment>.properties` files. The base starter requires local service configuration to run; the same provider values may be copied across base `dev`/`staging`/`prod` files in the template, but the files remain split so forks can differentiate them immediately. Test credentials are syntactically valid placeholders for build-time parsing only; provider behavior uses fake/no-op bindings unless a provider-smoke job opts into real secrets.
+- **SR-1** No secrets, keystores, `google-services.json`, or real API keys committed. `.gitignore` + per-environment `*.template` placeholders + local `config/<target>/<environment>.properties` files generated from the templates by `scripts/create-test-credentials.sh` (bash; produces ignored placeholder config so a fresh clone builds with fake/no-op bindings — never writes real secrets). The base starter requires local service configuration to run; the same provider values may be copied across base `dev`/`staging`/`prod` files in the template, but the files remain split so forks can differentiate them immediately. Test credentials are syntactically valid placeholders for build-time parsing only; provider behavior uses fake/no-op bindings unless a provider-smoke job opts into real secrets.
 - **SR-2** Release build posture: R8 minify + resource shrink; cleartext disabled; R8 mapping files generated. Mapping upload to Measure.sh + Crashlytics is deferred to the release/publishing pipeline in §22.
 - **SR-3 [demo]** RLS enabled on every `public` Supabase table (deny by default; explicit policies in migrations). Extends to **Storage** (path-ownership policies on `media`) and **push_tokens** (owner-only, no cross-user read). Mobile CI does not own backend policy tests.
 - **SR-4** Auth/session tokens go through `TokenStore`; production binding uses Android Keystore-backed encryption before persistence (base: DummyJSON JWTs; demo: Supabase session if app-owned). Token blobs are excluded from Android Auto Backup/restore; decrypt failure is treated as missing/invalid session and clears `TokenStore`. User preferences (theme/language/dynamic color) may be backed up; Remote Config cache and devtools local flag overrides are excluded from backup/restore. **Demo:** asymmetric auth nonce on every Google credential request (§9, FR-DAUTH-3).
@@ -901,24 +906,59 @@ All observability is consumed through interfaces in `:core:observability` (`Cras
 
 ## 18. Build Roadmap (milestones)
 
-Two tracks: **A — Base foundation** (the opinionated & complete starter with required local service config) ships first and stands alone; **B — Demo showcase** (`:demo:twitter:*`) builds on it. The base is releasable/forkable after Track A even if the demo never ships.
+Two implementation tracks ship the product surface: **A - Base foundation** (the opinionated & complete starter with required local service config) and **B - Demo showcase** (`:demo:twitter:*`) that builds on it. Cross-cutting milestones provide verification, CI, and documentation. The base feature set is complete after Track A; the base is releasable/forkable after the base portions of M9-M11 are also green.
+
+Each milestone is an ownership map, not a duplicate requirement source. `Owns` points to the canonical PRD sections/IDs; `Exit` summarizes the completion outcome; `Verification` names where tests/checks close the milestone. Feature milestones own their local unit/UI/state tests and fakes. M9 owns cross-module verification and CI-level quality gates, not first-pass feature test coverage.
 
 ### Track A — Base foundation (`:app`, configured services)
-1. **M1 — Foundation:** Gradle (AGP 9.2.0 / Gradle 9.4.1, catalog, `build-logic`), `:app` shell, Compose + M3, edge-to-edge + insets, `NavigationSuiteScaffold` adaptive root, Koin startup, Nav3 root. *Exit:* empty app runs edge-to-edge, nav adapts compact↔expanded.
-2. **M2 — Core layers (generic):** `:core:model/common/network(generic Ktor/OkHttp)/database/datastore/security/data/domain`, Result/UiState, `SessionProvider`/`AuthRepository` interface + `TokenStore`; Room + DataStore; domain use cases only where they add coordination/business rules. *Exit:* a generic repo round-trips data over Ktor `MockEngine`.
-3. **M3 — Design system:** tokens, font, wrapped `App*` atoms (semantics baseline + 48dp targets), `@PreviewParameter`/multipreview, Showkase in-app catalog (debug), Roborazzi + ComposablePreviewScanner + `roborazzi-accessibility-check`; `:app-catalog` skeleton (off). *Exit:* screenshot + a11y checks green.
-4. **M4 — Base auth + sample:** `:feature:auth` (Credential Manager username/password → DummyJSON token auth, refresh, logout), `:feature:sample` (posts/users browser, Paging 3 + Room cache + search), `:feature:splash` (injected router), `:feature:account` (deletion flow). *Exit:* SC-STARTER-1 (base runs end-to-end with required service config).
-5. **M5 — Base platform features:** settings (theme/dynamic-color/lang), feature flags (`FeatureFlagProvider`), push transport (`:core:push` + `TokenSyncWorker`, injected sink), observability (`:core:observability` composite), Play Core facades (`:core:playservices`), ads contracts + impl (`:core:ads` + `:ads`), deep-link contracts + Branch impl (`:core:deeplink` + `:deeplink-branch`), and devtools. *Exit:* base feature set complete with local/CI service config documented.
+1. **M1 - Foundation**
+   - **Owns:** §6.1-§6.5 architecture shell, §7 build configuration, §8.12 root adaptive shell, and the configuration-substrate work from §14-§15 that must exist before provider-backed features.
+   - **Exit:** Gradle/AGP catalog and `build-logic`, `:app` shell, flavors/config fields/templates + `scripts/create-test-credentials.sh` generator, Compose + M3, edge-to-edge/insets, `NavigationSuiteScaffold`, Koin startup, and Nav3 root are in place; a fresh clone can run the generator to create placeholder local config and build the empty base app without real provider secrets.
+   - **Verification:** `:app:assembleDevDebug` succeeds with generated placeholder config; no real secrets are tracked.
+2. **M2 - Core layers and contract spine**
+   - **Owns:** §6.2-§6.9 core modules, feature `:api`/`:impl` boundary conventions, `:core:ui`, `:core:testing`, `Result`/`UiState`, `SessionProvider`/`AuthRepository`, `TokenStore`, Room/DataStore/security/network layers, and applicable §15 token/storage security requirements.
+   - **Exit:** shared contracts exist before feature-heavy work starts; a sample base feature skeleton proves API-only route keys, impl-owned screens/ViewModels/Koin bindings, no impl-to-impl dependencies, Koin checks against fakes, `:core:ui` adaptive scaffolds, and `:core:testing` helpers.
+   - **Verification:** generic repository round-trips data over Ktor `MockEngine`; Koin `checkModules()` and dependency-boundary checks run against fakes.
+3. **M3 - Design system and catalog infrastructure**
+   - **Owns:** §8.11 design-system requirements, §8.13 accessibility defaults, §8.14 tool-backed gates for design-system scope, and the optional `:app-catalog` skeleton.
+   - **Exit:** tokens, font, wrapped `App*` atoms, semantics/touch-target defaults, multipreviews, `@PreviewParameter` coverage, Roborazzi + ComposablePreviewScanner + `roborazzi-accessibility-check`, Compose lint pack setup, generated Showkase catalog infrastructure, and standalone catalog skeleton are in place. The in-app Showkase entrypoint is exposed later through `:feature:devtools` in M5.
+   - **Verification:** design-system screenshot and accessibility checks pass.
+4. **M4 - Base auth + sample vertical slice**
+   - **Owns:** §8.1 splash, §8.2 base auth, §8.15 account deletion, §8.16 sample feature, applicable §8.12-§8.14 screen-level adaptive/a11y requirements, and local tests for these modules.
+   - **Exit:** base auth/sample/account/splash flow works with fake or local service bindings: fresh install -> DummyJSON sign-in -> sample list/detail/search -> logout/account deletion path -> auth state cleared. This does not claim full SC-STARTER-1 until M5.
+   - **Verification:** base feature unit/ViewModel/UI tests cover required happy, empty/no-result, error, retry, session-expired, logout/cache-clearing, and account-deletion failure states with `MockEngine`/fakes.
+5. **M5 - Base platform features**
+   - **Owns:** §8.3-§8.10 base platform features, §8.11 Showkase devtools entrypoint, §14 base service configuration, §15 base security/secrets requirements, §16 observability, and local tests/fakes for these modules.
+   - **Exit:** full SC-STARTER-1 base starter is satisfied: settings, feature flags, push transport, observability, Play services, ads, Branch-backed deep links, devtools, and required local/CI service configuration are wired according to the owned sections.
+   - **Verification:** base platform tests/fakes cover settings/flags/push/observability/Play services/ads/deep links/devtools; prod graph excludes devtools and local override bindings.
 
 ### Track B — Twitter-lite demo (`:demo:twitter:*`)
-6. **M6 — Demo backend + data:** Supabase schema + RLS + RPCs + notification triggers + `send-push` Edge Function + seeds; `:demo:twitter:supabase/model/network/database/data` (social repos + Supabase `AuthRepository` binding). *Exit:* demo setup docs/migrations/seeds exist; mobile repositories compile and pass mocked contract tests; manual demo backend setup can support SC-DEMO-1.
-7. **M7 — Demo auth + onboarding + social features:** `:demo:twitter:feature:auth` (Google SSO + nonce → Supabase), `:demo:twitter:feature:onboarding` (`complete_profile` gate), feed/post/profile/search/notifications (Paging 3 + realtime + multi-image upload). *Exit:* SC-DEMO-1 + SC-DEMO-E2E.
-8. **M8 — Demo dynamic feature:** `:core:dynamicdelivery` plumbing + `:demo:twitter:feature:imagecrop` on-demand crop (api-in-base + Koin `loadKoinModules` + Nav3 `openDynamic`; Fake/bundletool tests). *Exit:* crop installs on demand from compose-post; removing the DFM leaves the demo compiling.
+6. **M6 - Demo backend + data**
+   - **Owns:** §9.3 schema, §9.4 RLS/triggers/feed/storage/push/deletion backend contract, §9.5 data requirements that live below repositories, §14 Supabase/demo service setup, §15 demo security/secrets requirements, and repository contract tests.
+   - **Exit:** Supabase migrations/RLS/RPCs/triggers/storage policies/notification throttling/`send-push` Edge Function/seeds and `:demo:twitter:supabase/model/network/database/data` compile and support the manual demo contract without adding Supabase/social dependencies to base modules.
+   - **Verification:** mobile repositories pass mocked Supabase/Ktor contract tests, mapper tests, paging/Room merge tests, realtime handling tests, and image-upload worker state-transition tests; backend policy correctness remains documented demo setup guidance where not mobile-CI-owned.
+7. **M7 - Demo auth + onboarding + social features**
+   - **Owns:** §9 Demo authentication FR-DAUTH-1-4, demo onboarding FR-ONB-1-4, screen inventory, navigation map, §9.5 FR-DEMO-1-14, applicable §8.12-§8.14 screen-level adaptive/a11y requirements, and local tests for these modules. Passkeys remain deferred to §22.
+   - **Exit:** SC-DEMO-1 manual/product showcase works according to the owned §9 requirements: Google SSO -> onboarding if needed -> feed -> post detail/comments -> compose with images -> like/comment/follow/search/profile/edit/notifications against Supabase-backed demo modules. This does not claim SC-DEMO-E2E.
+   - **Verification:** demo feature unit/ViewModel/UI tests cover required happy, empty, offline, optimistic-failure, retry, discard, upload-failure, search pre-query, notification/profile empty, and onboarding gate states with fakes.
+8. **M8 - Demo dynamic feature**
+   - **Owns:** §6.10 dynamic feature delivery and the §9 compose-post cropper integration surface.
+   - **Exit:** `:core:dynamicdelivery` plumbing and `:demo:twitter:feature:imagecrop` on-demand cropper are implemented as one DFM stage; crop installs on demand from compose-post; removing the DFM leaves the demo compiling.
+   - **Verification:** Fake/local-testing dynamic-delivery paths, Koin load/unload guard, Nav3 dynamic open flow, and bundletool/local-testing verification pass as defined in §6.10 and §10.
 
 ### Cross-cutting
-9. **M9 — Testing + perf + a11y + isolation:** unit/UI coverage plus small Maestro smoke E2E (base via `MockEngine`, demo via seeded Supabase), Kover gates, design-system screenshot/a11y checks, targeted adaptive UI tests, **architecture/isolation tests (SC-ISOLATION-1/2)**, baseline profile + macrobenchmark (per target).
-10. **M10 — CI + repo automation:** workflows with the profiles (base / demo-compile); Codecov; wrapper-validation + dependency-submission/review; **Semgrep SAST**; **Renovate self-hosted** + Dependabot alerts; PR hygiene; size-diff; CODEOWNERS + templates. Release CI/publishing/FAD/demo-app-smoke pipeline is deferred to §22. *Exit:* SC4–SC5.
-11. **M11 — Docs:** README (starter path first), split setup checklist (§19), `docs/secrets.md`, `docs/ci.md`, per-module READMEs, **Dokka multi-module API site → GitHub Pages**. *Exit:* SC1, SC-STARTER-1, G5.
+9. **M9 - Final testing, perf, a11y, and isolation verification**
+   - **Owns:** §10 testing strategy, §11 performance, §8.12-§8.14 cross-screen adaptive/a11y verification, SC-ISOLATION-1/2, SC-DEMO-E2E, SC5, SC6, and SC7 verification.
+   - **Exit:** integrated verification gates pass: Kover, architecture/isolation tests, whole-demo removal build, single-feature removal/Koin matrix, design-system screenshot/a11y checks, targeted adaptive UI tests, baseline profile, macrobenchmark smoke, and small Maestro smoke E2E.
+   - **Verification:** SC-DEMO-E2E closes here after seeded Supabase test data, flavor-gated email/password test-auth, Maestro smoke flow, and CI/emulator integration are in place.
+10. **M10 - CI + repo automation**
+   - **Owns:** §13 CI, §12 quality tooling integration, §15 SR-5/SR-7/SR-8 supply-chain/secrets posture in CI, Codecov, wrapper validation, dependency submission/review, Semgrep, Renovate, PR hygiene, size diff, CODEOWNERS, and templates.
+   - **Exit:** required `base` and `demo-compile` CI profiles are green on PR/main with fork-safe secret handling; release CI/publishing/FAD/demo-app-smoke pipeline remains deferred to §22.
+   - **Verification:** SC4-SC5 CI criteria are met by GitHub Actions workflow runs and generated reports.
+11. **M11 - Docs**
+   - **Owns:** §19 setup checklist, §14-§15 secrets/service docs, §13 CI docs, §8.13-§8.14 manual accessibility docs, per-module READMEs, and Dokka publishing.
+   - **Exit:** README (starter path first), split setup checklist, `docs/secrets.md`, `docs/ci.md`, `docs/accessibility.md`, per-module READMEs, and Dokka multi-module API site -> GitHub Pages are complete.
+   - **Verification:** a new adopter can follow the docs to configure the base starter, understand secrets/CI handling, run manual accessibility checks, delete the demo, and navigate generated API/module documentation.
 
 ---
 
@@ -926,7 +966,7 @@ Two tracks: **A — Base foundation** (the opinionated & complete starter with r
 
 ### A. Starter setup (base — **local service config required**)
 1. Clone; read the README Getting Started section for required base service config and the manual fork-overwrite checklist. No rename/scaffold script is required.
-2. Add required local config: Firebase `app/src/<environment>/google-services.json` files plus Measure, AdMob, and Branch values in `config/base/<environment>.properties` (`dev`, `staging`, `prod`). Values may be copied from one base service project while this repo is only a template; keep files separate so forks can diverge them.
+2. Run `scripts/create-test-credentials.sh` to generate local placeholder config from the committed `*.template` files (one command; produces the ignored `config/<target>/<environment>.properties` + `google-services.json` files so a fresh clone builds without real secrets). Then add required real local config: Firebase `app/src/<environment>/google-services.json` files plus Measure, AdMob, and Branch values in `config/base/<environment>.properties` (`dev`, `staging`, `prod`). Values may be copied from one base service project while this repo is only a template; keep files separate so forks can diverge them.
 3. `./gradlew :app:assembleDevDebug` → runs the configured base starter against DummyJSON for auth/sample. `./gradlew :app:check` → green. *(SC-STARTER-1.)*
 4. Build your product: overwrite app identity/product bindings per README, replace `:feature:sample` with your first real feature, keep `:core:*` + base features, point `:core:network` at your backend (replace DummyJSON), and bind the real `AuthRepository`.
 5. **Delete the demo** when you don't need it: drop `:demo:twitter:*` includes from `settings.gradle.kts` + delete `supabase/` and demo config. Base still builds (SC-ISOLATION-1).
@@ -995,6 +1035,7 @@ profileinstaller = "1.4.1"
 spotless = "8.6.0"
 ktfmt = "0.59"
 detekt = "1.23.8"
+composeLints = "1.4.2"        # † slackhq/compose-lints — lib coord com.slack.lint.compose:compose-lint-checks, wired via lintChecks(...)
 kover = "0.9.8"
 googleServices = "4.4.2"
 crashlyticsPlugin = "3.0.7"
