@@ -13,6 +13,9 @@ local.properties
 .compound-engineering/*.local.yaml
 .worktree/
 
+# Plan-execution working notes (not part of the deliverable)
+temp-docs/
+
 # Local service config and secrets
 **/google-services.json
 config/**/*.properties

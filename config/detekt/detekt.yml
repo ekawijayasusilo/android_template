@@ -1,0 +1,43 @@
+# Single root detekt config (PRD §12 QR-2). Layered on detekt defaults via
+# buildUponDefaultConfig=true in the template.detekt convention. Project-specific tweaks only.
+
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+  warningsAsErrors: false
+  checkExhaustiveness: false
+
+complexity:
+  active: true
+  LongParameterList:
+    active: true
+    functionThreshold: 8
+    constructorThreshold: 8
+    ignoreDefaultParameters: true
+
+style:
+  active: true
+  # @Preview composables are private (compose-lints ComposePreviewPublic) but invoked only by tooling.
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: ['Preview']
+  MagicNumber:
+    active: true
+    ignoreNumbers: ['-1', '0', '1', '2']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreEnums: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+
+naming:
+  active: true
+  FunctionNaming:
+    active: true
+    # Allow @Composable PascalCase function names.
+    ignoreAnnotated: ['Composable']

@@ -1,20 +1,89 @@
+# Version catalog — PRD Appendix A.
+# † = pin to latest stable at implementation (values below verified June 2026 per PRD).
+# Library COORDINATES are added append-only per module PR (PR-2..PR-13); PR-1 provides only
+# what the build-logic conventions and the migrated :app need. Do NOT edit build-logic after
+# PR-1 — only append [versions]/[libraries] entries here.
+
 [versions]
-agp = "9.2.1"
-coreKtx = "1.10.1"
+# --- Build toolchain (frozen by PR-1) ---
+agp = "9.2.1"                  # kept ≥ PRD 9.2.0 (scaffold already on 9.2.1)
+kotlin = "2.3.0"
+ksp = "2.3.0"                  # KSP2 unified versioning, Kotlin-aligned (old "K-X.Y.Z" suffix dropped)
+coroutines = "1.10.2"          # †
+# --- AndroidX / Compose ---
+coreKtx = "1.16.0"             # †
+lifecycle = "2.9.0"            # †
+activityCompose = "1.10.0"     # †
+composeBom = "2026.06.00"      # † pin to current Compose BOM
+material3 = "1.4.0"
+material3Adaptive = "1.1.0"    # † adaptive, adaptive-layout, adaptive-navigation + material3-adaptive-navigation-suite
+navigation3 = "1.1.2"
+koinBom = "4.1.1"              # † bump to 4.2.x when stable
+serialization = "1.8.1"        # †
+room = "2.8.4"
+paging = "3.5.0"
+datastore = "1.2.1"
+work = "2.11.2"
+coil = "3.5.0"
+credentials = "1.6.0"
+googleid = "1.1.1"             # †
+splashscreen = "1.2.0"
+# --- Firebase / Play / Ads ---
+firebaseBom = "34.14.1"
+playUpdate = "2.1.0"
+playReview = "2.0.2"
+playAds = "25.3.0"
+ump = "3.2.0"
+featureDelivery = "2.1.0"      # † [DEMO] com.google.android.play:feature-delivery
+imageCropper = "4.6.0"         # † [DEMO] crop lib for :demo:twitter:feature:imagecrop
+supabase = "3.6.0"             # [DEMO ONLY] supabase-kt
+ktor = "3.4.0"                 # base generic Ktor client; demo supabase-kt engine
+okhttp = "5.0.0"               # OkHttp 5 — Ktor engine + Coil; one shared pool
+# --- Testing ---
+mockk = "1.14.9"
+turbine = "1.2.1"
+robolectric = "4.16"
 junit = "4.13.2"
-junitVersion = "1.1.5"
+androidxTestJunit = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.6.1"
-activityCompose = "1.8.0"
-kotlin = "2.2.10"
-composeBom = "2026.02.01"
+roborazzi = "1.64.0"           # † mainline + roborazzi-accessibility-check (ATF, JVM)
+composablePreviewScanner = "0.9.0"   # † auto-gen Roborazzi tests from @Preview
+# --- Observability / docs / catalog ---
+measure = "0.18.0"             # † Measure.sh SDK
+measureGradle = "0.13.0"       # † Measure Gradle plugin (R8 mapping upload)
+dokka = "2.2.0"                # † multi-module API docs (HTML)
+showkase = "1.0.5"             # † in-app component catalog (KSP)
+benchmark = "1.4.0"
+profileinstaller = "1.4.1"
+# --- Quality tooling ---
+spotless = "8.6.0"
+ktfmt = "0.59"
+detekt = "1.23.8"
+composeLints = "1.4.2"         # † slackhq/compose-lints — com.slack.lint.compose:compose-lint-checks, wired via lintChecks(...)
+kover = "0.9.8"
+# --- Gradle plugins applied to app targets (used in Phase 1+) ---
+googleServices = "4.4.2"
+crashlyticsPlugin = "3.0.7"
+perfPlugin = "2.0.2"
+baselineprofile = "1.4.0"
 
 [libraries]
+# --- Gradle-plugin artifacts: compileOnly deps for build-logic convention plugins (PR-1) ---
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-compiler-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
+kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
+
+# --- Compose lint (slackhq) — wired into the compose convention via lintChecks(...) ---
+compose-lint-checks = { group = "com.slack.lint.compose", name = "compose-lint-checks", version.ref = "composeLints" }
+
+# --- AndroidX core (consumed by :app; Compose UI via BOM) ---
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -25,7 +94,28 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+# --- Test (JVM + instrumented) ---
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+# --- Append per-module library coordinates below (PR-2..PR-13). Append-only → git auto-merges. ---
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "perfPlugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+measure = { id = "sh.measure.android.gradle", version.ref = "measureGradle" }   # † verify plugin id at impl
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
