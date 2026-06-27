@@ -28,3 +28,5 @@ rootProject.name = "android_template"
 
 // Module includes are append-only — each later PR (PR-2..PR-13) appends its module(s) below.
 include(":app")
+include(":core:common")
+include(":core:model")
