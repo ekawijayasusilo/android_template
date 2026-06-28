@@ -1,0 +1,10 @@
+Outfit is licensed under the SIL Open Font License, Version 1.1.
+
+Copyright 2021 The Outfit Project Authors (https://github.com/Outfitio/Outfit-Fonts)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is available with a FAQ at: https://scripts.sil.org/OFL
+
+Bundled weights: Regular (400), Medium (500), SemiBold (600), Bold (700).
+Static instances fetched from Google Fonts. The full license text accompanies
+the upstream font release; see https://openfontlicense.org for the canonical text.

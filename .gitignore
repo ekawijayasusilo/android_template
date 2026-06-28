@@ -16,6 +16,9 @@ local.properties
 # Plan-execution working notes (not part of the deliverable)
 temp-docs/
 
+# Roborazzi screenshot goldens — regenerated locally/CI via recordRoborazziDebug (not version-controlled).
+**/src/test/screenshots/
+
 # Local service config and secrets
 **/google-services.json
 config/**/*.properties
