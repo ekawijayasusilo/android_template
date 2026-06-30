@@ -30,3 +30,4 @@ rootProject.name = "android_template"
 include(":app")
 include(":core:common")
 include(":core:model")
+include(":core:database")
