@@ -6,8 +6,7 @@ import org.gradle.api.Project
 
 /** Shared Android config applied by both the application and library conventions.
  *  AGP 9 new DSL: configure through [CommonExtension] (non-generic) via direct property access — the
- *  lambda-accepting overloads were removed. AGP 9 has built-in Kotlin, so the Kotlin jvmTarget is
- *  derived from compileOptions (JDK 21) and the kotlin.android plugin must NOT be applied. */
+ *  lambda-accepting overloads were removed. KSP-backed processors require android.builtInKotlin=false, so convention plugins apply the Kotlin Android plugin and derive the Kotlin jvmTarget from compileOptions (JDK 21). */
 internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension,
 ) {
@@ -16,3 +15,4 @@ internal fun Project.configureKotlinAndroid(
     commonExtension.compileOptions.sourceCompatibility = JavaVersion.VERSION_21
     commonExtension.compileOptions.targetCompatibility = JavaVersion.VERSION_21
 }
+
